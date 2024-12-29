@@ -22,7 +22,11 @@
 
 body {
     margin: 0;
-    overflow-x: hidden; /* Prevent horizontal scroll */
+    /* display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; */
+    
 }
 
 .logo{
@@ -63,18 +67,18 @@ menu{
 }
 
 
+
 .center{
-    font-family: Sansation;
     display: flex;
-    align-items: center;
-    justify-content: center;
     flex-direction: column;
-    padding: 0;
-    margin: 0;
-    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding-top: 80px;
 }
 
 .center h1{
+    display: flex;
     font-family: Sansation-bold;
     padding: 0;
     margin: 0;
@@ -83,6 +87,7 @@ menu{
 }
 
 .center p{
+    font-family: sansation;
     font-size: 22px;
     padding: 0;
     margin: 0;
