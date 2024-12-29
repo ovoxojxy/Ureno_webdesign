@@ -14,6 +14,15 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'Sansation-italic';
+    src: url('font/sansation/Sansation_Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+
 * {
     margin: 0;
     padding: 0;
@@ -22,30 +31,30 @@
 
 body {
     margin: 0;
-    /* display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh; */
-    
+    overflow-x: hidden;    
 }
 
 .logo{
     font-family: Sansation;
-    padding: 0;
+    /* padding: 0; */
+    padding-left: 16px;
     margin: 0;
+    font-size: 24px;
 }
 
 .nav{
-    outline: 2px solid black;
+    outline: 1px solid black;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 8px;
-    margin-top: 8px;
+    /* margin-top: 8px; */
     padding-left: 16px;
     padding-right: 16px;
     width: 100%;
     position: fixed;
+    background-color: white;
+    z-index: 1000;
     
 }
 
@@ -68,16 +77,24 @@ menu{
 
 
 
-.center{
+.center-logo{
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    min-height: 50vh;
     padding-top: 80px;
 }
 
-.center h1{
+.center-logo .container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 64px;
+}
+
+.center-logo .container h1{
     display: flex;
     font-family: Sansation-bold;
     padding: 0;
@@ -86,7 +103,7 @@ menu{
     text-shadow: 0px 2px 2.5px rgba(157, 157, 157, 0.219);
 }
 
-.center p{
+.center-logo .container p{
     font-family: sansation;
     font-size: 22px;
     padding: 0;
@@ -100,6 +117,13 @@ button{
     outline: none;
     font-size: 16px;
 }
+
+.btn.try-now {
+    padding: 8px 24px;
+    margin-top: 24px;
+    width: 100px;
+}
+
 
 .btn.login-btn, .btn.try-now{
     background-color: black;
@@ -133,7 +157,169 @@ button{
     border-color: #333;
 }
 
-.btn.try-now {
-    padding: 8px 24px;
-    margin-top: 24px;
+
+
+.our-services{
+    outline: 1px solid black;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    margin-top: 8px;
+    padding-left: 16px;
+    padding-right: 16px;
+    width: 100%;
+    font-family: sansation;
+}
+
+.our-services p{
+    padding: 8px 16px;
+    font-family: sansation-italic;
+}
+
+.floor-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    overflow: hidden;
+    margin: 8px 8px 0 8px;
+}
+
+.flooring{
+    width: 60vw;
+    height: 250px;
+    overflow: hidden;
+    position: relative;
+    animation-name: fadeInRight;
+    animation-duration: 1s;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+    animation-delay: 0.2s;
+    border-radius: 12px;
+}
+
+.flooring img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.floor-txt{
+    /* outline: 2px solid black; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: sansation;
+    font-size: 20px;
+    width: 50vw;
+    height: 250px;
+    animation-name: fadeInRight;
+    animation-duration: 1s;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+    animation-delay: 0.4s; 
+}
+
+
+.paint-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    overflow: hidden;
+    margin: 8px 8px 0 8px;
+}
+
+.painting {
+    width: 60vw;
+    height: 250px;
+    overflow: hidden;
+    position: relative;
+    animation-name: fadeInLeft;
+    animation-duration: 1s;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+    animation-delay: 0.2s;
+    border-radius: 12px;
+}
+
+.painting img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.paint-txt {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Sansation;
+    font-size: 20px;
+    width: 50vw;
+    height: 250px;
+    animation-name: fadeInLeft;
+    animation-duration: 1s;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+    animation-delay: 0.4s; /* Slight delay for staggered effect */
+}
+
+/* animations */
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform:translate3d(100%, 0, 0)
+    }
+
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0)
+    }
+}
+
+.fadeInRight {
+    animation-name: fadeInRight;
+    animation-duration: 1s;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+    animation-delay: 0.2s;
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform:translate3d(-100%, 0, 0)
+    }
+
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0)
+    }
+}
+
+.fadeInLeft {
+    animation-name: fadeInLeft;
+    animation-duration: 1s;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+    animation-delay: 0.2s;
+}
+
+
+@media (max-width: 768px) {
+    .floor-content,
+    .paint-content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .flooring,
+    .painting,
+    .floor-txt,
+    .paint-txt {
+        width: 90vw;
+        text-align: center;
+    }
 }
