@@ -29,6 +29,8 @@
     box-sizing: border-box; /* Include padding and borders in width */
 }
 
+
+
 body {
     margin: 0;
     overflow-x: hidden;    
@@ -58,7 +60,7 @@ body {
     
 }
 
-menu{
+.nav menu{
     display: flex;       
     list-style: none;    
     padding: 0;          
@@ -141,7 +143,6 @@ button{
 
 .profile-btn{
     background-color: transparent;
-    border: 2px solid black;
     border-radius: 50%;
     width: 40px;
     height: 40px;
@@ -208,10 +209,12 @@ button{
 .floor-txt{
     /* outline: 2px solid black; */
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     font-family: sansation;
     font-size: 20px;
+    text-align: center;
     width: 50vw;
     height: 250px;
     animation-name: fadeInRight;
@@ -252,10 +255,12 @@ button{
 
 .paint-txt {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-family: Sansation;
+    font-family: sansation;
     font-size: 20px;
+    text-align: center;
     width: 50vw;
     height: 250px;
     animation-name: fadeInLeft;
@@ -263,6 +268,53 @@ button{
     animation-timing-function: ease-in-out;
     animation-fill-mode: forwards;
     animation-delay: 0.4s; /* Slight delay for staggered effect */
+}
+
+.footer{
+    border-top: 2px solid black;
+    border-color: #f0f0f0;
+    width: 80%;
+    margin: 100px auto 0 auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 14%;
+    padding-top: 50px;
+    margin-top: 100px;
+}
+
+.footer .logo{
+    margin-bottom: 75px;
+    padding-left: 0px;
+}
+
+.footer .social-sites{
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 75px;
+    padding-left: 0px;
+}
+
+.footer menu{
+    display: flex;
+    flex-direction: column;
+    line-height: 2.5;
+    list-style: none;
+    font-family: sansation;
+}
+
+.footer .menu-container{
+    display: flex;
+    flex-direction: row;
+}
+
+
+.footer .right{
+    display: flex;
+    flex-direction: row;
+    width: 50%;
+    justify-content: space-around;
+
 }
 
 /* animations */
