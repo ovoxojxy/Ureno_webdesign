@@ -7,7 +7,7 @@ import FlooringProduct from './product-page.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <Router>
+    <Router basename="/Ureno_webdesign">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/product-page" element={<FlooringProduct />} />
