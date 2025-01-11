@@ -6,7 +6,9 @@ export default function FlooringProduct() {
   <link rel="stylesheet" href="src/FlooringProduct.css" />
   <title>URENO</title>
   <div className="nav">
-    <div className="logo">URENO</div>
+    <div className="logo">
+        URENO
+    </div>
     <div className="Right">
       <menu>
         <li>AI Design</li>
