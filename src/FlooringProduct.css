@@ -8,14 +8,14 @@
 /* Bold Font */
 @font-face {
     font-family: 'Sansation-bold';
-    src: url('./assests/font/sansation/Sansation_Bold.ttf') format('truetype');
+    src: url('./assets/font/sansation/Sansation_Bold.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Sansation-italic';
-    src: url('./assests/font/sansation/Sansation_Italic.ttf') format('truetype');
+    src: url('./assets/font/sansation/Sansation_Italic.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
