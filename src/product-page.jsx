@@ -1,3 +1,12 @@
+import { Link } from "react-router-dom"
+import profileSVG from './assets/images/profile-svgrepo-com.svg'
+import harvestGrove from './assets/images/Harvest-grove-rigid.png'
+import tavertine from './assets/images/tavertine.png'
+import champagne from './assets/images/champagne.png'
+import luxury from './assets/images/luxury.png'
+import champagne2 from './assets/images/champage2.png'
+import harvest from './assets/images/harvest.png'
+
 export default function FlooringProduct() {
     return(
         <>
@@ -34,19 +43,19 @@ export default function FlooringProduct() {
     <p>Popular</p>
     <div className="products">
       <div className="container">
-        <img src="images/Harvest-grove-rigid.png" alt="" />
+        <img src={harvestGrove} alt="" />
         <div className="prod-title">Harvest Grove Rigid Luxury Vinyl</div>
         <p>Floor and Decor</p>
         <p>$2.19/sqft</p>
       </div>
       <div className="container">
-        <img src="images/tavertine.png" alt="" />
+        <img src={tavertine} alt="" />
         <div className="prod-title">Inverness Tavertine Vinyl</div>
         <p>Floor and Decor</p>
         <p>$2.19/sqft</p>
       </div>
       <div className="container">
-        <img src="images/champagne.png" alt="" />
+        <img src={champagne} alt="" />
         <div className="prod-title">
           Champagne Limestone Rigid Core Luxury Vinyl
         </div>
@@ -54,19 +63,19 @@ export default function FlooringProduct() {
         <p>$2.19/sqft</p>
       </div>
       <div className="container">
-        <img src="images/luxury.png" alt="" />
+        <img src={luxury} alt="" />
         <div className="prod-title">Harvest Grove Rigid Luxury Vinyl</div>
         <p>Floor and Decor</p>
         <p>$2.19/sqft</p>
       </div>
       <div className="container">
-        <img src="images/harvest.png" alt="" />
+        <img src={harvest} alt="" />
         <div className="prod-title">Inverness Tavertine Vinyl</div>
         <p>Floor and Decor</p>
         <p>$2.19/sqft</p>
       </div>
       <div className="container">
-        <img src="images/champage2.png" alt="" />
+        <img src={champagne2} alt="" />
         <div className="prod-title">
           Champagne Limestone Rigid Core Luxury Vinyl
         </div>

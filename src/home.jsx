@@ -1,11 +1,14 @@
 import { Link } from "react-router-dom";
+import floorBackground from './assets/images/flooring-background.png'
+import paintBackground from './assets/images/paint-background.png'
+import profileSVG from './assets/images/profile-svgrepo-com.svg'
 
 export default function Home() {
     return (
 <>
   <meta charSet="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="index-styles.css" />
+  <link rel="stylesheet" href="index.css" />
   <title>Ureno</title>
   <div className="nav">
     <div className="logo">URENO</div>
@@ -17,8 +20,8 @@ export default function Home() {
       </menu>
       <button className="btn login-btn">Log In</button>
       <button className="btn profile-btn">
-        <object data="images/profile-svgrepo-com.svg" type="image/svg+xml">
-          <img src="images/profile-svgrepo-com.svg" />
+        <object data={profileSVG} type="image/svg+xml">
+          <img src={profileSVG} />
         </object>
       </button>
     </div>
@@ -39,7 +42,7 @@ export default function Home() {
         <p>
           <Link to="/product-page">
             <img
-              src="/Ureno_webdesign/images/flooring-background.png"
+              src={floorBackground}
               alt="light oak wooden floor"
             />
           </Link>
@@ -55,7 +58,7 @@ export default function Home() {
     </div>
     <div className="paint-content">
       <div className="painting fadeInLeft">
-        <img src="images/paint-background.png" alt="blue painted walls" />
+        <img src={paintBackground} alt="blue painted walls" />
       </div>
       <div className="paint-txt fadeInLeft">
         <h3>paint</h3>
