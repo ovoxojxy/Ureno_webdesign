@@ -39,7 +39,7 @@ export default function Home() {
         <p>
           <Link to="/product-page">
             <img
-              src="images/flooring-background.png"
+              src="/Ureno_webdesign/images/flooring-background.png"
               alt="light oak wooden floor"
             />
           </Link>
