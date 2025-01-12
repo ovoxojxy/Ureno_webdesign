@@ -27,8 +27,8 @@ export default function FlooringProduct() {
       </menu>
       <button className="btn login-btn">Log In</button>
       <button className="btn profile-btn">
-        <object data="images/profile-svgrepo-com.svg" type="image/svg+xml">
-          <img src="images/profile-svgrepo-com.svg" />
+        <object data={profileSVG} type="image/svg+xml">
+          <img src={profileSVG} />
         </object>
       </button>
     </div>

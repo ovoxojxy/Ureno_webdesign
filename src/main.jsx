@@ -1,3 +1,9 @@
+// reset gh react page
+// rm -rf dist
+// npm run build
+// npm run deploy
+
+
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
