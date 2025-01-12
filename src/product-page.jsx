@@ -16,9 +16,9 @@ export default function FlooringProduct() {
   <link rel="stylesheet" href="./FlooringProduct.css" />
   <title>URENO</title>
   <div className="nav">
-    <div className="logo">
-        URENO
-    </div>
+    <Link to="/">
+      <div className="logo">URENO</div>
+    </Link>
     <div className="Right">
       <menu>
         <li>AI Design</li>
@@ -37,7 +37,7 @@ export default function FlooringProduct() {
     <h1>Flooring</h1>
     <div className="search">
       <div className="input">
-        <input type="text" className="search-bar" defaultValue="Search" />
+        <input type="text" className="search-bar" placeholder="Search" />
       </div>
       <div className="filter">Filter</div>
     </div>

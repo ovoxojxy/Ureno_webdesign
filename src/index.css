@@ -36,12 +36,19 @@ body {
     overflow-x: hidden;    
 }
 
+.nav a{
+    text-decoration: none;
+}
+
 .logo{
     font-family: Sansation;
     padding-left: 16px;
     margin: 0;
     font-size: 24px;
+    color: black;
 }
+
+
 
 .nav{
     outline: 1px solid black;
@@ -314,7 +321,7 @@ button{
 
 .footer .left{
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   width: 50%;
 }
 .footer .right{

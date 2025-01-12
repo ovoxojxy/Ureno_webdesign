@@ -136,7 +136,8 @@ input {
 
 .search-bar{
     font-family: sansation;
-    color: lightgrey;
+    color: black;
+    
 }
 
 .filter{

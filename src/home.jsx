@@ -2,6 +2,11 @@ import { Link } from "react-router-dom";
 import floorBackground from './assets/images/flooring-background.png'
 import paintBackground from './assets/images/paint-background.png'
 import profileSVG from './assets/images/profile-svgrepo-com.svg'
+import facebook from './assets/images/icons8-facebook.svg'
+import instagram from './assets/images/icons8-instagram.svg'
+import linkedin from './assets/images/icons8-linkedin.svg'
+import youtube from './assets/images/icons8-youtube-logo.svg'
+
 import './index.css'
 
 export default function Home() {
@@ -77,17 +82,17 @@ export default function Home() {
     <div className="left">
       <div className="logo">URENO</div>
       <div className="social-sites">
-        <object data="images/icons8-facebook.svg" type="image/svg+xml">
-          <img src="/path-to/your-fallback-image.png" />
+        <object data={facebook} type="image/svg+xml">
+          <img src={facebook} />
         </object>
-        <object data="images/icons8-instagram.svg" type="image/svg+xml">
-          <img src="/path-to/your-fallback-image.png" />
+        <object data={instagram} type="image/svg+xml">
+          <img src={instagram} />
         </object>
-        <object data="images/icons8-linkedin.svg" type="image/svg+xml">
-          <img src="/path-to/your-fallback-image.png" />
+        <object data={linkedin} type="image/svg+xml">
+          <img src={linkedin} />
         </object>
-        <object data="images/icons8-youtube-logo.svg" type="image/svg+xml">
-          <img src="/path-to/your-fallback-image.png" />
+        <object data={youtube} type="image/svg+xml">
+          <img src={youtube} />
         </object>
       </div>
     </div>
