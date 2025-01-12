@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom"
-import profileSVG from '../assets/images/profile-svgrepo-com.svg'
 import harvestGrove from '../assets/images/Harvest-grove-rigid.png'
 import tavertine from '../assets/images/tavertine.png'
 import champagne from '../assets/images/champagne.png'
 import luxury from '../assets/images/luxury.png'
 import champagne2 from '../assets/images/champage2.png'
 import harvest from '../assets/images/harvest.png'
+import Nav from "../components/nav"
+import Footer from "../components/footer"
+import FloorCard from "../components/flooringCards"
 import "../styles/FlooringProduct.css"
 
 export default function FlooringProduct() {
@@ -13,26 +15,8 @@ export default function FlooringProduct() {
         <>
   <meta charSet="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="../styles/FlooringProduct.css" />
   <title>URENO</title>
-  <div className="nav">
-    <Link to="/">
-      <div className="logo">URENO</div>
-    </Link>
-    <div className="Right">
-      <menu>
-        <li>AI Design</li>
-        <li>Projects</li>
-        <li>Messages</li>
-      </menu>
-      <button className="btn login-btn">Log In</button>
-      <button className="btn profile-btn">
-        <object data={profileSVG} type="image/svg+xml">
-          <img src={profileSVG} />
-        </object>
-      </button>
-    </div>
-  </div>
+  <Nav />
   <div className="main-content">
     <h1>Flooring</h1>
     <div className="search">
@@ -43,48 +27,45 @@ export default function FlooringProduct() {
     </div>
     <p>Popular</p>
     <div className="products">
-      <div className="container">
-        <img src={harvestGrove} alt="" />
-        <div className="prod-title">Harvest Grove Rigid Luxury Vinyl</div>
-        <p>Floor and Decor</p>
-        <p>$2.19/sqft</p>
-      </div>
-      <div className="container">
-        <img src={tavertine} alt="" />
-        <div className="prod-title">Inverness Tavertine Vinyl</div>
-        <p>Floor and Decor</p>
-        <p>$2.19/sqft</p>
-      </div>
-      <div className="container">
-        <img src={champagne} alt="" />
-        <div className="prod-title">
-          Champagne Limestone Rigid Core Luxury Vinyl
-        </div>
-        <p>Floor and Decor</p>
-        <p>$2.19/sqft</p>
-      </div>
-      <div className="container">
-        <img src={luxury} alt="" />
-        <div className="prod-title">Harvest Grove Rigid Luxury Vinyl</div>
-        <p>Floor and Decor</p>
-        <p>$2.19/sqft</p>
-      </div>
-      <div className="container">
-        <img src={harvest} alt="" />
-        <div className="prod-title">Inverness Tavertine Vinyl</div>
-        <p>Floor and Decor</p>
-        <p>$2.19/sqft</p>
-      </div>
-      <div className="container">
-        <img src={champagne2} alt="" />
-        <div className="prod-title">
-          Champagne Limestone Rigid Core Luxury Vinyl
-        </div>
-        <p>Floor and Decor</p>
-        <p>$2.19/sqft</p>
-      </div>
+      <FloorCard
+        image={harvestGrove}
+        title="Harvest Grove Rigid Luxury Vinyl"
+        description="Floor and Decor"
+        price="$2.19/sqft"
+      />
+      <FloorCard
+        image={tavertine}
+        title="Inverness Tavertine Vinyl"
+        description="Floor and Decor"
+        price="$2.19/sqft"
+      />
+      <FloorCard
+        image={champagne}
+        title="Champagne Limestone Rigid Core Luxury Vinyl"
+        description="Floor and Decor"
+        price="2.19/sqft"
+      />
+      <FloorCard
+        image={luxury}
+        title="Harvest Grove Rigid Luxury Vinyl"
+        description="Floor and Decor"
+        price="$2.19/sqft"
+      />
+      <FloorCard
+        image={harvest}
+        title="Inverness Tavertine Vinyl"
+        description="Floor and Decor"
+        price="2.19/sqft"
+      />
+      <FloorCard
+      image={champagne2}
+      title="Champagne Limestone Rigid Core Luxury Vinyl"
+      description="Floor and Decor"
+      price="$2.19/sqft"
+      />
     </div>
   </div>
+  <Footer />
 </>
 
     );
