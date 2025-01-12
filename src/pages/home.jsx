@@ -1,20 +1,20 @@
 import { Link } from "react-router-dom";
-import floorBackground from './assets/images/flooring-background.png'
-import paintBackground from './assets/images/paint-background.png'
-import profileSVG from './assets/images/profile-svgrepo-com.svg'
-import facebook from './assets/images/icons8-facebook.svg'
-import instagram from './assets/images/icons8-instagram.svg'
-import linkedin from './assets/images/icons8-linkedin.svg'
-import youtube from './assets/images/icons8-youtube-logo.svg'
+import floorBackground from '../assets/images/flooring-background.png'
+import paintBackground from '../assets/images/paint-background.png'
+import profileSVG from '../assets/images/profile-svgrepo-com.svg'
+import facebook from '../assets/images/icons8-facebook.svg'
+import instagram from '../assets/images/icons8-instagram.svg'
+import linkedin from '../assets/images/icons8-linkedin.svg'
+import youtube from '../assets/images/icons8-youtube-logo.svg'
 
-import './index.css'
+import '../styles/index.css'
 
 export default function Home() {
     return (
 <>
   <meta charSet="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="./index.css" />
+  <link rel="stylesheet" href="../styles/index.css" />
   <title>Ureno</title>
   <div className="nav">
     <Link to="/">

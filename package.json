@@ -18,8 +18,11 @@
     "react-router-dom": "^7.1.1"
   },
   "devDependencies": {
+    "@types/react": "^19.0.5",
+    "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^4.3.4",
     "gh-pages": "^6.3.0",
+    "typescript": "^5.7.3",
     "vite": "^6.0.7"
   }
 }
