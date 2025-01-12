@@ -11,4 +11,11 @@ const FloorCard = ({image, title, description, price}) => {
     )
 }
 
+FloorCard.defaultProps = {
+    image: "../assets/images/defaultImage.jpg.webp",
+    title: "Default Title",
+    description: "No description available",
+    price: "Price not available.",
+}
+
 export default FloorCard
