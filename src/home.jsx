@@ -2,16 +2,20 @@ import { Link } from "react-router-dom";
 import floorBackground from './assets/images/flooring-background.png'
 import paintBackground from './assets/images/paint-background.png'
 import profileSVG from './assets/images/profile-svgrepo-com.svg'
+import './index.css'
 
 export default function Home() {
     return (
 <>
   <meta charSet="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="index.css" />
+  <link rel="stylesheet" href="./index.css" />
   <title>Ureno</title>
   <div className="nav">
-    <div className="logo">URENO</div>
+    <Link to="/">
+      <div className="logo">URENO</div>
+    </Link>
+    
     <div className="Right">
       <menu>
         <li>AI Design</li>

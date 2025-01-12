@@ -6,13 +6,14 @@ import champagne from './assets/images/champagne.png'
 import luxury from './assets/images/luxury.png'
 import champagne2 from './assets/images/champage2.png'
 import harvest from './assets/images/harvest.png'
+import "./FlooringProduct.css"
 
 export default function FlooringProduct() {
     return(
         <>
   <meta charSet="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="src/FlooringProduct.css" />
+  <link rel="stylesheet" href="./FlooringProduct.css" />
   <title>URENO</title>
   <div className="nav">
     <div className="logo">
