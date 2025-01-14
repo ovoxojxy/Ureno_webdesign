@@ -16,7 +16,11 @@ const Nav = () => {
             <li>Projects</li>
             <li>Messages</li>
           </menu>
-          <button className="btn login-btn">Log In</button>
+          <Link to="sign-in">
+            <button className="btn login-btn">
+                Log In
+            </button>
+          </Link>
           <button className="btn profile-btn">
             <object data={profileSVG} type="image/svg+xml">
               <img src={profileSVG} />

@@ -8,8 +8,10 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import './styles/index.css'
+import './globals.css'
 import Home from './pages/home.jsx'
 import FlooringProduct from './pages/product-page.jsx'
+import SignIn from './app/(auth)/sign-in/page'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -17,6 +19,7 @@ createRoot(document.getElementById('root')).render(
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/product-page" element={<FlooringProduct />} />
+        <Route path="sign-in" element={<SignIn />} />
       </Routes>
     </Router>
   </StrictMode>
