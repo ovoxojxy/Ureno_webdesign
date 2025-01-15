@@ -2,7 +2,8 @@ import { FC } from 'react'
 import { Link } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/components/ui/Button'
-import SignIn from '@/components/SIgnIn'
+import SignIn from '@/components/SignIn'
+import { Toaster } from '@/components/ui/toaster'
 
 
 
@@ -12,6 +13,8 @@ const page: FC = ({}) => {
         <Link to='/' className={cn(buttonVariants({variant: 'ghost'}), 'self-start -mt-20')}>Home</Link>
 
         <SignIn />
+
+        <Toaster />
     </div>
  </div>
 }
