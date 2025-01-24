@@ -7,6 +7,9 @@ import autoprefixer from 'autoprefixer'
 
 // https://vite.dev/config/
 export default defineConfig({
+  optimizeDeps: {
+    include: ['lucide-react'],
+  },
   base: '/Ureno_webdesign/',
   plugins: [react()],
   resolve: {

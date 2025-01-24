@@ -32,6 +32,7 @@ export default function FlooringProduct() {
         title="Harvest Grove Rigid Luxury Vinyl"
         description="Floor and Decor"
         price="$2.19/sqft"
+        link="/product/harvest"
       />
       <FloorCard
         image={tavertine}
