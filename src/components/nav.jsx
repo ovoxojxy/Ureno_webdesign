@@ -16,7 +16,7 @@ const Nav = () => {
             <li>Projects</li>
             <li>Messages</li>
           </menu>
-          <Link to="sign-in">
+          <Link to="/sign-in">
             <button className="btn login-btn">
                 Log In
             </button>

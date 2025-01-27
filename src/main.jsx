@@ -21,9 +21,8 @@ createRoot(document.getElementById('root')).render(
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/product-page" element={<FlooringProduct />} />
-        <Route path="/productDetail" element={<ProductDetailPage />} />
-        <Route path="sign-in" element={<SignIn />} />
-        
+        <Route path="/productDetail/:productId" element={<ProductDetailPage />} />
+        <Route path="sign-in" element={<SignIn />} /> 
       </Routes>
     </Router>
   </StrictMode>
