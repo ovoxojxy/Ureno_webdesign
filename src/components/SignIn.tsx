@@ -8,9 +8,6 @@ return <div className='container mx-auto flex h-screen w-full flex-col justify-c
     <div className='flex flex-col space-y-2 text-center'>
         <Icons.logo className='container mx-auto flex h-screen w-full flex-col justify-center' />
         <h1 className='text-2xl font-semibold tracking-tight'>Welcome back</h1>
-        <p className='text-sm max-w-xs mx-auto'>
-            "Sample User Agreement"
-        </p>
 
         {/* sign in form */}
 
@@ -23,6 +20,9 @@ return <div className='container mx-auto flex h-screen w-full flex-col justify-c
             Sign Up
             </Link>
         </p>
+        <p className='text-sm max-w-xs mx-auto text-gray-500'>
+                        By clicking create account, you agree to our <a href="" className='underline'>Terms of Service</a> and <a href="" className='underline'>Privacy Policy</a>
+                </p>
     </div>
 </div>
 }

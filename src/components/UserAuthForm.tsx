@@ -66,7 +66,7 @@ const UserAuthForm: FC<UserAuthFormProps> = ({className, ...props}) => {
  return (
     <div className={cn('flex flex-col items-center space-y-4 justify-center', className)} {...props}>
         {userLoggedIn && (<Navigate to={'/'} replace={true} />)}
-        <div className="flex flex-col space-y-2">
+        <div className="flex flex-col space-y-4">
             <input
                 type="email"
                 value={email}
@@ -91,17 +91,21 @@ const UserAuthForm: FC<UserAuthFormProps> = ({className, ...props}) => {
             >
                 Login with Email
             </Button>
-        </div>
 
-        <p> Or Login with Google</p>
+            <p className='flex items-center text-gray-500 text-sm'> 
+                <span className='flex-grow border-t border-gray-300'></span>
+                <span className='px-3'> Or Login with Google </span>
+                <span className='flex-grow border-t border-gray-300'></span>
+            </p>
         <Button 
             onClick={loginWithGoogle} 
             isLoading={isLoading} 
             size='sm' 
-            className='w-full max-w-md'> 
-            {isLoading ? null : <Icons.google className='h-4 w-4 mr-2'/>}
+            className='w-full'> 
+            {isLoading ? null : <Icons.google className='sh-4 w-4 mr-2'/>}
             Google
         </Button>
+        </div>
     </div>
 
  )
