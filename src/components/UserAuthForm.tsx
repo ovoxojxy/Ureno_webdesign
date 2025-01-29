@@ -1,10 +1,8 @@
-import { FC, useState } from 'react'
-import { Navigate } from 'react-router-dom'
+import { FC, useEffect, useState } from 'react'
+import { Navigate, useNavigate } from 'react-router-dom'
 import { Icons } from './Icons'
 import { Button } from './ui/Button'
 import { cn } from '@/lib/utils'
-import SignIn from './SignIn'
-import { signInWithPopup, auth, provider  } from "../firebase/firebaseConfig"
 import { useToast } from '@/hooks/use-toast'
 import { doSignInWithEmailAndPassword, doSignInWithGoogle } from "../firebase/auth"
 import { useAuth } from '@/contexts/authContext'
@@ -14,13 +12,17 @@ interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 
 
+
 const UserAuthForm: FC<UserAuthFormProps> = ({className, ...props}) => {
-    const { userLoggedIn } = useAuth() || { userLoggedIn: false }
+    const { userLoggedIn } = useAuth()
+    const navigate = useNavigate()
 
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [isLoading, setIsLoading] = useState<boolean>(false)
+
+
     const {toast} = useToast()
 
     const loginWithGoogle = async () => {
@@ -62,10 +64,19 @@ const UserAuthForm: FC<UserAuthFormProps> = ({className, ...props}) => {
         }
     }
 
+    if (userLoggedIn) {
+        return <Navigate to={'/'} replace={true} />
+    }
+
+    useEffect(() => {
+        if (userLoggedIn) {
+            navigate('/')
+        }
+    }, [userLoggedIn, navigate])
+
    
  return (
     <div className={cn('flex flex-col items-center space-y-4 justify-center', className)} {...props}>
-        {userLoggedIn && (<Navigate to={'/'} replace={true} />)}
         <div className="flex flex-col space-y-4">
             <input
                 type="email"
@@ -109,7 +120,10 @@ const UserAuthForm: FC<UserAuthFormProps> = ({className, ...props}) => {
     </div>
 
  )
+
     
 }
+
+
 
 export default UserAuthForm
