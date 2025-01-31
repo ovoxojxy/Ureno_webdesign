@@ -5,24 +5,20 @@ import { Button } from './ui/Button'
 import { cn } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
 import { doSignInWithEmailAndPassword, doSignInWithGoogle } from "../firebase/auth"
-import { useAuth } from '@/contexts/authContext'
+import { useAuth } from '@/contexts/authContext/index'
+import { redirect } from 'react-router-dom'
 
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 
 
-
 const UserAuthForm: FC<UserAuthFormProps> = ({className, ...props}) => {
-    const { userLoggedIn } = useAuth()
+    const { userLoggedIn } = useAuth() || { userLoggedIn: false }
     const navigate = useNavigate()
-
-
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [isLoading, setIsLoading] = useState<boolean>(false)
-
-
     const {toast} = useToast()
 
     const loginWithGoogle = async () => {
@@ -30,6 +26,7 @@ const UserAuthForm: FC<UserAuthFormProps> = ({className, ...props}) => {
 
         try {
             const result = await doSignInWithGoogle()
+            navigate("/")
         } catch (error){
             // toast notification
             toast({
@@ -39,6 +36,7 @@ const UserAuthForm: FC<UserAuthFormProps> = ({className, ...props}) => {
             })
         } finally {
             setIsLoading(false)
+            console.log("Logged in: ", userLoggedIn)
         }
     };
 
@@ -47,7 +45,7 @@ const UserAuthForm: FC<UserAuthFormProps> = ({className, ...props}) => {
 
         try {
             const result = await doSignInWithEmailAndPassword(email, password)
-
+            navigate("/")
             toast({
                 title: 'Success!',
                 description: 'Logged in',
@@ -61,22 +59,15 @@ const UserAuthForm: FC<UserAuthFormProps> = ({className, ...props}) => {
             })
         } finally {
             setIsLoading(false)
+            console.log("Logged in: ", userLoggedIn)
         }
     }
 
-    if (userLoggedIn) {
-        return <Navigate to={'/'} replace={true} />
-    }
-
-    useEffect(() => {
-        if (userLoggedIn) {
-            navigate('/')
-        }
-    }, [userLoggedIn, navigate])
 
    
  return (
     <div className={cn('flex flex-col items-center space-y-4 justify-center', className)} {...props}>
+        {userLoggedIn && (<Navigate to={'/'} replace={true} />)}
         <div className="flex flex-col space-y-4">
             <input
                 type="email"
@@ -120,10 +111,7 @@ const UserAuthForm: FC<UserAuthFormProps> = ({className, ...props}) => {
     </div>
 
  )
-
     
 }
-
-
 
 export default UserAuthForm

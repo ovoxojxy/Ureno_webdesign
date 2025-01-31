@@ -20,19 +20,18 @@ export function AuthProvider({ children }) {
         userLoggedIn,
         isEmailUser,
         isGoogleUser,
-        loading
+        loading,
+        redirectAfterAuth,
+        setRedirectAfterAuth
     }
+
 
     useEffect(()=>{
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
                 setCurrentUser(user)
-
-                const isEmail = user.providerData.some(
-                    (provider) => provider.providerId === "password"
-                )
+                setUserLoggedIn(true)
                 setIsEmailUser(isEmail)
-
                 setUserLoggedIn(true)
             }else{
                 setCurrentUser(null)

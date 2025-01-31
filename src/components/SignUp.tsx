@@ -1,3 +1,7 @@
+// change use state after sign up
+// add email verification / phone number verification
+
+
 import { FC } from "react";
 import { Link } from "react-router-dom";
 import { Icons } from "./Icons";
