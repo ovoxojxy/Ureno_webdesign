@@ -12,6 +12,9 @@ import './globals.css'
 import Home from './pages/home.jsx'
 import FlooringProduct from './pages/product-page.jsx'
 import SignIn from './app/(auth)/sign-in/page'
+import SignUp from './components/SignUp'
+import ProductDetail from './components/product-detail'
+import ProductDetailPage from './pages/productDetailPage'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -19,7 +22,9 @@ createRoot(document.getElementById('root')).render(
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/product-page" element={<FlooringProduct />} />
-        <Route path="sign-in" element={<SignIn />} />
+        <Route path="/productDetail/:productId" element={<ProductDetailPage />} />
+        <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/sign-up" element={<SignUp />} />
       </Routes>
     </Router>
   </StrictMode>

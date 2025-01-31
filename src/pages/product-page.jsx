@@ -28,36 +28,43 @@ export default function FlooringProduct() {
     <p>Popular</p>
     <div className="products">
       <FloorCard
+        productId="HarvestGrove"
         image={harvestGrove}
         title="Harvest Grove Rigid Luxury Vinyl"
         description="Floor and Decor"
         price="$2.19/sqft"
+        link="/productDetail"
       />
       <FloorCard
+        productId= "tavertine"
         image={tavertine}
         title="Inverness Tavertine Vinyl"
         description="Floor and Decor"
         price="$2.19/sqft"
       />
       <FloorCard
+        productId= "Champagne"
         image={champagne}
         title="Champagne Limestone Rigid Core Luxury Vinyl"
         description="Floor and Decor"
         price="2.19/sqft"
       />
       <FloorCard
+        productId= "Luxury"
         image={luxury}
         title="Harvest Grove Rigid Luxury Vinyl"
         description="Floor and Decor"
         price="$2.19/sqft"
       />
       <FloorCard
+        productId= "Harvest"
         image={harvest}
         title="Inverness Tavertine Vinyl"
         description="Floor and Decor"
         price="2.19/sqft"
       />
       <FloorCard
+      productId= "Champagne2"
       image={champagne2}
       title="Champagne Limestone Rigid Core Luxury Vinyl"
       description="Floor and Decor"

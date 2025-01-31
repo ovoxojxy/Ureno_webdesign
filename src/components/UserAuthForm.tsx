@@ -1,27 +1,35 @@
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
+import { Navigate, useNavigate } from 'react-router-dom'
 import { Icons } from './Icons'
 import { Button } from './ui/Button'
 import { cn } from '@/lib/utils'
-import SignIn from './SignIn'
-import { signInWithPopup, auth, provider  } from "../firebaseConfig"
 import { useToast } from '@/hooks/use-toast'
-
+import { doSignInWithEmailAndPassword, doSignInWithGoogle } from "../firebase/auth"
+import { useAuth } from '@/contexts/authContext'
 
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 
 
-const UserAuthForm: FC<UserAuthFormProps> = ({className, ...props}) => {
 
+const UserAuthForm: FC<UserAuthFormProps> = ({className, ...props}) => {
+    const { userLoggedIn } = useAuth()
+    const navigate = useNavigate()
+
+
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
     const [isLoading, setIsLoading] = useState<boolean>(false)
+
+
     const {toast} = useToast()
 
     const loginWithGoogle = async () => {
         setIsLoading(true)
 
         try {
-            const result = await signInWithPopup(auth, provider)
+            const result = await doSignInWithGoogle()
         } catch (error){
             // toast notification
             toast({
@@ -32,23 +40,90 @@ const UserAuthForm: FC<UserAuthFormProps> = ({className, ...props}) => {
         } finally {
             setIsLoading(false)
         }
+    };
+
+    const loginWithEmailAndPassword = async (email: string, password: string) => {
+        setIsLoading(true)
+
+        try {
+            const result = await doSignInWithEmailAndPassword(email, password)
+
+            toast({
+                title: 'Success!',
+                description: 'Logged in',
+                variant: 'default',
+            })
+        } catch (error: any) {
+            toast({
+                title: 'There was a problem.',
+                description: 'Error logging in with email and password',
+                variant: 'destructive'
+            })
+        } finally {
+            setIsLoading(false)
+        }
     }
+
+    if (userLoggedIn) {
+        return <Navigate to={'/'} replace={true} />
+    }
+
+    useEffect(() => {
+        if (userLoggedIn) {
+            navigate('/')
+        }
+    }, [userLoggedIn, navigate])
 
    
  return (
-    <div className={cn('flex justify-center', className)} {...props}>
+    <div className={cn('flex flex-col items-center space-y-4 justify-center', className)} {...props}>
+        <div className="flex flex-col space-y-4">
+            <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.currentTarget.value)}
+                placeholder="Email"
+                className="input"
+            />
+
+            <input 
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+                className='input'
+            />
+
+            <Button
+                onClick={() => loginWithEmailAndPassword(email, password)}
+                isLoading={isLoading}
+                size="sm"
+                className='w-full'
+            >
+                Login with Email
+            </Button>
+
+            <p className='flex items-center text-gray-500 text-sm'> 
+                <span className='flex-grow border-t border-gray-300'></span>
+                <span className='px-3'> Or Login with Google </span>
+                <span className='flex-grow border-t border-gray-300'></span>
+            </p>
         <Button 
             onClick={loginWithGoogle} 
             isLoading={isLoading} 
             size='sm' 
             className='w-full'> 
-            {isLoading ? null : <Icons.google className='h-4 w-4 mr-2'/>}
+            {isLoading ? null : <Icons.google className='sh-4 w-4 mr-2'/>}
             Google
         </Button>
+        </div>
     </div>
 
  )
+
     
 }
+
+
 
 export default UserAuthForm
