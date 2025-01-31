@@ -20,7 +20,7 @@ import { AuthProvider } from './contexts/authContext'
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AuthProvider>
-    <Router basenanme="/Ureno_webdesign/">
+    <Router basename="/Ureno_webdesign/">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/product-page" element={<FlooringProduct />} />

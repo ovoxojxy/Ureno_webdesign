@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate, Link } from 'react-router-dom'
 import { Icons } from './Icons'
 import { Button } from './ui/Button'
 import { cn } from '@/lib/utils'

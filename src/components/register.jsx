@@ -1,7 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { Navigate, Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/authContext'
 import { doCreateUserWithEmailAndPassword } from '@/firebase/auth'
+import { Button } from './ui/Button'
+import { Icons } from './Icons'
+
+
 
 const Register = () => {
     const navigate = useNavigate()
@@ -11,6 +15,7 @@ const Register = () => {
     const [lastName, setLastname] = useState('')
     const [phoneNumber, setNumber] = useState('')
     const [redirectAfterAuth, setRedirectAfterAuth] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -40,6 +45,25 @@ const Register = () => {
             setIsRegistering(false)
         }
     }
+
+    const loginWithGoogle = async () => {
+        setIsLoading(true)
+
+        try {
+            const result = await doSignInWithGoogle()
+            navigate("/")
+        } catch (error){
+            // toast notification
+            toast({
+                title: 'THere was a problem.',
+                description: 'THere was an error logging in with Google',
+                variant: 'destructive',
+            })
+        } finally {
+            setIsLoading(false)
+            console.log("Logged in: ", userLoggedIn)
+        }
+    };
 
     useEffect(() => {
         if (redirectAfterAuth) {
@@ -190,6 +214,21 @@ const Register = () => {
 
 
                         </button>
+
+                        <p className='flex items-center text-gray-500 text-sm'> 
+                        <span className='flex-grow border-t border-gray-300'></span>
+                        <span className='px-3'> Or Sign up with Google </span>
+                        <span className='flex-grow border-t border-gray-300'></span>
+                        </p>
+
+                        <Button 
+                            onClick={loginWithGoogle} 
+                            isLoading={isLoading} 
+                            size='sm' 
+                            className='w-full'> 
+                            {isLoading ? null : <Icons.google className='sh-4 w-4 mr-2'/>}
+                            Google
+                        </Button>
 
                         <div className='text-sm text-center'>
                             Already have an account? {'    '}
