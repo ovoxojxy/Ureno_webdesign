@@ -21,6 +21,13 @@ const UserAuthForm: FC<UserAuthFormProps> = ({className, ...props}) => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const {toast} = useToast()
 
+    useEffect(() => {
+        console.log("Auth state changed: userLoggedIn = ", userLoggedIn)
+        if (userLoggedIn) {
+            navigate("/")
+        }
+    }, [userLoggedIn, navigate])
+
     const loginWithGoogle = async () => {
         setIsLoading(true)
 
@@ -67,7 +74,7 @@ const UserAuthForm: FC<UserAuthFormProps> = ({className, ...props}) => {
    
  return (
     <div className={cn('flex flex-col items-center space-y-4 justify-center', className)} {...props}>
-        {userLoggedIn && (<Navigate to={'/'} replace={true} />)}
+        {/* {userLoggedIn && (<Navigate to={'/'} replace={true} />)} */}
         <div className="flex flex-col space-y-4">
             <input
                 type="email"

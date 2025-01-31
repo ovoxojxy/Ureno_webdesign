@@ -5,24 +5,39 @@ import { doCreateUserWithEmailAndPassword } from '@/firebase/auth'
 
 const Register = () => {
     const navigate = useNavigate()
-    const { userLoggedIn, redirectAfterAuth, setRedirectAfterAuth } = useAuth() || { userLoggedIn: false }
+    const {userLoggedIn, loading } = useAuth()
 
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastname] = useState('')
     const [phoneNumber, setNumber] = useState('')
+    const [redirectAfterAuth, setRedirectAfterAuth] = useState(false)
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setconfirmPassword] = useState('')
     const [isRegistering, setIsRegistering] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
-    // const { userLoggedIn } = useAuth() || { userLoggedIn: false }
 
     const onSubmit = async (e) => {
         e.preventDefault()
-        if(!isRegistering) {
-            setIsRegistering(true)
+        if(isRegistering) return 
+            
+        setErrorMessage('')
+        setIsRegistering(true)
+
+        if (password !== confirmPassword) {
+            setErrorMessage("Passwords don't match")
+            setIsRegistering(false)
+            return
+        }
+
+        try {
             await doCreateUserWithEmailAndPassword(email, password)
+            navigate('/')
+            console.log(userLoggedIn)
+        } catch (e) {
+            setErrorMessage("There was a problem creating your account")
+            setIsRegistering(false)
         }
     }
 
@@ -46,6 +61,10 @@ const Register = () => {
         }
     }
 
+    if (loading) {
+        return <div>Loading...</div>
+    }
+
 
     return(
         <>
@@ -64,7 +83,8 @@ const Register = () => {
                     onSubmit={onSubmit}
                     className='space-y-4'>
 
-                    {errorMessage && <Text style={styles.errorMessage}>{errorMessage}</Text>}
+                    {errorMessage && <span className='text-red-600 font-bold'>{errorMessage}</span>}
+
                         
                         <div>
                             <label className='text-sm text-gray-600 font-bold'>
@@ -162,9 +182,9 @@ const Register = () => {
                             
                         <button
                             type="submit"
-                            disabled={!isRegistering}
+                            disabled={isRegistering}
                             className={`w-full px-4 py-2 text-white font-medium rounded-lg ${isRegistering ? ' bg-gray-300 cursor-not-allowed' : 'bg-black hover:bg-black hover:shadow-xl transition duration-300'}`}
-                            // onClick={createAccount}
+                            // onClick={onSubmit}
                         >
                             {isRegistering ? 'Signing Up...' : 'Create Account'}
 

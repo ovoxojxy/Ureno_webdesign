@@ -4,7 +4,7 @@
 
 import { FC } from "react";
 import { Link } from "react-router-dom";
-import { Icons } from "./Icons";
+import { Icons } from "./Icons"; 
 import Register from "./register";
 
 const SignUp = () => {
