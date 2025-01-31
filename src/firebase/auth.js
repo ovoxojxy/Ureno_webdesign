@@ -10,10 +10,25 @@ export const doSignInWithEmailAndPassword = (email, password) => {
 }
 
 export const doSignInWithGoogle = async () => {
+    const auth = getAuth()
     const provider = new GoogleAuthProvider()
-    const result = await signInWithPopup(auth, provider)
-    //result.user
-    return result
+
+    try {
+        const result = await signInWithPopup(auth, provider)
+
+        const isNewUser = result?.additionalUserInfo?.isNewUser
+
+        if (isNewUser) {
+            console.log("New user signed up with Google:", result.user)
+        } else {
+            console.log("Existing user logged in with Google: ", result.user)
+        }
+
+        return result
+    } catch (error) {
+        console.error("Google Sign-In Error:", error)
+    }
+   
 }
 
 export const doSignOut = () => {
