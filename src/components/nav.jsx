@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import profileSVG from '../assets/images/profile-svgrepo-com.svg'
 import { useAuth } from '@/contexts/authContext'
 import { doSignOut } from '@/firebase/auth'
+import UserDropDown from './userDropDown'
 
 
 const Nav = () => {
@@ -43,12 +44,20 @@ const Nav = () => {
           )}
           
 
+          {!userLoggedIn ? (
 
-          <button className="btn profile-btn">
-            <object data={profileSVG} type="image/svg+xml">
-              <img src={profileSVG} />
-            </object>
-          </button>
+            <button className="btn profile-btn">
+              <object data={profileSVG} type="image/svg+xml">
+                <img src={profileSVG} />
+              </object>
+            </button>
+
+            ) : ( 
+            <UserDropDown />
+          )}
+
+
+          
         </div>
       </div>
     )
