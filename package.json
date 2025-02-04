@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@firebasegen/default-connector": "file:dataconnect-generated/js/default-connector",
-    "@radix-ui/react-toast": "^1.2.4",
+    "@radix-ui/react-toast": "^1.2.5",
     "axios": "^1.7.9",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

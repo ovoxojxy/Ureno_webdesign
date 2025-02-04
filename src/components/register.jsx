@@ -215,11 +215,14 @@ const Register = () => {
 
                         </button>
 
+                        </form>
+
                         <p className='flex items-center text-gray-500 text-sm'> 
                         <span className='flex-grow border-t border-gray-300'></span>
                         <span className='px-3'> Or Sign up with Google </span>
                         <span className='flex-grow border-t border-gray-300'></span>
                         </p>
+
 
                         <Button 
                             onClick={loginWithGoogle} 
@@ -238,7 +241,7 @@ const Register = () => {
                         <p className='text-sm max-w-xs mx-auto'>
                         By clicking create account, you agree to our <a href="" className='underline'>Terms of Service</a> and <a href="" className='underline'>Privacy Policy</a>
                 </p>
-                    </form>
+                    
             </div>
         </main>
         </>

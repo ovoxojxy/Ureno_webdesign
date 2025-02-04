@@ -3,10 +3,10 @@ import { Navigate, useNavigate, Link } from 'react-router-dom'
 import { Icons } from './Icons'
 import { Button } from './ui/Button'
 import { cn } from '@/lib/utils'
+import { Toaster } from '@/components/ui/toaster'
 import { useToast } from '@/hooks/use-toast'
 import { doSignInWithEmailAndPassword, doSignInWithGoogle } from "../firebase/auth"
 import { useAuth } from '@/contexts/authContext/index'
-import { redirect } from 'react-router-dom'
 
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -19,7 +19,7 @@ const UserAuthForm: FC<UserAuthFormProps> = ({className, ...props}) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const {toast} = useToast()
+    const { toast } = useToast()
 
     useEffect(() => {
         console.log("Auth state changed: userLoggedIn = ", userLoggedIn)
@@ -36,8 +36,10 @@ const UserAuthForm: FC<UserAuthFormProps> = ({className, ...props}) => {
             navigate("/")
         } catch (error){
             // toast notification
+            console.error("Google sign-in error:", error)
+
             toast({
-                title: 'THere was a problem.',
+                title: 'There was a problem.',
                 description: 'THere was an error logging in with Google',
                 variant: 'destructive',
             })
@@ -73,6 +75,8 @@ const UserAuthForm: FC<UserAuthFormProps> = ({className, ...props}) => {
 
    
  return (
+    <>
+        <Toaster />
     <div className={cn('flex flex-col items-center space-y-4 justify-center', className)} {...props}>
         {/* {userLoggedIn && (<Navigate to={'/'} replace={true} />)} */}
         <div className="flex flex-col space-y-4">
@@ -116,6 +120,8 @@ const UserAuthForm: FC<UserAuthFormProps> = ({className, ...props}) => {
         </Button>
         </div>
     </div>
+    </>
+    
 
  )
     
