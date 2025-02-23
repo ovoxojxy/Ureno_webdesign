@@ -21,6 +21,8 @@
     font-style: normal;
 }
 
+
+
 .product-detail-page body {
     display: flex;
     flex-direction: column;
@@ -39,7 +41,7 @@
     font: Sansation;
     color: black;
     font-family: sansation;
-    padding-top: 104px;
+    padding-top: 134px;
     display: flex;
     flex-direction: row;
     justify-content: space-around;

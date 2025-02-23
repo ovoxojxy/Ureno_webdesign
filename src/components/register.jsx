@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/authContext'
 import { doCreateUserWithEmailAndPassword } from '@/firebase/auth'
 import { Button } from './ui/Button'
 import { Icons } from './Icons'
+import { collectionUserData } from '@/firebase/firebaseConfig'
 
 
 
@@ -37,7 +38,11 @@ const Register = () => {
         }
 
         try {
-            await doCreateUserWithEmailAndPassword(email, password)
+            const userCredential = await doCreateUserWithEmailAndPassword(email, password)
+            const user = userCredential.user
+
+            await collectionUserData(user)
+
             navigate('/')
             console.log(userLoggedIn)
         } catch (e) {

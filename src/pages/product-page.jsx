@@ -9,8 +9,31 @@ import Nav from "../components/nav"
 import Footer from "../components/footer"
 import FloorCard from "../components/flooringCards"
 import "../styles/FlooringProduct.css"
+import { useEffect } from "react"
+import { useState } from "react"
+import { useAuth } from "@/contexts/authContext"
 
 export default function FlooringProduct() {
+
+  const [navHeight, setNavHeight] = useState(0);
+  const { userLoggedIn } = useAuth() || { userLoggedIn: false }
+
+  useEffect(() => {
+    const updateNavHeight = () => {
+      const navElement = document.querySelector(".nav")
+      if (navElement) {
+        setNavHeight(navElement.offsetHeight)
+      }
+    }
+
+    updateNavHeight()
+    window.addEventListener("resize", updateNavHeight)
+
+    return () => {
+      window.removeEventListener("resize", updateNavHeight)
+    }
+  }, [])
+
     return(
         <>
   <meta charSet="UTF-8" />
