@@ -13,6 +13,7 @@ export default function ProductDetailPage() {
             <meta charSet="UTF-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
             <title>product detail</title>
+            
             <Nav />
             <ProductDetail />
             <Footer />

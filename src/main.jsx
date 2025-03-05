@@ -17,6 +17,7 @@ import ProductDetail from './components/product-detail'
 import ProductDetailPage from './pages/productDetailPage'
 import { AuthProvider } from './contexts/authContext'
 import DesignerPage from './pages/designer'
+import ProfileDashboard from './pages/profile'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -27,6 +28,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/product-page" element={<FlooringProduct />} />
         <Route path="/productDetail/:productId" element={<ProductDetailPage />} />
         <Route path="/designerPage" element={<DesignerPage />} />
+        <Route path="/ProfileDashboard" element={<ProfileDashboard />} />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
       </Routes>

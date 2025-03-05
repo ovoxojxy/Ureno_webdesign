@@ -21,6 +21,10 @@
     font-style: normal;
 }
 
+body {
+    margin: 0;
+    padding: 0;
+}
 
 
 .product-detail-page body {

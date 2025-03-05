@@ -40,7 +40,9 @@ export default function FlooringProduct() {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>URENO</title>
   <Nav />
-  <div className="main-content">
+  <div className="body">
+
+  <div className={`main-content ${userLoggedIn ? "logged-in" : ""}`}>
     <h1>Flooring</h1>
     <div className="search">
       <div className="input">
@@ -96,6 +98,8 @@ export default function FlooringProduct() {
     </div>
   </div>
   <Footer />
+  </div>
+  
 </>
 
     );

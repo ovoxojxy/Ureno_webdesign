@@ -21,7 +21,7 @@ const UserDropDown = () => {
 
             <Dropdown.Menu>
 
-                <Dropdown.Item href="#/action-1">Profile</Dropdown.Item>
+                <Dropdown.Item as={Link} to="/ProfileDashboard">Profile</Dropdown.Item>
 
                 
                 <Dropdown.Item as={Link} to="/designerPage">Designs</Dropdown.Item>

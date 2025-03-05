@@ -61,11 +61,28 @@ const UserAuthForm: FC<UserAuthFormProps> = ({className, ...props}) => {
                 variant: 'default',
             })
         } catch (error: any) {
+
+            let errorMessage = "Error logging in with email and password"
+            console.log(error.code)
+
+
+            if (error.code === "auth/invalid-credential"){
+                errorMessage = "Incorrect email or password. Please try again."
+            } else if (error.code === "auth/user-not-found"){
+                errorMessage = "No account found with this email."
+            } else if (error.code === "auth/invalid-email") {
+                errorMessage = "Invalid email format"
+            } else if (error.code === "auth/too-many-requests"){
+                errorMessage = "Too many failed login attempts. Try again later."
+            }
+
+
             toast({
                 title: 'There was a problem.',
-                description: 'Error logging in with email and password',
+                description: errorMessage,
                 variant: 'destructive'
             })
+
         } finally {
             setIsLoading(false)
             console.log("Logged in: ", userLoggedIn)
