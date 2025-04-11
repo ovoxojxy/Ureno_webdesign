@@ -1,6 +1,6 @@
 import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, updatePassword } from "firebase/auth"
 import { auth } from "./firebaseConfig"
-import { writeUserData } from "./rtdb_write_new_user"
+import { writeUserData } from "./firestore_write_new_user"
 
 export const doCreateUserWithEmailAndPassword = async (email, password) => {
     return createUserWithEmailAndPassword(auth, email, password)

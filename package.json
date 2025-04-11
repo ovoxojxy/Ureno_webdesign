@@ -11,6 +11,8 @@
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
+    "deploy:firebase": "npm run build && firebase deploy",
+    "deploy:all": "npm run build && firebase deploy && gh-pages -d dist",
     "build:css": "tailwindcss -i ./src/globals.css -o ./dist/output.css --watch"
   },
   "dependencies": {

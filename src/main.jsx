@@ -19,6 +19,22 @@ import { AuthProvider } from './contexts/authContext'
 import DesignerPage from './pages/designer'
 import ProfileDashboard from './pages/profile'
 import { UserProvider } from './contexts/authContext/UserContext'
+import AdminDashboard from './components/admin/AdminDashboard'
+import ProductForm from './components/admin/ProductForm'
+import { useAuth } from './contexts/authContext'
+import { useContext } from 'react'
+import { UserContext } from './contexts/authContext/UserContext'
+
+const ProtectedAdminRoute = ({ children }) => {
+  const { currentUser } = useAuth()
+  const { profile } = useContext(UserContext);
+
+  if (!currentUser || !profile?.isAdmin) {
+    return null;
+  }
+
+  return children
+}
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -33,6 +49,8 @@ createRoot(document.getElementById('root')).render(
             <Route path="/ProfileDashboard" element={<ProfileDashboard />} />
             <Route path="/sign-in" element={<SignIn />} />
             <Route path="/sign-up" element={<SignUp />} />
+            <Route path="/admin" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
+            <Route path="/admin/add" element={<ProtectedAdminRoute><ProductForm /></ProtectedAdminRoute>} />
           </Routes>
         </Router>
       </UserProvider>

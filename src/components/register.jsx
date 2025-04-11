@@ -4,8 +4,10 @@ import { useAuth } from '@/contexts/authContext'
 import { doCreateUserWithEmailAndPassword } from '@/firebase/auth'
 import { Button } from './ui/Button'
 import { Icons } from './Icons'
+import { getDatabase } from 'firebase/database'
 import { collectionUserData } from '@/firebase/firebaseConfig'
-import { writeUserData } from "@/firebase/rtdb_write_new_user"
+import { writeUserData } from "@/firebase/firestore_write_new_user"
+import { updateProfile } from 'firebase/auth'
 
 
 const Register = () => {
@@ -42,7 +44,9 @@ const Register = () => {
             const userCredential = await doCreateUserWithEmailAndPassword(email, password)
             const user = userCredential.user
 
-            await writeUserData(user.uid, firstName + " " + lastName, email, "");
+            await updateProfile(user, { displayName: `${firstName} ${lastName}`})
+
+            await writeUserData(user.uid, firstName, lastName, email, phoneNumber);
 
             navigate('/')
             console.log(userLoggedIn)

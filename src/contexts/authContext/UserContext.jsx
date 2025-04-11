@@ -1,9 +1,11 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth, collectionUserData } from '../../firebase/firebaseConfig';
-import { getUserProfile } from '../../firebase/firestore'; // assumes you have this set up
+import { getUserProfile } from '../../firebase/firestore';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { db } from '../../firebase/firestore';
 
-const UserContext = createContext();
+export const UserContext = createContext();
 
 export const useUser = () => useContext(UserContext);
 
@@ -13,22 +15,50 @@ export const UserProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+    // Handle auth state changes
+    const authUnsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
-      if (currentUser) {
-        try {
-          const profileData = await getUserProfile(currentUser.uid);
-          setProfile(profileData);
-        } catch (err) {
-          console.error("Failed to fetch user profile:", err.message);
-        }
-      } else {
+      
+      if (!currentUser) {
         setProfile(null);
+        setLoading(false);
+        return;
       }
-      setLoading(false);
+      
+      try {
+        // Set initial profile from one-time fetch
+        const initialProfile = await getUserProfile(currentUser.uid);
+        const fallbackProfile = {
+          displayName: currentUser.displayName || "",
+          email: currentUser.email || "",
+          photoURL: currentUser.photoURL || "",
+          isAdmin: false
+        };
+        
+        setProfile(initialProfile || fallbackProfile);
+        setLoading(false);
+        
+        // Set up real-time listener for profile updates
+        const userDocRef = doc(db, "users", currentUser.uid);
+        const profileUnsubscribe = onSnapshot(userDocRef, 
+          (doc) => {
+            if (doc.exists()) {
+              setProfile(doc.data());
+            }
+          },
+          (error) => {
+            console.error("Error listening to profile updates:", error);
+          }
+        );
+        
+        return () => profileUnsubscribe();
+      } catch (err) {
+        console.error("Failed to fetch user profile:", err.message);
+        setLoading(false);
+      }
     });
 
-    return () => unsubscribe();
+    return () => authUnsubscribe();
   }, []);
 
   return (

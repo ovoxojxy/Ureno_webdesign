@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup } from "firebase/auth";
 import { getFirestore, collection, doc, setDoc, getDocs, serverTimestamp, setLogLevel } from 'firebase/firestore'
 import { getDatabase } from "firebase/database"
-import { writeUserData } from "./rtdb_write_new_user"
+import { writeUserData } from "./firestore_write_new_user"
 
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,

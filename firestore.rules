@@ -2,8 +2,35 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-      match /users/{userId} {
-        allow read, write: if request.time < timestamp.date(2025, 3, 24)
+    // User profiles
+    match /users/{userId} {
+      // Any authenticated user can read their own profile
+      allow read: if request.auth != null && request.auth.uid == userId;
+      // Allow admin to read all user profiles
+      allow read: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+      // Users can update their own profile, but not the admin status
+      allow update: if request.auth != null && 
+                      request.auth.uid == userId && 
+                      !('isAdmin' in request.resource.data);
+      // Only admins can update admin status
+      allow update: if request.auth != null && 
+                      get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+      // Only new users can create their own profile initially
+      allow create: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Products
+    match /products/{productId} {
+      // Anyone can read products
+      allow read: if true;
+      // Only admins can write products
+      allow write: if request.auth != null && 
+                    get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+    
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }

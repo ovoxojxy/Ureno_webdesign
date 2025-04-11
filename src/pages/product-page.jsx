@@ -12,12 +12,24 @@ import "../styles/FlooringProduct.css"
 import { useEffect } from "react"
 import { useState } from "react"
 import { useAuth } from "@/contexts/authContext"
+import { getFirestore, collection, getDocs } from "firebase/firestore"
 
 export default function FlooringProduct() {
 
   const [navHeight, setNavHeight] = useState(0);
   const { userLoggedIn } = useAuth() || { userLoggedIn: false }
+  const [products, setProducts] = useState([]);
 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const db = getFirestore();
+      const querySnapshot = await getDocs(collection(db, "products"));
+      const productList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setProducts(productList); 
+    }
+
+    fetchProducts();
+  }, []);
   useEffect(() => {
     const updateNavHeight = () => {
       const navElement = document.querySelector(".nav")
@@ -52,7 +64,7 @@ export default function FlooringProduct() {
     </div>
     <p>Popular</p>
     <div className="products">
-      <FloorCard
+      {/* <FloorCard 
         productId="HarvestGrove"
         image={harvestGrove}
         title="Harvest Grove Rigid Luxury Vinyl"
@@ -94,7 +106,19 @@ export default function FlooringProduct() {
       title="Champagne Limestone Rigid Core Luxury Vinyl"
       description="Floor and Decor"
       price="$2.19/sqft"
-      />
+      />*/}
+
+      {products.map(product => (
+        <FloorCard
+        key={product.id}
+        productId={product.id}
+        image={product.image}
+        title={product.title}
+        description={product.description}
+        price={product.price}
+        link={product.link}
+        />
+      ))}
     </div>
   </div>
   <Footer />
