@@ -1,9 +1,19 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { Settings, Bell, LogOut } from 'lucide-react'
+import { doSignOut } from '@/firebase/auth'
 
 
 const ProfileNav = () => {    
+    const navigate = useNavigate()
+
+    const handleLogout = async () => {
+          await doSignOut()
+          navigate('/')
+        }
+
     return (
+
+        
         <div className="nav flex justify-between items-center p-4 border-b">
             <Link to="/" className='text-2xl font-bold'>
             <div className="logo">URENO</div>
@@ -18,7 +28,7 @@ const ProfileNav = () => {
                     <Bell className="w-5 h-5" /> Notifications
                 </Link>
 
-                <Link to="/logout" className="flex items-center gap-2 text-red-500 hover:text-red-700">
+                <Link to="/logout" onClick={handleLogout} className="flex items-center gap-2 text-red-500 hover:text-red-700">
                     <LogOut className="w-5 h-5" /> Log Out
                 </Link>
             </div>

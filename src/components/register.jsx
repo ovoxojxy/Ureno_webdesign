@@ -5,11 +5,12 @@ import { doCreateUserWithEmailAndPassword } from '@/firebase/auth'
 import { Button } from './ui/Button'
 import { Icons } from './Icons'
 import { collectionUserData } from '@/firebase/firebaseConfig'
-
+import { writeUserData } from "@/firebase/rtdb_write_new_user"
 
 
 const Register = () => {
     const navigate = useNavigate()
+    const database = getDatabase()
     const {userLoggedIn, loading } = useAuth()
 
     const [firstName, setFirstName] = useState('')
@@ -41,7 +42,7 @@ const Register = () => {
             const userCredential = await doCreateUserWithEmailAndPassword(email, password)
             const user = userCredential.user
 
-            await collectionUserData(user)
+            await writeUserData(user.uid, firstName + " " + lastName, email, "");
 
             navigate('/')
             console.log(userLoggedIn)

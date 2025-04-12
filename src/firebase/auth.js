@@ -1,5 +1,6 @@
 import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, updatePassword } from "firebase/auth"
 import { auth } from "./firebaseConfig"
+import { writeUserData } from "./rtdb_write_new_user"
 
 export const doCreateUserWithEmailAndPassword = async (email, password) => {
     return createUserWithEmailAndPassword(auth, email, password)
@@ -15,11 +16,13 @@ export const doSignInWithGoogle = async () => {
 
     try {
         const result = await signInWithPopup(auth, provider)
-
         const isNewUser = result?.additionalUserInfo?.isNewUser
+        const user = result.user
 
         if (isNewUser) {
             console.log("New user signed up with Google:", result.user)
+
+            await writeUserData(user.uid, user.displayname  || "Google User", user.email, user.photoURL)
         } else {
             console.log("Existing user logged in with Google: ", result.user)
         }

@@ -3,10 +3,17 @@ import ProfileNav from "@/components/profileNav"
 import { Button } from "react-bootstrap"
 import { Card } from "react-bootstrap"
 import { Bell, Settings, LogOut } from "lucide-react"
+import defaultProfile from '../assets/images/default_pfp.png'
+import { Link } from 'react-router-dom'
+import { useUser } from "../contexts/authContext/UserContext";
 
 import '../styles/FlooringProduct.css'
 
 export default function ProfileDashboard() {
+    const {user, profile, loading } = useUser();
+
+    if (loading) return <p>Loading...</p>;
+    if (!user || !profile) return <p>User not found nor not logged in.</p>
     return (
         <>
         <meta charSet="UTF-8" />
@@ -18,7 +25,7 @@ export default function ProfileDashboard() {
         <div className="main-content max-w-6xl mx-auto p-6">
 
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 ">
             
 
             {/* Overview cards */}
@@ -26,7 +33,12 @@ export default function ProfileDashboard() {
                 <Card>
                     <div className="p-4">
                         <h3 className="text-lg font-semibold">Projects</h3>
-                        <p className="test-gray-500">3 Ongoing, 5 completed</p>
+                        {/* <p className="test-gray-500">3 Ongoing, 5 completed</p> */}
+
+                        <p classname = "text-gray-500">
+                            {profile.homeProjects?.filter(p => p.status === "in progress").length || 0} Ongoing, {" "}
+                            {profile.homeProjects?.filter(p => p.status === "in progress").length || 0} Completed
+                        </p>
                         <Button variant="link" className="mt-2">View projects</Button>
                     </div>
                 </Card>
@@ -40,7 +52,7 @@ export default function ProfileDashboard() {
                 </Card>
 
 
-                <Card className="md:col-span-2">
+                <Card>
                     <div className="p-4">
                         <h3 className="text-lg font-semibold">Messages & Notifications</h3>
                         <p className="text-gray-500">2 Unread Messages</p>
@@ -49,10 +61,11 @@ export default function ProfileDashboard() {
                 </Card>
             </div>
 
-            <div className="flex flex-col items-center md:items-start text-center md:text-left">
-          <h2 className="text-2xl font-bold mt-4">John Doe</h2>
-          <p className="text-gray-500">johndoe@email.com</p>
-          <Button className="mt-2">Edit Profile</Button>
+            <div className="flex flex-col items-center md:col-span-1 text-center ">
+            <h2 className="text-2xl font-bold mt-4">{profile.username || user.displayName}</h2>
+            <img src={defaultProfile} />
+            <p className="text-gray-500">{user.email}</p>
+            <Button className="mt-2">Edit Profile</Button>
         </div>
 
         </div>

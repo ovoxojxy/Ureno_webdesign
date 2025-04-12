@@ -1,6 +1,8 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup } from "firebase/auth";
-import { getFirestore, collection, doc, setDoc, getDocs, serverTimestamp } from 'firebase/firestore'
+import { getFirestore, collection, doc, setDoc, getDocs, serverTimestamp, setLogLevel } from 'firebase/firestore'
+import { getDatabase } from "firebase/database"
+import { writeUserData } from "./rtdb_write_new_user"
 
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -10,27 +12,35 @@ const firebaseConfig = {
     messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
     appId: import.meta.env.VITE_FIREBASE_APP_ID,
     measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+    databaseURL: "https://ureno-userdb.firebaseio.com"
 }
 
+console.log("FIREBASE CONFIG:", firebaseConfig);
 const app = initializeApp(firebaseConfig)
 const auth = getAuth(app)
 const provider = new GoogleAuthProvider()
 const db = getFirestore(app);
+setLogLevel('debug');
+writeUserData
 
-async function collectionUserData(user) {
+async function collectionUserData(user, additional = {} ) {
     const userDocRef = doc(db, "users", user.uid)
     const docData = {
         email: user.email,
-        displayName: user.displayName || 'New User',
+        displayName: user.displayName || additional.displayName || 'New User',
         photoURL: user.photoURL || '',
-        createdAt: serverTimestamp()
+        firstName: additional.firstName || '',
+        lastName: additional.lastName || '',
+        createdAt: additional.createdAt || serverTimestamp()
     }
 
     try {
+        console.log("Attempting to write user profile for:", user.uid);
+
         await setDoc(userDocRef, docData, { merge: true })
         console.log("User document created/updated succesfully")
     } catch (error) {
-        console.error("Error creating/updating user document", error)
+        console.error(`Error creating/updating user document ${user.uid}`, error)
     }
 }
 
@@ -50,5 +60,4 @@ async function fetchTodos() {
         console.log(doc.id, "=>", doc.data())
     })
 }
-
-export { auth, provider, signInWithPopup, collectionUserData}
+export { app, auth, provider, signInWithPopup, collectionUserData}

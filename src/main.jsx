@@ -18,21 +18,24 @@ import ProductDetailPage from './pages/productDetailPage'
 import { AuthProvider } from './contexts/authContext'
 import DesignerPage from './pages/designer'
 import ProfileDashboard from './pages/profile'
+import { UserProvider } from './contexts/authContext/UserContext'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AuthProvider>
-    <Router basename="/Ureno_webdesign/">
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/product-page" element={<FlooringProduct />} />
-        <Route path="/productDetail/:productId" element={<ProductDetailPage />} />
-        <Route path="/designerPage" element={<DesignerPage />} />
-        <Route path="/ProfileDashboard" element={<ProfileDashboard />} />
-        <Route path="/sign-in" element={<SignIn />} />
-        <Route path="/sign-up" element={<SignUp />} />
-      </Routes>
-    </Router>
+      <UserProvider>
+        <Router basename="/Ureno_webdesign/">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/product-page" element={<FlooringProduct />} />
+            <Route path="/productDetail/:productId" element={<ProductDetailPage />} />
+            <Route path="/designerPage" element={<DesignerPage />} />
+            <Route path="/ProfileDashboard" element={<ProfileDashboard />} />
+            <Route path="/sign-in" element={<SignIn />} />
+            <Route path="/sign-up" element={<SignUp />} />
+          </Routes>
+        </Router>
+      </UserProvider>
     </ AuthProvider>
   </StrictMode>
 );
