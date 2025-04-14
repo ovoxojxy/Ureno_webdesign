@@ -8,6 +8,7 @@ export const writeUserData = async (userId, firstName, lastName, email, phoneNum
         lastName,
         email,
         phoneNumber,
+        isAdmin: false,
         createdAt: new Date()
     })
 }

@@ -23,6 +23,7 @@ const Nav = () => {
         <div className="Right">
           <menu>
             <li>AI Design</li>
+            <li>Architects & Designers</li>
             <li>Projects</li>
             <li>Messages</li>
           </menu>

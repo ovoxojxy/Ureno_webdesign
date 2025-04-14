@@ -60,4 +60,4 @@ async function fetchTodos() {
         console.log(doc.id, "=>", doc.data())
     })
 }
-export { app, auth, provider, signInWithPopup, collectionUserData}
+export { app, auth, provider, signInWithPopup, collectionUserData, db}

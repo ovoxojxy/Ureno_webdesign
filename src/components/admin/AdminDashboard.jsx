@@ -9,7 +9,7 @@ const AdminDashboard = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             const db = getFirestore();
-            const scnapshot = await getDocs(collection(db, "products"));
+            const snapshot = await getDocs(collection(db, "products"));
             const productList = snapshotEqual.docs.map(doc => ({ id: doc.id, ...doc.data() }))
             setProducts(productList);
         }
