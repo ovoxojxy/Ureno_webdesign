@@ -65,7 +65,11 @@ export default function ProfileDashboard() {
             <h2 className="text-2xl font-bold mt-4">{profile.username || user.displayName}</h2>
             <img src={defaultProfile} />
             <p className="text-gray-500">{user.email}</p>
-            <Button className="mt-2">Edit Profile</Button>
+            
+            <Link to="/edit-profile">
+                <Button className="mt-2">Edit Profile</Button>
+            </Link>
+            
         </div>
 
         </div>

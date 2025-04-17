@@ -3,10 +3,15 @@ import { doSignOut } from "@/firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
 import Dropdown from 'react-bootstrap/Dropdown'
 import "../styles/bootstrap.min.css"; 
+import { useContext } from 'react';
+import { UserContext } from '@/contexts/authContext/UserContext';
+import { useAuth } from '@/contexts/authContext';
 
 
 const UserDropDown = () => {
     const navigate = useNavigate()
+    const { currentUser } = useAuth()
+    const { profile } = useContext(UserContext)
 
     const handleLogout = async () => {
         await doSignOut ()
@@ -25,6 +30,8 @@ const UserDropDown = () => {
 
                 
                 <Dropdown.Item as={Link} to="/designerPage">Designs</Dropdown.Item>
+
+                {currentUser?.isAdmin && ( <Dropdown.Item as={Link} to="/Admin">Admin</Dropdown.Item>)}
                 
 
                 <Dropdown.Item href="#/action-3">Action</Dropdown.Item>

@@ -2,8 +2,10 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth, collectionUserData } from '../../firebase/firebaseConfig';
 import { getUserProfile } from '../../firebase/firestore';
+import { writeUserData } from '@/firebase/firestore_write_new_user';
+import { db } from '@/firebase/firestore';
 import { doc, onSnapshot } from 'firebase/firestore';
-import { db } from '../../firebase/firestore';
+
 
 export const UserContext = createContext();
 
@@ -24,6 +26,10 @@ export const UserProvider = ({ children }) => {
         setLoading(false);
         return;
       }
+
+      console.log("Current user UID:", currentUser?.uid);
+      await writeUserData(currentUser.uid, null, null, currentUser.email, null, currentUser.displayName)
+
       
       try {
         // Set initial profile from one-time fetch
@@ -37,13 +43,18 @@ export const UserProvider = ({ children }) => {
         
         setProfile(initialProfile || fallbackProfile);
         setLoading(false);
-        
+
+
         // Set up real-time listener for profile updates
         const userDocRef = doc(db, "users", currentUser.uid);
+        console.log("Setting up Firestore listener on: /users/" + currentUser.uid);
         const profileUnsubscribe = onSnapshot(userDocRef, 
           (doc) => {
             if (doc.exists()) {
+              console.log("Received profile update for UID:", currentUser.uid, "Data:", doc.data());
               setProfile(doc.data());
+            } else {
+              console.warn("User document does not exist for UID:", currentUser.uid);
             }
           },
           (error) => {
