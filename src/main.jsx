@@ -25,6 +25,8 @@ import EditProfile from './pages/edit-profile'
 import { useAuth } from './contexts/authContext'
 import { useContext } from 'react'
 import { UserContext } from './contexts/authContext/UserContext'
+import ProjectsDashboard from './pages/projectsDashboard'
+import CreateProject from './pages/CreateProject'
 
 const ProtectedAdminRoute = ({ children }) => {
   const { currentUser } = useAuth()
@@ -53,6 +55,8 @@ createRoot(document.getElementById('root')).render(
             <Route path="/sign-up" element={<SignUp />} />
             <Route path="/admin" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
             <Route path="/admin/add" element={<ProtectedAdminRoute><ProductForm /></ProtectedAdminRoute>} />
+            <Route path="/projects" element={<ProjectsDashboard />} />
+            <Route path="/projects/new" element={<CreateProject />} />
           </Routes>
         </Router>
       </UserProvider>

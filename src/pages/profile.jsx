@@ -1,3 +1,8 @@
+import { collection, query, where, getDocs } from "firebase/firestore"
+import { db } from "@/firebase/firebaseConfig"
+import { useEffect, useState } from "react"
+
+
 import Footer from "../components/footer"
 import ProfileNav from "@/components/profileNav"
 import { Button } from "react-bootstrap"
@@ -11,9 +16,42 @@ import '../styles/FlooringProduct.css'
 
 export default function ProfileDashboard() {
     const {user, profile, loading } = useUser();
+    const [projects, setProjects] = useState([])
+    const [projectsLoading, setProjectsLoading] = useState(true)
+
+
+
+    
+
+    useEffect(() => {
+        const fetchProjects = async () => {
+            if (!user) return
+
+            const projectsRef = collection(db, "users", user.uid, "projects")
+            const q = query(projectsRef)
+
+            try {
+                const querySnapshot = await getDocs(q)
+                const userProjects = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }))
+
+                setProjects(userProjects)
+            } catch (error) {
+                console.error("Error fetching projects: ", error)
+            } finally {
+                setProjectsLoading(false)
+            }
+        }
+
+        fetchProjects()
+    }, [user])
+
 
     if (loading) return <p>Loading...</p>;
     if (!user || !profile) return <p>User not found nor not logged in.</p>
+
     return (
         <>
         <meta charSet="UTF-8" />
@@ -35,11 +73,20 @@ export default function ProfileDashboard() {
                         <h3 className="text-lg font-semibold">Projects</h3>
                         {/* <p className="test-gray-500">3 Ongoing, 5 completed</p> */}
 
-                        <p classname = "text-gray-500">
-                            {profile.homeProjects?.filter(p => p.status === "in progress").length || 0} Ongoing, {" "}
-                            {profile.homeProjects?.filter(p => p.status === "in progress").length || 0} Completed
-                        </p>
-                        <Button variant="link" className="mt-2">View projects</Button>
+
+                        {projectsLoading ? (
+                            <p className="text-gray-500">Loading project stats...</p>
+                            ) : (
+                                <p className="text-gray-500">
+                                    {projects.filter(p => p.status === "in progress").length} Ongoing, {" "}
+                                    {projects.filter(p => p.status === "completed").length} Completed
+                                </p>
+                            )}
+
+                        <Link to="/projects">
+                            <Button variant="link" className="mt-2">View projects</Button>
+                        </Link>
+                        
                     </div>
                 </Card>
 
