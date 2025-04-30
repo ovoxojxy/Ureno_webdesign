@@ -6,17 +6,22 @@ service cloud.firestore {
     match /users/{userId} {
       // Any authenticated user can read their own profile
       allow read: if request.auth != null && request.auth.uid == userId;
+      
       // Allow admin to read all user profiles
-      allow read: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
-      // Users can update their own profile, but not the admin status
+      allow read: if request.auth != null && 
+                   exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+                   get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+      
+      // Users can update or create their own profile, but not the admin status
+      allow create, update: if request.auth != null && 
+                     request.auth.uid == userId && 
+                     (!('isAdmin' in request.resource.data) || 
+                      !request.resource.data.isAdmin);
+      
+      // Only admins can update admin status for any user
       allow update: if request.auth != null && 
-                      request.auth.uid == userId && 
-                      !('isAdmin' in request.resource.data);
-      // Only admins can update admin status
-      allow update: if request.auth != null && 
-                      get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
-      // Only new users can create their own profile initially
-      allow create: if request.auth != null && request.auth.uid == userId;
+                     exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+                     get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
     }
     
     // Products

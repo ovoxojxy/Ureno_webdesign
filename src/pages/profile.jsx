@@ -19,6 +19,9 @@ export default function ProfileDashboard() {
     const [projects, setProjects] = useState([])
     const [projectsLoading, setProjectsLoading] = useState(true)
 
+    const [savedMaterials, setSavedMaterials] = useState([])
+    const [savedMaterialsLoading, setSavedMaterialsLoading] = useState(true)
+
 
 
     
@@ -45,7 +48,29 @@ export default function ProfileDashboard() {
             }
         }
 
+            const fetchSavedMaterials = async () => {
+                if (!user) return
+
+                const savedRef = collection(db, "savedMaterials")
+                const q = query(savedRef, where("userId", "==", user.uid))
+
+                try {
+                    const querySnapshot = await getDocs(q)
+                    const materials = querySnapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }))
+
+                    setSavedMaterials(materials)
+                } catch (error){
+                    console.error("Error fetching saved materials:", errors)
+                } finally {
+                    setSavedMaterialsLoading(false)
+                }
+            }
+        
         fetchProjects()
+        fetchSavedMaterials()
     }, [user])
 
 
@@ -93,8 +118,16 @@ export default function ProfileDashboard() {
                 <Card>
                     <div className="p-4">
                         <h3 className="text-lg font-semibold">Saved Items</h3>
-                        <p className="text-gray-500">12 Materials Favorited</p>
-                        <Button variant="link" className="mt-2">View Favorites</Button>
+                        {savedMaterialsLoading ? (
+                            <p className="text-gray-500">Loading saved materials...</p>
+                        ) : (
+                            <p className="text-gray-500">{savedMaterials.length} Materials Favorited</p>
+                        )}
+
+                        <Link to="/savedItems">
+                            <Button variant="link" className="mt-2">View Favorites</Button>
+                        </Link>
+                        
                     </div>
                 </Card>
 

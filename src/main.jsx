@@ -3,30 +3,35 @@
 // npm run build
 // npm run deploy
 
-
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import './styles/index.css'
-import './globals.css'
+import { useAuth } from './contexts/authContext'
+import { useContext } from 'react'
+import { UserContext } from './contexts/authContext/UserContext'
+import { AuthProvider } from './contexts/authContext'
+import { UserProvider } from './contexts/authContext/UserContext'
+import { MessagesProvider } from './contexts/MessageContext'
+
 import Home from './pages/home.jsx'
 import FlooringProduct from './pages/product-page.jsx'
 import SignIn from './app/(auth)/sign-in/page'
 import SignUp from './components/SignUp'
 import ProductDetail from './components/product-detail'
 import ProductDetailPage from './pages/productDetailPage'
-import { AuthProvider } from './contexts/authContext'
 import DesignerPage from './pages/designer'
 import ProfileDashboard from './pages/profile'
-import { UserProvider } from './contexts/authContext/UserContext'
 import AdminDashboard from './components/admin/AdminDashboard'
 import ProductForm from './components/admin/ProductForm'
 import EditProfile from './pages/edit-profile'
-import { useAuth } from './contexts/authContext'
-import { useContext } from 'react'
-import { UserContext } from './contexts/authContext/UserContext'
 import ProjectsDashboard from './pages/projectsDashboard'
 import CreateProject from './pages/CreateProject'
+import SavedItems from './pages/SavedItems'
+import Login from './pages/Login'
+
+import './styles/index.css'
+import './globals.css'
+// Login.css will be imported only in the Login component
 
 const ProtectedAdminRoute = ({ children }) => {
   const { currentUser } = useAuth()
@@ -39,7 +44,10 @@ const ProtectedAdminRoute = ({ children }) => {
   return children
 }
 
-createRoot(document.getElementById('root')).render(
+const container = document.getElementById('root')
+const root = createRoot(container)
+
+root.render(
   <StrictMode>
     <AuthProvider>
       <UserProvider>
@@ -52,11 +60,13 @@ createRoot(document.getElementById('root')).render(
             <Route path="/ProfileDashboard" element={<ProfileDashboard />} />
             <Route path="/edit-profile" element={<EditProfile />} />
             <Route path="/sign-in" element={<SignIn />} />
+            <Route path="/Login" element={<Login />} />
             <Route path="/sign-up" element={<SignUp />} />
             <Route path="/admin" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
             <Route path="/admin/add" element={<ProtectedAdminRoute><ProductForm /></ProtectedAdminRoute>} />
             <Route path="/projects" element={<ProjectsDashboard />} />
             <Route path="/projects/new" element={<CreateProject />} />
+            <Route path="/savedItems" element={<SavedItems />} />
           </Routes>
         </Router>
       </UserProvider>

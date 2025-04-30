@@ -3,10 +3,19 @@ import { getFirestore, doc, setDoc } from "firebase/firestore";
 
 export const writeUserData = async (userId, firstName, lastName, email, phoneNumber, displayNameFromAuth, isAdmin) => {
     const db = getFirestore();
+    let displayName;
+    
+    // Use firstName/lastName if provided, otherwise fall back to auth displayName
+    if (firstName || lastName) {
+        displayName = `${firstName || ''} ${lastName || ''}`.trim();
+    } else {
+        displayName = displayNameFromAuth || '';
+    }
+    
     const data = {
-        displayName: `${firstName} ${lastName}`.trim(),
-        firstName: firstName,
-        lastName: lastName,
+        displayName: displayName,
+        firstName: firstName || (displayNameFromAuth ? displayNameFromAuth.split(' ')[0] : ''),
+        lastName: lastName || (displayNameFromAuth ? displayNameFromAuth.split(' ').slice(1).join(' ') : ''),
         email,
         phoneNumber,
         createdAt: new Date()
