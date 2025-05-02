@@ -22,10 +22,33 @@ export default function FlooringProduct() {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const db = getFirestore();
-      const querySnapshot = await getDocs(collection(db, "products"));
-      const productList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setProducts(productList); 
+      try {
+        const db = getFirestore();
+        console.log("Attempting to fetch products from Firestore...");
+        const querySnapshot = await getDocs(collection(db, "products"));
+        console.log("Products fetched successfully:", querySnapshot.size);
+        const productList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setProducts(productList);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        // Fallback to hardcoded products
+        setProducts([
+          {
+            id: "HarvestGrove",
+            image: harvestGrove,
+            title: "Harvest Grove Rigid Luxury Vinyl",
+            description: "Floor and Decor",
+            price: "$2.19/sqft"
+          },
+          {
+            id: "tavertine",
+            image: tavertine,
+            title: "Inverness Tavertine Vinyl",
+            description: "Floor and Decor",
+            price: "$2.19/sqft"
+          }
+        ]);
+      }
     }
 
     fetchProducts();

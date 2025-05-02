@@ -1,4 +1,5 @@
 import { addDoc, collection, updateDoc, doc, serverTimestamp } from "firebase/firestore";
+import { db } from "@/firebase/firebaseConfig";
 
 async function sendMessage(conversationId, senderId, text) {
     const messageRef = collection(db,  "conversations", conversationId, "messages")

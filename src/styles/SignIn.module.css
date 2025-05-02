@@ -1,0 +1,96 @@
+.signInContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100%;
+  padding: 0 1rem;
+}
+
+.formWrapper {
+  width: 100%;
+  max-width: 24rem;
+  /* space-y: 1.5rem; */
+  /* text-center; */
+}
+
+.headerContainer {
+  display: flex;
+  flex-direction: column;
+  /* space-y: 0.5rem; */
+  /* text-center; */
+}
+
+.logoContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.heading {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.signInText {
+  padding: 0 2rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #3f3f46;
+}
+
+.signUpLink {
+  color: #18181b;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.signUpLink:hover {
+  color: #18181b;
+}
+
+.termsText {
+  font-size: 0.875rem;
+  max-width: 20rem;
+  margin: 0 auto;
+  color: #71717a;
+}
+
+.termsLink {
+  text-decoration: underline;
+}
+
+/* Input styles */
+.input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d4d4d8;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+}
+
+/* Divider */
+.divider {
+  display: flex;
+  align-items: center;
+  color: #71717a;
+  font-size: 0.875rem;
+  margin: 0.5rem 0;
+}
+
+.dividerLine {
+  flex-grow: 1;
+  border-top: 1px solid #d4d4d8;
+}
+
+.dividerText {
+  padding: 0 0.75rem;
+}

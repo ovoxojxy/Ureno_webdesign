@@ -11,7 +11,7 @@ import { useContext } from 'react'
 import { UserContext } from './contexts/authContext/UserContext'
 import { AuthProvider } from './contexts/authContext'
 import { UserProvider } from './contexts/authContext/UserContext'
-import { MessagesProvider } from './contexts/MessageContext'
+import { MessagesProvider } from './components/conversations/MessageContext'
 
 import Home from './pages/home.jsx'
 import FlooringProduct from './pages/product-page.jsx'
@@ -28,6 +28,7 @@ import ProjectsDashboard from './pages/projectsDashboard'
 import CreateProject from './pages/CreateProject'
 import SavedItems from './pages/SavedItems'
 import Login from './pages/Login'
+import MessagePage from './pages/MessagePage'
 
 import './styles/index.css'
 import './globals.css'
@@ -51,6 +52,7 @@ root.render(
   <StrictMode>
     <AuthProvider>
       <UserProvider>
+        <MessagesProvider>
         <Router basename="/Ureno_webdesign/">
           <Routes>
             <Route path="/" element={<Home />} />
@@ -67,8 +69,10 @@ root.render(
             <Route path="/projects" element={<ProjectsDashboard />} />
             <Route path="/projects/new" element={<CreateProject />} />
             <Route path="/savedItems" element={<SavedItems />} />
+            <Route path="/messages" element={<MessagePage />} />
           </Routes>
         </Router>
+        </MessagesProvider>
       </UserProvider>
     </ AuthProvider>
   </StrictMode>

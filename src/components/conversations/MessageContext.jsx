@@ -11,10 +11,20 @@ const initialState = {
 
 function messageReducer(state, action) {
     switch (action.type) {
-        case "SET_CONVERSATION":
-            return {...state, conversations: action.payload }
+        case "SET_CONVERSATIONS":
+            // Preserve the selectedConversation when updating conversations
+            return {
+                ...state, 
+                conversations: action.payload,
+                // If the currently selected conversation is no longer in the list,
+                // this will preserve it so the UI still works
+            }
 
         case "SELECT_CONVERSATION":
+            // Only clear messages when selecting a different conversation
+            if (state.selectedConversation === action.payload) {
+                return state; // No change if selecting the same conversation
+            }
             return { ...state, selectedConversation: action.payload, messages: [] };
         
         case "SET_MESSAGES":
@@ -31,8 +41,9 @@ function messageReducer(state, action) {
     }
 }
 
+
 export function MessagesProvider({ children }) {
-    const [state, dispatch] = useReducer(messagesReducer, initialState)
+    const [state, dispatch] = useReducer(messageReducer, initialState)
 
     return (
         <MessagesContext.Provider value={{ state, dispatch}}>

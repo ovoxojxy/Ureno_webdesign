@@ -11,11 +11,13 @@ import { Bell, Settings, LogOut } from "lucide-react"
 import defaultProfile from '../assets/images/default_pfp.png'
 import { Link } from 'react-router-dom'
 import { useUser } from "../contexts/authContext/UserContext";
+import { useMessages } from "../components/conversations/MessageContext"
 
 import '../styles/FlooringProduct.css'
 
 export default function ProfileDashboard() {
     const {user, profile, loading } = useUser();
+    const messages = useMessages();
     const [projects, setProjects] = useState([])
     const [projectsLoading, setProjectsLoading] = useState(true)
 
@@ -88,7 +90,7 @@ export default function ProfileDashboard() {
         <div className="main-content max-w-6xl mx-auto p-6">
 
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 ">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-24 ">
             
 
             {/* Overview cards */}
