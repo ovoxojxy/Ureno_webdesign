@@ -3,6 +3,7 @@ import { useMessages } from "@/components/conversations/MessageContext";
 import { db } from "@/firebase/firebaseConfig";
 import { collection, query, where, onSnapshot, QuerySnapshot } from "firebase/firestore";
 import { useAuth } from "@/contexts/authContext";
+import { Link } from "react-router-dom";
 
 function ConversationList() {
     const { state, dispatch } = useMessages()
@@ -59,7 +60,11 @@ function ConversationList() {
     
     return (
         <div className="conversation-list">
-            <h2 className="text-xl font-bold mb-4">Conversations</h2>
+            <div className="flex items-center gap-3 ">
+                <Link to="/ProfileDashboard" className="text-blue-500 text-3xl font-bold hover:scale-110 hover:text-blue-700 transition-all duration-200 flex items-center justify-center">&lt;</Link>
+                <h2 className="text-xl font-bold mb-4">Conversations</h2>
+            </div>
+           
             {visibleConversations.length === 0 && !selectedConversation ? (
                 <p>No conversations yet.</p>
             ) : (

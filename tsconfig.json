@@ -17,6 +17,6 @@
         "isolatedModules": true
     },
 
-    "include": ["src/**/.ts", "src/**/*.tsx", "src/**/*.jsx"],
+    "include": ["src/**/.ts", "src/**/*.tsx", "src/**/*.jsx", "src/lib/lazyLoad.ts"],
     "exclude": ["node_modules"]
 }

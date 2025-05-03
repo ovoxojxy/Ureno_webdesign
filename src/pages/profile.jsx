@@ -138,7 +138,10 @@ export default function ProfileDashboard() {
                     <div className="p-4">
                         <h3 className="text-lg font-semibold">Messages & Notifications</h3>
                         <p className="text-gray-500">2 Unread Messages</p>
-                        <Button variant="link" className="mt-2">Go to Messages</Button>
+                        <Link to="/messages">
+                            <Button variant="link" className="mt-2">Go to Messages</Button>
+                        </Link>
+                        
                     </div>
                 </Card>
             </div>
