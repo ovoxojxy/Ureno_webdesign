@@ -5,6 +5,7 @@ import { getUserProfile } from '../../firebase/firestore';
 import { writeUserData } from '@/firebase/firestore_write_new_user';
 import { db } from '@/firebase/firestore';
 import { doc, onSnapshot, getDoc, setDoc } from 'firebase/firestore';
+// import { useNavigate, useLocation } from 'react-router-dom';
 
 
 export const UserContext = createContext();
@@ -15,6 +16,9 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);        // Firebase user object
   const [profile, setProfile] = useState(null);  // Firestore profile data
   const [loading, setLoading] = useState(true);
+
+  // const navigate = useNavigate();
+  // const location = useLocation();
 
   useEffect(() => {
     // Handle auth state changes

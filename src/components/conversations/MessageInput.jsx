@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useMessages } from "./MessageContext";
 import { useAuth } from "@/contexts/authContext";
 import { db } from "@/firebase/firebaseConfig";
 import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
+import sendMessage from "./sendMessage";
 
 function MessageInput() {
     const [text, setText] = useState("")
+    const inputRef = useRef(null)
     const { state, dispatch } = useMessages()
     const { currentUser } = useAuth();
     const { selectedConversation } = state
@@ -14,26 +16,37 @@ function MessageInput() {
         e.preventDefault()
         if (!text.trim()) return
 
-        const messageData = {
-            senderId: currentUser.uid,
-            text: text.trim(),
-            timestamp: serverTimestamp(),
-        }
-
-        const messagesRef = collection(db, "conversations", selectedConversation, "messages")
-        await addDoc(messagesRef, messageData)
-
-        const conversationRef = doc(db, "conversations", selectedConversation)
-        await updateDoc(conversationRef, {
-            lastMessage: {
-                text: messageData.text,
-                senderId: currentUser.uid,
-                timestamp: serverTimestamp(),
-            },
-            updatedAt: serverTimestamp(),
-        })
-
+        // Save the text locally before clearing the input
+        const messageText = text.trim()
+        
+        // Clear the input immediately for better user experience
         setText("")
+
+        try {
+            // Use the dedicated sendMessage function with the dispatch function
+            // This will handle both Firestore updates and local state updates
+            const success = await sendMessage(
+                selectedConversation,
+                currentUser.uid,
+                messageText,
+                dispatch
+            );
+            
+            if (success) {
+                console.log("Message sent successfully");
+            } else {
+                console.error("Failed to send message");
+                // Optionally restore the message text if sending failed
+                // setText(messageText);
+            }
+            
+            // Focus back on the input for better UX
+            inputRef.current?.focus()
+        } catch (error) {
+            console.error("Error sending message:", error)
+            // In case of error, we might want to restore the message text
+            // setText(messageText)
+        }
     }
 
     if (!selectedConversation) return null
@@ -41,11 +54,19 @@ function MessageInput() {
     return (
         <form onSubmit={handleSend} className="flex items-center p-4 border-t">
             <input 
+                ref={inputRef}
                 type="text" 
                 placeholder="Type a message..."
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 className="flex-1 p-2 border rounded-md"
+                // Add onKeyDown to support sending with Enter and clearing with Escape
+                onKeyDown={(e) => {
+                    if (e.key === 'Escape') {
+                        setText('');
+                        e.target.blur();
+                    }
+                }}
             />
             <button 
                 type="submit"

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore"
+import { useState, useEffect } from "react";
+import { collection, addDoc, serverTimestamp, getDocs, query, where } from "firebase/firestore"
 import { db } from "@/firebase/firebaseConfig";
 import { useAuth } from "../contexts/authContext";
 import { useNavigate } from "react-router-dom";
@@ -11,11 +11,26 @@ function CreateProject() {
 
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
-    const [flooringType, setFlooringType] = useState("")
+    const [selectedFlooring, setSelectedFlooring] = useState(null)
     const [length, setLength] = useState("")
     const [width, setWidth] = useState("")
     const [loading, setLoading] = useState(false)
     const [showSuccess, setShowSuccess] = useState(false)
+    const [flooringOption, setFlooringOption] = useState([])
+
+    useEffect(() => {
+        const fetchFlooringOption = async () => {
+            const q = query(collection(db, "products"), where("description",
+                "==", "Flooring"))
+                const querySnapshot = await getDocs(q)
+                const options = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }))
+                setFlooringOption(options)
+        }
+        fetchFlooringOption()
+    }, [])
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -29,7 +44,7 @@ function CreateProject() {
                 ownerId: currentUser.uid,
                 title,
                 description,
-                flooringType,
+                flooringOption: selectedFlooring,
                 roomDimensions: {
                     length: Number(length),
                     width: Number(width),
@@ -88,13 +103,21 @@ function CreateProject() {
                     required
                     className="w-full border p-2 rounded"/>
                 
-                <input
-                    type="text"
-                    placeholder="Flooring Type"
-                    value={flooringType}
-                    onChange={(e) => setFlooringType(e.target.value)}
-                    className="w-full border p-2 rounded"
-                    />
+                <select
+                    value={selectedFlooring?.id || ""}
+                    className="w-full border p-2 rounded bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    onChange={(e) => {
+                        const selected = flooringOptions.find(option => option.id === e.target.value)
+                        setSelectedFlooring(selected || null)
+                    }}
+                >
+                    <option value="">Select Flooring Option</option>
+                    {flooringOption.map(option => (
+                            <option key={option.id} value={option.id}>
+                            {option.title} - {option.price}
+                        </option>
+                    ))}
+                </select>
 
                 <div className="flex gap-4">
                     <input

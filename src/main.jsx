@@ -12,18 +12,22 @@ import { UserContext } from './contexts/authContext/UserContext'
 import { AuthProvider } from './contexts/authContext'
 import { UserProvider } from './contexts/authContext/UserContext'
 import { MessagesProvider } from './components/conversations/MessageContext'
+import { Navigate } from 'react-router-dom'
 import LoadingSpinner from './components/ui/LoadingSpinner'
 
 // Regular imports for critical path components
 import Home from './pages/home.jsx'
 import FlooringProduct from './pages/product-page.jsx'
 import SignIn from './app/(auth)/sign-in/page'
-import SignUp from './components/SignUp'
+import SignUp from './components/SignUp.jsx'
 import ProductDetail from './components/product-detail'
 import ProductDetailPage from './pages/productDetailPage'
 import EditProfile from './pages/edit-profile'
 import SavedItems from './pages/SavedItems'
 import Login from './pages/Login'
+import ChooseRole from './pages/ChooseRole'
+import EditProject from './pages/EditProject'
+import AvailableProjects from './pages/AvailableProjects'
 
 // Import lazyLoad utility
 import { lazyLoad } from './lib/lazyLoad'
@@ -41,16 +45,26 @@ const ProductForm = lazyLoad(() => import('./components/admin/ProductForm'))
 
 import './styles/index.css'
 import './globals.css'
+import RoleRedirectGate from './contexts/authContext/RoleRedirectGate'
 // Login.css will be imported only in the Login component
 
 const ProtectedAdminRoute = ({ children }) => {
   const { currentUser } = useAuth()
   const { profile } = useContext(UserContext);
 
-  if (!currentUser || !profile?.isAdmin) {
+  if (!currentUser || profile?.role !== "admin") {
     return null;
   }
 
+  return children
+}
+
+const ProtectedContractorRoute = ({ children }) => {
+  const { currentUser } = useAuth()
+  const { profile } = useContext(UserContext);
+  if (!currentUser || profile?.role !== "contractor") {
+    return <Navigate to="/" />
+  }
   return children
 }
 
@@ -63,6 +77,7 @@ root.render(
       <UserProvider>
         <MessagesProvider>
         <Router basename="/Ureno_webdesign/">
+        <RoleRedirectGate />
           {/* Loading fallback for lazy-loaded components */}
           <Suspense fallback={<LoadingSpinner />}>
             <Routes>
@@ -81,6 +96,9 @@ root.render(
               <Route path="/projects/new" element={<CreateProject />} />
               <Route path="/savedItems" element={<SavedItems />} />
               <Route path="/messages" element={<MessagePage />} />
+              <Route path="/choose-role" element={<ChooseRole />} />
+              <Route path="/projects/edit/:projectId" element={<EditProject />} />
+              <Route path="/available-projects" element={<ProtectedContractorRoute><AvailableProjects /></ProtectedContractorRoute>} />
             </Routes>
           </Suspense>
         </Router>

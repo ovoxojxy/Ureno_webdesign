@@ -25,3 +25,5 @@ dist-ssr
 .env
 /build
 /dist
+
+**/.claude/settings.local.json

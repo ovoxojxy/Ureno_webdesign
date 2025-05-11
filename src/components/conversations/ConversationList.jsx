@@ -32,6 +32,12 @@ function ConversationList() {
                 conversations.push({ id: doc.id, ...doc.data() })
             })
 
+            conversations.sort((a, b) => {
+                const timeA = a.lastMessage?.timestamp?.toMillis?.() || 0;
+                const timeB = b.lastMessage?.timestamp?.toMillis?.() || 0;
+                return timeB - timeA; 
+            })
+
 
             console.log("Fetched conversations:", conversations);
             dispatch({ type: "SET_CONVERSATIONS", payload: conversations })

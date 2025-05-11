@@ -35,6 +35,19 @@ const Register = () => {
         setErrorMessage('')
         setIsRegistering(true)
 
+        if (!email || !password) {
+            setErrorMessage("Email and password are required")
+            setIsRegistering(false)
+            return  
+        }
+
+        if (password.length < 6) {
+            setErrorMessage("Password must be at least 6 characters")
+            setIsRegistering(false)
+            return
+        }
+
+
         if (password !== confirmPassword) {
             setErrorMessage("Passwords don't match")
             setIsRegistering(false)
@@ -42,18 +55,24 @@ const Register = () => {
         }
 
         try {
-            const userCredential = await doCreateUserWithEmailAndPassword(email, password)
+            const userCredential = await doCreateUserWithEmailAndPassword(email.trim(), password.trim())
             const user = userCredential.user
 
             await updateProfile(user, { displayName: `${firstName} ${lastName}`})
 
-            await writeUserData(user.uid, firstName, lastName, email, phoneNumber);
+            await writeUserData(user.uid, firstName, lastName, email.trim(), phoneNumber, user.displayName)
             
             navigate('/')
             console.log(userLoggedIn)
         } catch (e) {
-            setErrorMessage("There was a problem creating your account")
-            setIsRegistering(false)
+            if (e.code === "auth/email-already-in-use") {
+                setErrorMessage("An account with this email already exists.")
+              } else if (e.code === "auth/invalid-email") {
+                setErrorMessage("The email address is not valid.")
+              } else {
+                setErrorMessage("There was a problem creating your account.")
+              }
+              setIsRegistering(false)
         }
     }
 

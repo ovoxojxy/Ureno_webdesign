@@ -14,9 +14,11 @@
         "allowJs": true,
         "outDir": "./dist",
         "resolveJsonModule": true,
-        "isolatedModules": true
+        "isolatedModules": true,
+        "allowSyntheticDefaultImports": true
+
     },
 
-    "include": ["src/**/.ts", "src/**/*.tsx", "src/**/*.jsx", "src/lib/lazyLoad.ts"],
+    "include": ["src/**/.ts", "src/**/*.tsx", "src/**/*.jsx", "src/lib/lazyLoad.ts", "src/global.d.ts"],
     "exclude": ["node_modules"]
 }

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useMessages } from "./MessageContext";
 import { db } from "@/firebase/firebaseConfig";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
@@ -8,7 +8,18 @@ function MessageView() {
     const { state, dispatch } = useMessages();
     const { currentUser } = useAuth();
     const { selectedConversation } = state;
+    const messagesEndRef = useRef(null);
 
+    // Scroll to bottom whenever messages change
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+    
+    useEffect(() => {
+        scrollToBottom();
+    }, [state.messages]);
+    
+    // Fetch messages from Firestore
     useEffect(() => {
         if (!selectedConversation) return
         
@@ -41,22 +52,34 @@ function MessageView() {
             {state.messages.length === 0 ? (
                 <div className="text-center text-gray-500">No messages in this conversation yet</div>
             ) : (
-                state.messages.map((msg) => {
+                // Sort messages by timestamp (oldest first)
+                [...state.messages]
+                .sort((a, b) => {
+                    const timeA = a.timestamp?.toMillis?.() || 
+                                (a.timestamp instanceof Date ? a.timestamp.getTime() : 0);
+                    const timeB = b.timestamp?.toMillis?.() || 
+                                (b.timestamp instanceof Date ? b.timestamp.getTime() : 0);
+                    return timeA - timeB;
+                })
+                .map((msg) => {
                     const isSentByCurrentUser = msg.senderId === currentUser?.uid;
-                    console.log(`Message ${msg.id}: senderId=${msg.senderId}, currentUser=${currentUser?.uid}, isSent=${isSentByCurrentUser}`);
                     
                     return (
                         <div key={msg.id} className={`flex ${isSentByCurrentUser ? "justify-end" : "justify-start"}`}>
                             <div className={`p-2 rounded-md max-w-xs ${isSentByCurrentUser ? "bg-blue-500 text-white" : "bg-gray-200"}`}>
                                 <div className="text-sm">{msg.text}</div>
                                 <div className={`text-xs ${isSentByCurrentUser ? "text-blue-100" : "text-gray-500"} text-right`}>
-                                    {msg.timestamp?.toDate().toLocaleString()}
+                                    {msg.timestamp instanceof Date 
+                                        ? msg.timestamp.toLocaleString()
+                                        : msg.timestamp?.toDate?.()?.toLocaleString() || ''}
                                 </div>
                             </div>
                         </div>
                     );
                 })
             )}
+            {/* Invisible element to scroll to */}
+            <div ref={messagesEndRef} />
         </div>
     )
 }

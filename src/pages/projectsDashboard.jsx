@@ -1,4 +1,4 @@
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, deleteDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebaseConfig";
 import { useEffect, useState } from "react";
 import { useAuth } from "../contexts/authContext";
@@ -9,6 +9,21 @@ function ProjectsDashboard() {
     const { currentUser } = useAuth();
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [openDropdownId, setOpenDropdownId] = useState(null)
+
+    const handleToggleOptions = (projectId) => {
+      setOpenDropdownId(prev => (prev === projectId ? null : projectId))
+    }
+
+    const handleDelete = async (projectId) => {
+        if (!currentUser) return;
+        const confirmDelete = window.confirm("Are you sure you want to delete this project?");
+        if (!confirmDelete) return;
+        const docRef = doc(db, "users", currentUser.uid, "projects", projectId)
+        await deleteDoc(docRef)
+        setProjects(prev => prev.filter(p => p.id !== projectId))
+    }
+
 
     useEffect(() => {
         const fetchProjects = async () => {
@@ -51,7 +66,28 @@ function ProjectsDashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {projects.map(project => (
                         <div key={project.id} className="p-4 border rounded shadow">
-                            <h2 className="text-xl font-semibold">{project.title}</h2>
+                            <div className="flex justify-between items-start">
+                                <h2 className="text-xl font-semibold">{project.title}</h2>
+                                <div className="relative">
+                                    <button onClick={() => handleToggleOptions(project.id)} className="text-gray-600 hover:text-black">⋮</button>
+                                    {openDropdownId === project.id && (
+                                      <div className="absolute right-0 mt-1 bg-white border rounded shadow-md z-10">
+                                        <button
+                                            onClick={() => handleDelete(project.id)}
+                                            className="block w-full text-left px-4 py-2 hover:bg-red-100 text-red-600"
+                                        >
+                                            Delete
+                                        </button>
+                                        <Link
+                                            to={`/projects/edit/${project.id}`}
+                                            className="block px-4 py-2 hover:bg-blue-100 text-blue-600"
+                                        >
+                                            Edit
+                                        </Link>
+                                      </div>
+                                    )}
+                                </div>
+                            </div>
                             <p className="text-gray-600">{project.description}</p>
                             {/*Later: view or edit buttons*/}
                         </div>
