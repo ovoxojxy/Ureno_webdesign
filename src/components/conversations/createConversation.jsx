@@ -1,16 +1,25 @@
-import { doc, setDoc, serverTimestamp } from "firebase/firestore"
+import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore"
 import { db } from "@/firebase/firebaseConfig"
 
-async function createConversation(conversationId, participants, projectId) {
-    await setDoc(doc(db, "conversations", conversationId), {
-        participants: participants,
-        projectId: projectId,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-        lastMessage: {
-            text: "",
-            senderId: "",
-            timestamp: serverTimestamp()
-        }
-    })
+export const createConversation = async ({ 
+    projectId,
+    customerId,
+    contractorId,
+    status = "inquiry",
+}) => {
+    const conversationId = `${projectId}_${contractorId}`
+    const convRef = doc(db, "conversations", conversationId)
+    const existing = await getDoc(convRef);
+
+    if (!existing.exists()) {
+        await setDoc(convRef, {
+            projectId,
+            customerId,
+            contractorId,
+            participants: [customerId, contractorId],
+            status,
+            createdAt: serverTimestamp(),
+        })
+    }
+    return conversationId;
 }

@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebaseConfig";
 import { useUser } from "@/contexts/authContext/UserContext";
 import { Link } from "react-router-dom";
+
+import { createConversation } from "@/components/conversations/createConversation";
 
 const ProjectDetails = () => {
     const { projectId } = useParams();
@@ -24,7 +26,8 @@ const ProjectDetails = () => {
                 const docRef = doc(db, "projects", projectId);
                 const snap = await getDoc(docRef);
                 if (snap.exists()) {
-                    setProject({ projectId: snap.projectId, ...snap.data() });
+                    // Use the correct ID property (snap.id, not snap.projectId)
+                    setProject({ id: snap.id, ...snap.data() });
                 }
             } catch (err) {
               console.error("Error fetching project:", err.message);
@@ -42,7 +45,15 @@ const ProjectDetails = () => {
               status: "inquiry",
               inquiredBy: [...(project.inquiredBy || []), user.uid],
             });
-            navigate("/messages");
+        
+            const conversationId = await createConversation({
+              projectId,
+              customerId: project.ownerId,
+              contractorId: user.uid,
+              status: "inquiry",
+            });
+        
+            navigate(`/messages/${conversationId}`);
           } catch (err) {
             console.error("Error inquiring about project:", err.message);
           }

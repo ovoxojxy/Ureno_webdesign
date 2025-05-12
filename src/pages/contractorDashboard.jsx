@@ -9,7 +9,7 @@ import defaultProfile from "@/assets/images/default_pfp.png";
 
 const ContractorDashboard = () => {
     const { profile } = useContext(UserContext);
-    const { currnetUser } = useAuth();
+    const { currentUser } = useAuth();
     const [availableCount, setAvailibleCount] = useState(0);
     const [inquiredCount, setInquirdCount] = useState(0);
     const [acceptedCount, setAcceptedCount] = useState(0);
@@ -31,14 +31,14 @@ const ContractorDashboard = () => {
                 // For inquired and accepted, also use the root-level projects collection
                 const inquiredQuery = query(
                     collection(db, "projects"),
-                    where("status", "==", "inquired"),
-                    where("inquiredBy", "array-contains", currnetUser?.uid || "")
+                    where("status", "==", "inquiry"),
+                    where("inquiredBy", "array-contains", currentUser?.uid || "")
                 );
 
                 const acceptedQuery = query(
                     collection(db, "projects"),
                     where("status", "==", "accepted"),
-                    where("inquiredBy", "array-contains", currnetUser?.uid || "")
+                    where("inquiredBy", "array-contains", currentUser?.uid || "")
                 );
 
                 try {
@@ -99,7 +99,7 @@ const ContractorDashboard = () => {
         };
 
         fetchProjectStats();
-    }, [currnetUser, profile]);
+    }, [currentUser, profile]);
 
     return (
       <>

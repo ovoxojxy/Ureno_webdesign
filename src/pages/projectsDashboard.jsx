@@ -19,9 +19,17 @@ function ProjectsDashboard() {
         if (!currentUser) return;
         const confirmDelete = window.confirm("Are you sure you want to delete this project?");
         if (!confirmDelete) return;
-        const docRef = doc(db, "users", currentUser.uid, "projects", projectId)
-        await deleteDoc(docRef)
-        setProjects(prev => prev.filter(p => p.id !== projectId))
+
+        try {
+            // Delete from the root-level projects collection to match where we're fetching from
+            const docRef = doc(db, "projects", projectId);
+            await deleteDoc(docRef);
+            setProjects(prev => prev.filter(p => p.id !== projectId));
+            console.log("Project deleted successfully");
+        } catch (error) {
+            console.error("Error deleting project:", error);
+            alert("Failed to delete project. Please try again.");
+        }
     }
 
 

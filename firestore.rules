@@ -49,8 +49,8 @@ service cloud.firestore {
       allow read: if request.auth != null &&
                    get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "contractor";
 
-      // Allow project owners to read/write their own projects
-      allow read, write: if request.auth != null &&
+      // Allow project owners to read/write/delete their own projects
+      allow read, write, delete: if request.auth != null &&
                          request.auth.uid == resource.data.ownerId;
 
       // Allow admins to read/write all projects
@@ -74,6 +74,44 @@ service cloud.firestore {
       allow write: if request.auth != null &&
                     (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true ||
                      request.auth.uid == resource.data.ownerId);
+    }
+
+    // Conversations collection for messaging
+    match /conversations/{conversationId} {
+      // Allow participants to read their own conversations
+      allow read: if request.auth != null &&
+                  request.auth.uid in resource.data.participants;
+
+      // Allow both contractors and project owners to create conversations
+      allow create: if request.auth != null && (
+                    // Contractor creating conversation
+                    (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "contractor" &&
+                     request.resource.data.contractorId == request.auth.uid) ||
+                    // Project owner creating conversation
+                    request.resource.data.customerId == request.auth.uid
+                    ) &&
+                    // Always ensure participants array contains both customer and contractor
+                    request.resource.data.participants.hasAll([request.resource.data.customerId, request.resource.data.contractorId]);
+
+      // Allow participants to update conversations
+      allow update: if request.auth != null &&
+                   request.auth.uid in resource.data.participants;
+    }
+
+    // Messages subcollection within conversations
+    match /conversations/{conversationId}/messages/{messageId} {
+      // Allow participants to read and create messages
+      allow read, create: if request.auth != null &&
+                         exists(/databases/$(database)/documents/conversations/$(conversationId)) &&
+                         request.auth.uid in get(/databases/$(database)/documents/conversations/$(conversationId)).data.participants;
+    }
+
+    // Allow contractors to update projects when inquiring
+    match /projects/{projectId} {
+      // Contractors can update projects to change status and add themselves to inquiredBy
+      allow update: if request.auth != null &&
+                   get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "contractor" &&
+                   request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'inquiredBy', 'contractorId']);
     }
 
     // Default deny
