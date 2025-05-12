@@ -26,7 +26,11 @@ const UserDropDown = () => {
 
             <Dropdown.Menu>
 
-                <Dropdown.Item as={Link} to="/ProfileDashboard">Profile</Dropdown.Item>
+                {profile?.role === 'contractor' ? (
+                  <Dropdown.Item as={Link} to="/contractor-dashboard">Dashboard</Dropdown.Item>
+                ) : (
+                  <Dropdown.Item as={Link} to="/ProfileDashboard">Profile</Dropdown.Item>
+                )}
 
                 
                 <Dropdown.Item as={Link} to="/designerPage">Designs</Dropdown.Item>

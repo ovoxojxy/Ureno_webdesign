@@ -39,7 +39,8 @@ function CreateProject() {
         setLoading(true)
 
         try {
-            const projectRef = collection(db, "users", currentUser.uid, "projects")
+            // const projectRef = collection(db, "users", currentUser.uid, "projects")
+            const projectRef = collection(db, "projects")
             await addDoc(projectRef, {
                 ownerId: currentUser.uid,
                 title,
@@ -51,7 +52,7 @@ function CreateProject() {
                 },
                 createdAt: serverTimestamp(),
                 updatedAt: serverTimestamp(),
-                status: "in progress"
+                status: "submitted"
             })
 
             setShowSuccess(true)
@@ -107,7 +108,7 @@ function CreateProject() {
                     value={selectedFlooring?.id || ""}
                     className="w-full border p-2 rounded bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                     onChange={(e) => {
-                        const selected = flooringOptions.find(option => option.id === e.target.value)
+                        const selected = flooringOption.find(option => option.id === e.target.value)
                         setSelectedFlooring(selected || null)
                     }}
                 >

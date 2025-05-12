@@ -6,33 +6,76 @@ service cloud.firestore {
     match /users/{userId} {
       // Any authenticated user can read their own profile
       allow read: if request.auth != null && request.auth.uid == userId;
-      
+
       // Allow admin to read all user profiles
-      allow read: if request.auth != null && 
-                   exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+      allow read: if request.auth != null &&
+                   exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
                    get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
-      
+
       // Users can update or create their own profile, but not the admin status
-      allow create, update: if request.auth != null && 
-                     request.auth.uid == userId && 
-                     (!('isAdmin' in request.resource.data) || 
+      allow create, update: if request.auth != null &&
+                     request.auth.uid == userId &&
+                     (!('isAdmin' in request.resource.data) ||
                       !request.resource.data.isAdmin);
-      
+
       // Only admins can update admin status for any user
-      allow update: if request.auth != null && 
+      allow update: if request.auth != null &&
                      exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
                      get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+
+      // Projects subcollection
+      match /projects/{projectId} {
+        // Allow authenticated users with contractor role to read projects
+        allow read: if request.auth != null &&
+                     get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "contractor";
+
+        // Allow project owners to read/write their own projects
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
     }
-    
+
     // Products
     match /products/{productId} {
       // Anyone can read products
       allow read: if true;
       // Only admins can write products
-      allow write: if request.auth != null && 
+      allow write: if request.auth != null &&
                     get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
     }
-    
+
+    // Root-level projects collection
+    match /projects/{projectId} {
+      // Allow contractors to read all projects
+      allow read: if request.auth != null &&
+                   get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "contractor";
+
+      // Allow project owners to read/write their own projects
+      allow read, write: if request.auth != null &&
+                         request.auth.uid == resource.data.ownerId;
+
+      // Allow admins to read/write all projects
+      allow read, write: if request.auth != null &&
+                         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+
+    // Allow collection group queries on projects for contractors
+    match /{path=**}/projects/{projectId} {
+      allow read: if request.auth != null &&
+                   get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "contractor";
+    }
+
+    // availableProjects collection - used for contractor access
+    match /availableProjects/{projectId} {
+      // Anyone with contractor role can read available projects
+      allow read: if request.auth != null &&
+                   get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "contractor";
+
+      // Only admins and project owners can write
+      allow write: if request.auth != null &&
+                    (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true ||
+                     request.auth.uid == resource.data.ownerId);
+    }
+
     // Default deny
     match /{document=**} {
       allow read, write: if false;

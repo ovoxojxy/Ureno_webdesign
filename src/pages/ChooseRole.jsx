@@ -10,10 +10,16 @@ const ChooseRole = () => {
     const navigate = useNavigate()
 
     const setRole = async (role) => {
-        if (!user?.uid) return 
+        if (!user?.uid) return
         try {
             await updateDoc(doc(db, 'users', user.uid), {role})
-            navigate('/')
+
+            // Redirect to the appropriate dashboard based on role
+            if (role === 'contractor') {
+                navigate('/contractor-dashboard')
+            } else {
+                navigate('/')
+            }
         } catch (error) {
             console.error('Failed to update role:', error)
         }

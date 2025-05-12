@@ -28,6 +28,8 @@ import Login from './pages/Login'
 import ChooseRole from './pages/ChooseRole'
 import EditProject from './pages/EditProject'
 import AvailableProjects from './pages/AvailableProjects'
+import ContractorDashboard from './pages/contractorDashboard'
+import ProjectDetails from './pages/projectDetails'
 
 // Import lazyLoad utility
 import { lazyLoad } from './lib/lazyLoad'
@@ -98,7 +100,9 @@ root.render(
               <Route path="/messages" element={<MessagePage />} />
               <Route path="/choose-role" element={<ChooseRole />} />
               <Route path="/projects/edit/:projectId" element={<EditProject />} />
+              <Route path="/contractor-dashboard" element={<ProtectedContractorRoute><ContractorDashboard /></ProtectedContractorRoute>} />
               <Route path="/available-projects" element={<ProtectedContractorRoute><AvailableProjects /></ProtectedContractorRoute>} />
+              <Route path="/projects/view/:projectId" element={<ProtectedContractorRoute><ProjectDetails /></ProtectedContractorRoute>} />
             </Routes>
           </Suspense>
         </Router>

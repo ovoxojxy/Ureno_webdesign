@@ -29,8 +29,8 @@ function ProjectsDashboard() {
         const fetchProjects = async () => {
             if (!currentUser) return;
 
-            const projectsRef = collection(db, "users", currentUser.uid, "projects")
-            const q = query (projectsRef, where("ownerId", "==", currentUser.uid))
+            const projectsRef = collection(db, "projects")
+            const q = query(projectsRef, where("ownerId", "==", currentUser.uid))
             const querySnapshot = await getDocs(q)
 
             const userProjects = querySnapshot.docs.map(doc => ({

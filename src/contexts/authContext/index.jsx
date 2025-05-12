@@ -36,7 +36,6 @@ export function AuthProvider({ children }) {
             setUserLoggedIn(!!user)
 
             if (user) {
-                
                 const providerId = user.providerData[0]?.providerId
                 setIsEmailUser(providerId === "password")
                 setIsGoogleUser(providerId === "google.com")
@@ -46,11 +45,11 @@ export function AuthProvider({ children }) {
             }
 
             setLoading(false)
-            console.log("AuthProvider state updated: userLogggedIn =", userLoggedIn)
+            console.log("AuthProvider state updated: userLoggedIn =", !!user, "user:", user?.uid)
         })
 
         return () => unsubscribe
-    })
+    }, [])
 
 
     return (
