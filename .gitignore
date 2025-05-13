@@ -7,14 +7,40 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
-dist
+/.pnp
+.pnp.js
+
+# Production
+/build
+/dist
 dist-ssr
+
+# Local env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 *.local
+
+# Firebase
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+.runtimeconfig.json
+firebase-export-*
+
+# Testing
+/coverage
+.nyc_output
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
+!.vscode/settings.json
 .idea
 .DS_Store
 *.suo
@@ -22,8 +48,21 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-.env
-/build
-/dist
+
+# Misc
+.cache
+.eslintcache
+.stylelintcache
+.next
+.vercel
+.turbo
+.cache/
+public/sw.js
+public/workbox-*.js
+storybook-static
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
 
 **/.claude/settings.local.json

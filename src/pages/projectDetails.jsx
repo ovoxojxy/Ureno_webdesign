@@ -53,7 +53,8 @@ const ProjectDetails = () => {
               status: "inquiry",
             });
         
-            navigate(`/messages/${conversationId}`);
+            // navigate(`/messages/${conversationId}`);
+            navigate("/messages");
           } catch (err) {
             console.error("Error inquiring about project:", err.message);
           }

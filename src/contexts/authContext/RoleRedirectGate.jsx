@@ -14,7 +14,9 @@ const RoleRedirectGate = () => {
         // Redirect to choose-role only if user exists, profile exists, but role is missing
         if (user && profile && !profile.role && location.pathname !== '/choose-role') {
             navigate('/choose-role');
+            return
         }
+        
 
         // Protect contractor routes
         const contractorRoutes = ['/contractor-dashboard', '/available-projects'];

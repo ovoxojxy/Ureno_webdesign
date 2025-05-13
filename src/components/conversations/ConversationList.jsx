@@ -79,18 +79,31 @@ function ConversationList() {
             ) : (
                 <ul className="space-y-4">
                     {/* Show visible conversations from Firestore */}
-                    {visibleConversations.map((conv) => (
-                        <li
-                        key={conv.id}
-                        onClick={() => handleSelectConversation(conv.id)}
-                        className={`cursor-pointer p-3 rounded-md ${state.selectedConversation === conv.id ? "bg-blue-100 border-2 border-blue-500"  : "bg-gray-100"}`}>
-                            <div className="font-semibold">Project: {conv.projectId}</div>
-                            <div className="text-sm text-gray-600">
-                                {conv.lastMessage?.text
-                                ? `${conv.lastMessage.text.slice(0, 30)}...` : "No messages yet"}
-                            </div>
-                        </li>
-                    ))}
+                    {visibleConversations.map((conv) => {
+                        const lastRead = conv.lastReadBy?.[currentUser.uid]?.toMillis?.() || 0;
+                        const lastMsg = conv.lastMessage?.timestamp?.toMillis?.() || 0;
+                        const isUnread = lastMsg > lastRead;
+
+                        return (
+                            <li
+                                key={conv.id}
+                                onClick={() => handleSelectConversation(conv.id)}
+                                className={`cursor-pointer p-3 rounded-md ${
+                                    state.selectedConversation === conv.id
+                                        ? "bg-blue-100 border-2 border-blue-500"
+                                        : "bg-gray-100"
+                                } ${isUnread ? "font-bold text-blue-800" : "text-gray-700"}`}
+                            >
+                                <div className="font-semibold">Project: {conv.projectId}</div>
+                                <div className="text-sm text-gray-600">
+                                    {conv.lastMessage?.text
+                                        ? `${conv.lastMessage.text.slice(0, 30)}...`
+                                        : "No messages yet"}
+                                    {isUnread && <span className="text-blue-500 ml-2">•</span>}
+                                </div>
+                            </li>
+                        );
+                    })}
                     
                     {/* If there is a selected conversation not in the visible list, show it too */}
                     {selectedConversation && (

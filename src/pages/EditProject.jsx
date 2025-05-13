@@ -13,20 +13,21 @@ const EditProject = () => {
 
     useEffect(() => {
         const fetchProject = async () => {
-            if (!currentUser) return
-            const docRef = doc(db, 'users', currentUser.uid, 'projects', projectId)
-            const docSnap = await getDoc(docRef)
+            if (!currentUser) return;
+            const docRef = doc(db, 'projects', projectId);
+            const docSnap = await getDoc(docRef);
+
             if (docSnap.exists()) {
-                setProject({ id: docSnap.id, ...docSnap.data() })
-            } 
-            setLoading(false)
-        }
+                setProject({ id: docSnap.id, ...docSnap.data() });
+            }
+            setLoading(false);
+        };
         fetchProject()
     }, [currentUser, projectId])
 
     const handleUpdate = async (e) => {
         e.preventDefault()
-        const docRef = doc(db, 'users', currentUser.uid, 'projects', projectId)
+        const docRef = doc(db, 'projects', projectId)
         await updateDoc(docRef, {
             title: project.title,
             description: project.description

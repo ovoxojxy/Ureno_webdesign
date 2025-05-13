@@ -13,7 +13,9 @@ import { AuthProvider } from './contexts/authContext'
 import { UserProvider } from './contexts/authContext/UserContext'
 import { MessagesProvider } from './components/conversations/MessageContext'
 import { Navigate } from 'react-router-dom'
+// import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import LoadingSpinner from './components/ui/LoadingSpinner'
+
 
 // Regular imports for critical path components
 import Home from './pages/home.jsx'
@@ -33,6 +35,8 @@ import ProjectDetails from './pages/projectDetails'
 
 // Import lazyLoad utility
 import { lazyLoad } from './lib/lazyLoad'
+
+// const QueryClient = new QueryClient()
 
 // Lazy-loaded components
 const DesignerPage = lazyLoad(() => import('./pages/designer'))
@@ -64,7 +68,10 @@ const ProtectedAdminRoute = ({ children }) => {
 const ProtectedContractorRoute = ({ children }) => {
   const { currentUser } = useAuth()
   const { profile } = useContext(UserContext);
-  if (!currentUser || profile?.role !== "contractor") {
+  if (!currentUser || !profile || typeof profile.role !== "string") {
+    return <LoadingSpinner />
+  }
+  if (profile.role !== "contractor") {
     return <Navigate to="/" />
   }
   return children
@@ -75,6 +82,7 @@ const root = createRoot(container)
 
 root.render(
   <StrictMode>
+    {/* <QueryClientProvider client={QueryClient}> */}
     <AuthProvider>
       <UserProvider>
         <MessagesProvider>
@@ -109,5 +117,6 @@ root.render(
         </MessagesProvider>
       </UserProvider>
     </ AuthProvider>
+  {/* </QueryClientProvider > */}
   </StrictMode>
 );

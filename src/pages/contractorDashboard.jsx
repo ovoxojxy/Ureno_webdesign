@@ -37,7 +37,7 @@ const ContractorDashboard = () => {
 
                 const acceptedQuery = query(
                     collection(db, "projects"),
-                    where("status", "==", "accepted"),
+                    where("status", "==", "in progress"),
                     where("inquiredBy", "array-contains", currentUser?.uid || "")
                 );
 
@@ -51,7 +51,7 @@ const ContractorDashboard = () => {
                     
                     console.log("Available projects count:", availableSnap.size);
                     console.log("Inquired projects count:", inquiredSnap.size);
-                    console.log("Accepted projects count:", acceptedSnap.size);
+                    console.log("In Progress projects count:", acceptedSnap.size);
                     
         
                     setAvailibleCount(availableSnap.size);
@@ -82,9 +82,9 @@ const ContractorDashboard = () => {
                     try {
                         const acceptedSnap = await getDocs(acceptedQuery);
                         setAcceptedCount(acceptedSnap.size);
-                        console.log("Accepted query succeeded:", acceptedSnap.size);
+                        console.log("In Progress query succeeded:", acceptedSnap.size);
                     } catch (e) {
-                        console.error("Accepted query failed:", e);
+                        console.error("In Progress query failed:", e);
                         setAcceptedCount(0);
                     }
                 }

@@ -24,7 +24,9 @@ export default function ProfileDashboard() {
     const [savedMaterials, setSavedMaterials] = useState([])
     const [savedMaterialsLoading, setSavedMaterialsLoading] = useState(true)
 
-
+    const [conversationCount, setConversationCount] = useState(0);
+    const [readConversations, setReadConversations] = useState(0);
+    const [unreadConversations, setUnreadConversations] = useState(0);
 
     
 
@@ -32,8 +34,8 @@ export default function ProfileDashboard() {
         const fetchProjects = async () => {
             if (!user) return
 
-            const projectsRef = collection(db, "users", user.uid, "projects")
-            const q = query(projectsRef)
+            const projectsRef = collection(db, "projects")
+            const q = query(projectsRef, where("ownerId", "==", user.uid))
 
             try {
                 const querySnapshot = await getDocs(q)
@@ -70,9 +72,41 @@ export default function ProfileDashboard() {
                     setSavedMaterialsLoading(false)
                 }
             }
+
+            const fetchConversations = async () => {
+                if (!user) return;
+
+                const convRef = collection(db, "conversations");
+                const q = query(convRef, where("participants", "array-contains", user.uid));
+
+                try {
+                    const snapshot = await getDocs(q);
+                    setConversationCount(snapshot.size);
+
+                    let readCount = 0;
+                    let unreadCount = 0;
+
+                    snapshot.docs.forEach(doc => {
+                      const data = doc.data();
+                      const lastMsg = data.lastMessage?.timestamp?.toMillis?.() || 0;
+                      const lastRead = data.lastReadBy?.[user.uid]?.toMillis?.() || 0;
+                      if (lastMsg > lastRead) {
+                        unreadCount++;
+                      } else {
+                        readCount++;
+                      }
+                    });
+
+                    setReadConversations(readCount);
+                    setUnreadConversations(unreadCount);
+                } catch (error) {
+                    console.error("Error fetching conversations:", error);
+                }
+            };
         
         fetchProjects()
         fetchSavedMaterials()
+        fetchConversations();
     }, [user])
 
 
@@ -98,14 +132,14 @@ export default function ProfileDashboard() {
                 <Card>
                     <div className="p-4">
                         <h3 className="text-lg font-semibold">Projects</h3>
-                        {/* <p className="test-gray-500">3 Ongoing, 5 completed</p> */}
 
 
                         {projectsLoading ? (
                             <p className="text-gray-500">Loading project stats...</p>
                             ) : (
                                 <p className="text-gray-500">
-                                    {projects.filter(p => p.status === "in progress").length} Ongoing, {" "}
+                                    {projects.filter(p => p.status === "submitted").length} Submitted, {" "}
+                                    {projects.filter(p => p.status === "inquiry").length} Pending, {" "}
                                     {projects.filter(p => p.status === "completed").length} Completed
                                 </p>
                             )}
@@ -137,7 +171,10 @@ export default function ProfileDashboard() {
                 <Card>
                     <div className="p-4">
                         <h3 className="text-lg font-semibold">Messages & Notifications</h3>
-                        <p className="text-gray-500">2 Unread Messages</p>
+                        <p className="text-gray-500">
+                          {conversationCount} Conversation{conversationCount !== 1 ? 's' : ''} — 
+                           {unreadConversations}  Unread, {readConversations} Read
+                        </p>
                         <Link to="/messages">
                             <Button variant="link" className="mt-2">Go to Messages</Button>
                         </Link>
@@ -164,4 +201,3 @@ export default function ProfileDashboard() {
         </>
     )
 }
-
