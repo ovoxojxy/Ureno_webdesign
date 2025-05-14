@@ -74,8 +74,14 @@ function ProjectsDashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {projects.map(project => (
                         <div key={project.id} className="p-4 border rounded shadow">
+                            <div className="flex justify-between items-center mb-2">
+                              <h2 className="text-xl font-semibold">{project.title}</h2>
+                              <span className="text-sm text-white px-2 py-1 rounded bg-gray-500">
+                                {project.status}
+                              </span>
+                            </div>
                             <div className="flex justify-between items-start">
-                                <h2 className="text-xl font-semibold">{project.title}</h2>
+                                <div></div>
                                 <div className="relative">
                                     <button onClick={() => handleToggleOptions(project.id)} className="text-gray-600 hover:text-black">⋮</button>
                                     {openDropdownId === project.id && (
@@ -97,7 +103,21 @@ function ProjectsDashboard() {
                                 </div>
                             </div>
                             <p className="text-gray-600">{project.description}</p>
-                            {/*Later: view or edit buttons*/}
+                            {project.status === "inquiry" && project.inquiredBy?.length > 0 && (
+                              <Link to={`/projects/${project.id}/inquiries`}>
+                                <button className="mt-2 text-blue-600 hover:underline">
+                                  View Inquiries
+                                </button>
+                              </Link>
+                            )}
+                            {project.status === "pending_approval" && project.requestedBy?.length > 0 && (
+                              <Link to={`/projects/${project.id}/requests`}>
+                                <button className="mt-2 text-blue-600 hover:underline">
+                                  View Requests
+                                </button>
+                              </Link>
+                            )}
+                            
                         </div>
                     ))}
                 </div>

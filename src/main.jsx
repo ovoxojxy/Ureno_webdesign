@@ -32,6 +32,7 @@ import EditProject from './pages/EditProject'
 import AvailableProjects from './pages/AvailableProjects'
 import ContractorDashboard from './pages/contractorDashboard'
 import ProjectDetails from './pages/projectDetails'
+import ProjectRequests from './pages/projectRequests'
 
 // Import lazyLoad utility
 import { lazyLoad } from './lib/lazyLoad'
@@ -111,6 +112,7 @@ root.render(
               <Route path="/contractor-dashboard" element={<ProtectedContractorRoute><ContractorDashboard /></ProtectedContractorRoute>} />
               <Route path="/available-projects" element={<ProtectedContractorRoute><AvailableProjects /></ProtectedContractorRoute>} />
               <Route path="/projects/view/:projectId" element={<ProtectedContractorRoute><ProjectDetails /></ProtectedContractorRoute>} />
+              <Route path="/projects/:id/requests" element={<ProjectRequests />} />
             </Routes>
           </Suspense>
         </Router>

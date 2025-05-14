@@ -64,12 +64,15 @@ const ProjectDetails = () => {
           try {
             const docRef = doc(db, "projects", projectId);
             await updateDoc(docRef, {
-              status: "in progress",
-              contractorId: user.uid,
+              // status: "in progress",
+              // contractorId: user.uid,
+              status: "pending_approval",
+              requestedBy: [...(project.requestedBy || []), user.uid],
             });
             navigate("/contractor-dashboard");
           } catch (err) {
-            console.error("Error accepting project:", err.message);
+            // console.error("Error accepting project:", err.message);
+            console.error("Error requestin acceptance:", err.message);
           }
         };
       
@@ -94,18 +97,29 @@ const ProjectDetails = () => {
       
             {profile?.role === "contractor" && (
               <div className="mt-6 flex gap-4">
-                <button
-                  onClick={handleInquire}
-                  className="bg-yellow-500 text-white px-4 py-2 rounded"
-                >
-                  Inquire
-                </button>
-                <button
-                  onClick={handleAccept}
-                  className="bg-green-600 text-white px-4 py-2 rounded"
-                >
-                  Accept Project
-                </button>
+                {project.status === "in progress" && project.contractorId === user.uid ? (
+                  <button
+                    onClick={() => navigate('/messages/')}
+                    className="bg-blue-600 text-white px-4 py-2 rounded"
+                  >
+                    View Conversation
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      onClick={handleInquire}
+                      className="bg-yellow-500 text-white px-4 py-2 rounded"
+                    >
+                      Inquire
+                    </button>
+                    <button
+                      onClick={handleAccept}
+                      className="bg-green-600 text-white px-4 py-2 rounded"
+                    >
+                      Request Acceptance
+                    </button>
+                  </>
+                )}
               </div>
             )}
           </div>
