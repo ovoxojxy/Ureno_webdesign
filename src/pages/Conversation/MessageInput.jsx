@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { useMessages } from "./MessageContext";
+import { useMessages } from "../../pages/Conversation/MessageContext";
 import { useAuth } from "@/contexts/authContext";
 import { db } from "@/firebase/firebaseConfig";
 import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";

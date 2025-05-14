@@ -7,7 +7,7 @@ import ProfileNav from "@/components/profileNav";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getFirestore, doc, updateDoc } from "firebase/firestore";
 import { getAuth, updateProfile, updateEmail } from "firebase/auth";
-import '../styles/FlooringProduct.css'
+import '../../styles/FlooringProduct.css'
 
 
 export default function EditProfile() {

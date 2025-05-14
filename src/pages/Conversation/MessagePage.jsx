@@ -1,5 +1,5 @@
 import * as React from "react";
-import ConversationList from "@/components/conversations/ConversationList";
+import ConversationList from "@/pages/Conversation/ConversationList";
 import MessageView from "@/components/conversations/MessageView";
 import MessageInput from "@/components/conversations/MessageInput";
 

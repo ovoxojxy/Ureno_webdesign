@@ -11,7 +11,7 @@ import { useContext } from 'react'
 import { UserContext } from './contexts/authContext/UserContext'
 import { AuthProvider } from './contexts/authContext'
 import { UserProvider } from './contexts/authContext/UserContext'
-import { MessagesProvider } from './components/conversations/MessageContext'
+import { MessagesProvider } from './pages/Conversation/MessageContext'
 import { Navigate } from 'react-router-dom'
 // import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import LoadingSpinner from './components/ui/LoadingSpinner'
@@ -24,15 +24,15 @@ import SignIn from './app/(auth)/sign-in/page'
 import SignUp from './components/SignUp.jsx'
 import ProductDetail from './components/product-detail'
 import ProductDetailPage from './pages/productDetailPage'
-import EditProfile from './pages/edit-profile'
+import EditProfile from './pages/Dashboard/edit-profile'
 import SavedItems from './pages/SavedItems'
 import Login from './pages/Login'
 import ChooseRole from './pages/ChooseRole'
-import EditProject from './pages/EditProject'
-import AvailableProjects from './pages/AvailableProjects'
-import ContractorDashboard from './pages/contractorDashboard'
-import ProjectDetails from './pages/projectDetails'
-import ProjectRequests from './pages/projectRequests'
+import EditProject from './pages/Projects/EditProject'
+import AvailableProjects from './pages/Projects/AvailableProjects'
+import ContractorDashboard from './pages/Dashboard/contractorDashboard'
+import ProjectDetails from './pages/Projects/projectDetails'
+import ProjectRequests from './pages/Projects/projectRequests'
 
 // Import lazyLoad utility
 import { lazyLoad } from './lib/lazyLoad'
@@ -41,10 +41,10 @@ import { lazyLoad } from './lib/lazyLoad'
 
 // Lazy-loaded components
 const DesignerPage = lazyLoad(() => import('./pages/designer'))
-const ProfileDashboard = lazyLoad(() => import('./pages/profile'))
-const ProjectsDashboard = lazyLoad(() => import('./pages/projectsDashboard'))
-const CreateProject = lazyLoad(() => import('./pages/CreateProject'))
-const MessagePage = lazyLoad(() => import('./pages/MessagePage'))
+const ProfileDashboard = lazyLoad(() => import('./pages/Dashboard/profile'))
+const ProjectsDashboard = lazyLoad(() => import('./pages/Projects/projectsDashboard'))
+const CreateProject = lazyLoad(() => import('./pages/Projects/CreateProject'))
+const MessagePage = lazyLoad(() => import('./pages/Conversation/MessagePage'))
 
 // Admin components (likely less frequently used)
 const AdminDashboard = lazyLoad(() => import('./components/admin/AdminDashboard'))

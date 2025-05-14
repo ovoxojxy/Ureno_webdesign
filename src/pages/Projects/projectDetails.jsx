@@ -5,7 +5,7 @@ import { db } from "@/firebase/firebaseConfig";
 import { useUser } from "@/contexts/authContext/UserContext";
 import { Link } from "react-router-dom";
 
-import { createConversation } from "@/components/conversations/createConversation";
+import { createConversation } from "@/pages/Conversation/createConversation";
 
 const ProjectDetails = () => {
     const { projectId } = useParams();
