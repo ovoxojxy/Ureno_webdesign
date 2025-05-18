@@ -35,8 +35,14 @@ export const doSignInWithGoogle = async () => {
    
 }
 
-export const doSignOut = () => {
-    return auth.signOut()
+export const doSignOut = async () => {
+    try {
+        await auth.signOut()
+        return { success: true }
+    } catch (error) {
+        console.error("sign-out error: ", error)
+        return { success: false, error }
+    }
 }
 
 export const doPasswordReset = (email) => {

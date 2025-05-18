@@ -1,7 +1,7 @@
 import { collection, query, where, getDocs, doc, deleteDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebaseConfig";
 import { useEffect, useState } from "react";
-import { useAuth } from "../contexts/authContext";
+import { useAuth } from "../../contexts/authContext";
 import { setPriority } from "firebase/database";
 import { Link } from "react-router-dom";
 

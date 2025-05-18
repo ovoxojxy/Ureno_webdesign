@@ -20,16 +20,29 @@ export const UserProvider = ({ children }) => {
   // const navigate = useNavigate();
   // const location = useLocation();
 
+  // Track Firestore listeners that need to be cleaned up
+  const [firestoreUnsubscribe, setFirestoreUnsubscribe] = useState(null);
+  
   useEffect(() => {
     // Handle auth state changes
     const authUnsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      // Clean up any existing Firestore listeners when auth state changes
+      if (firestoreUnsubscribe) {
+        console.log("Cleaning up previous Firestore listener");
+        firestoreUnsubscribe();
+        setFirestoreUnsubscribe(null);
+      }
+      
       setUser(currentUser);
       
       if (!currentUser) {
+        setUser(null);
         setProfile(null);
         setLoading(false);
         return;
       }
+
+      setUser(currentUser);
 
       console.log("Current user UID:", currentUser?.uid);
       // Extract first and last name from displayName if possible
@@ -99,7 +112,8 @@ export const UserProvider = ({ children }) => {
             }
           );
           
-          return () => profileUnsubscribe();
+          // Store the unsubscribe function in state so we can clean it up on auth state changes
+          setFirestoreUnsubscribe(() => profileUnsubscribe);
         } catch (error) {
           console.error("Error setting up profile listener:", error);
           // Continue without real-time updates
@@ -110,7 +124,16 @@ export const UserProvider = ({ children }) => {
       }
     });
 
-    return () => authUnsubscribe();
+    return () => {
+      // Clean up auth listener
+      authUnsubscribe();
+      
+      // Clean up any Firestore listeners
+      if (firestoreUnsubscribe) {
+        console.log("Cleaning up Firestore listener on component unmount");
+        firestoreUnsubscribe();
+      }
+    };
   }, []);
 
   return (

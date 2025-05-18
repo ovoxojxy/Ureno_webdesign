@@ -1,7 +1,7 @@
 import * as React from "react";
-import ConversationList from "@/pages/Conversation/ConversationList";
-import MessageView from "@/components/conversations/MessageView";
-import MessageInput from "@/components/conversations/MessageInput";
+import ConversationList from "./ConversationList";
+import MessageView from "./MessageView";
+import MessageInput from "./MessageInput";
 
 function MessagePage() {
     return (

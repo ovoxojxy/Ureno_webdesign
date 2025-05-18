@@ -3,19 +3,50 @@ import { doSignOut } from "@/firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
 import Dropdown from 'react-bootstrap/Dropdown'
 import "../styles/bootstrap.min.css"; 
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { UserContext } from '@/contexts/authContext/UserContext';
 import { useAuth } from '@/contexts/authContext';
+import { useToast } from "@/hooks/use-toast";
+import LoadingSpinner from './ui/LoadingSpinner';
 
 
 const UserDropDown = () => {
     const navigate = useNavigate()
     const { currentUser } = useAuth()
     const { profile } = useContext(UserContext)
+    const { toast } = useToast()
+    const [isLoggingOut, setIsLoggingOut] = useState(false)
 
     const handleLogout = async () => {
-        await doSignOut ()
-        navigate('/')
+        try {
+            setIsLoggingOut(true)
+            
+            // Show toast notification
+            toast({
+                title: "Logging out",
+                description: "You are being signed out...",
+            })
+            
+            await doSignOut()
+            
+            // Navigate after a slight delay to allow the toast to be seen
+            setTimeout(() => {
+                navigate('/')
+                setIsLoggingOut(false)
+            }, 1000)
+        } catch (error) {
+            console.error("Logout error:", error)
+            toast({
+                variant: "destructive",
+                title: "Logout failed",
+                description: "There was an error signing you out.",
+            })
+            setIsLoggingOut(false)
+        }
+    }
+    
+    if (isLoggingOut) {
+        return <LoadingSpinner />
     }
     
     return (

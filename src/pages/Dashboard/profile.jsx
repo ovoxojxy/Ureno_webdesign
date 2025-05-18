@@ -3,17 +3,17 @@ import { db } from "@/firebase/firebaseConfig"
 import { useEffect, useState } from "react"
 
 
-import Footer from "../components/footer"
+import Footer from "../../components/footer"
 import ProfileNav from "@/components/profileNav"
 import { Button } from "react-bootstrap"
 import { Card } from "react-bootstrap"
 import { Bell, Settings, LogOut } from "lucide-react"
-import defaultProfile from '../assets/images/default_pfp.png'
+import defaultProfile from '../../assets/images/default_pfp.png'
 import { Link } from 'react-router-dom'
-import { useUser } from "../contexts/authContext/UserContext";
-import { useMessages } from "../components/conversations/MessageContext"
+import { useUser } from "../../contexts/authContext/UserContext";
+import { useMessages } from "../Conversation/MessageContext"
 
-import '../styles/FlooringProduct.css'
+import '../../styles/FlooringProduct.css'
 
 export default function ProfileDashboard() {
     const {user, profile, loading } = useUser();

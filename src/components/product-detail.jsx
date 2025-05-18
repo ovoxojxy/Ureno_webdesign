@@ -1,89 +1,35 @@
-import * as React from "react";
-import { useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
-import mainImage from "../assets/images/Harvest-grove-rigid.png"
-import alt1 from "../assets/images/harvest-alt1.png"
-import alt2 from "../assets/images/harvest-alt2.png"
+import React, { useEffect, useState } from "react"
+import { useParams } from "react-router-dom"
+import { doc, getDoc } from "firebase/firestore"
+import { db } from "../firebase/firestore";
 import defaultImage from "../assets/images/Image-not-found.png"
 
 const ProductDetail = () => {
 
     const { productId } = useParams()
-    const products = [
-        {
-            id: "HarvestGrove",
-            productTitle: "Harvest Grove Rigid Luxury Vinyl",
-            productCategory:"Floor and Decor",
-            price: "$2.19/sqft",
-            description: "Default",
-            mainIm: {defaultImage},
-            alternate1: {defaultImage}, 
-            alternate2: {defaultImage}
-        },
-        
-        {
+    const [product, setProduct] = useState(null)
+    const [mainImage, setMainImage] = useState(null)
 
-            id: "tavertine",
-            productTitle: "Inverness Tavertine Vinyl",
-            productCategory:"Floor and Decor",
-            price: "$2.19/sqft",
-            description: "Default",
-            mainIm: {defaultImage},
-            alternate1: {defaultImage}, 
-            alternate2: {defaultImage}
-        },
-
-        {
-
-            id: "Champagne",
-            productTitle: "Champagne Limestone Rigid Core Luxury Vinyl",
-            productCategory:"Floor and Decor",
-            price: "$2.19/sqft",
-            description: "Default",
-            mainIm: {defaultImage},
-            alternate1: {defaultImage}, 
-            alternate2: {defaultImage}
-        },
-
-        {
-            
-            id: "Luxury",
-            productTitle: "Harvest Grove Rigid Luxury Vinyl",
-            productCategory:"Floor and Decor",
-            price: "$2.19/sqft",
-            description: "Default",
-            mainIm: {defaultImage},
-            alternate1: {defaultImage}, 
-            alternate2: {defaultImage}
-        },
-
-        {
-            
-            id: "Harvest",
-            productTitle: "Inverness Tavertine Vinyl",
-            productCategory:"Floor and Decor",
-            price: "$2.19/sqft",
-            description: "Default",
-            mainIm: {defaultImage},
-            alternate1: {defaultImage}, 
-            alternate2: {defaultImage}
-        },
-
-        {
-
-            id: "Champagne2",
-            productTitle: "Champagne Limestone Rigid Core luxiry Vinyl",
-            productCategory:"Floor and Decor",
-            price: "$2.19/sqft",
-            description: "Default",
-            mainIm: {defaultImage},
-            alternate1: {defaultImage}, 
-            alternate2: {defaultImage}
+    useEffect(() => {
+        const fetchProduct = async () => {
+            try {
+                const docRef = doc(db, "products", productId)
+                const docSnap = await getDoc(docRef)
+                if (docSnap.exists()) {
+                    const productData = docSnap.data()
+                    setProduct(productData)
+                    setMainImage(productData.image)
+                } else {
+                    console.error("Product not found")
+                }
+            } catch (error) {
+                console.error("Error fetching product: ", error)
         }
+    }
 
-    ]
+    if (productId) fetchProduct()
+    }, [productId])
 
-    const product = products.find((prod) => prod.id === productId)
 
     if(!product) {
         return (
@@ -185,25 +131,42 @@ const ProductDetail = () => {
             <div className="main-content">
                 <div id="left">
                     <div className="main-image">
-                        <img src={product.mainIm} alt="" />
+                        <img src={mainImage || product.image} alt="" />
                     </div>
                     <div className="thumbnails">
-                        <img src={product.mainIm} alt="" />
-                        <img src={product.alternate1} alt="" />
-                        <img src={product.alternate2} alt="" />
+                        <img 
+                            src={product.image} 
+                            alt="" 
+                            onClick={() => setMainImage(product.image)}
+                        />
+                        <img 
+                            src={product.image1} 
+                            alt="" 
+                            onClick={() => setMainImage(product.image1)}
+                        />
+                        <img 
+                            src={product.image2} 
+                            alt="" 
+                            onClick={() => setMainImage(product.image2)}
+                        />
+                        <img 
+                            src={product.image3} 
+                            alt="" 
+                            onClick={() => setMainImage(product.image3)}
+                        />
                     </div>
                 </div>
 
                 <div id="right">
                     <div className="title-section">
                         <div className="title">
-                            <p id="main">{product.productTitle}</p>
-                            <p id="sub">{product.productCategory}</p>
+                            <p id="main">{product.title}</p>
+                            <p id="sub">{product.description}</p>
                         </div>
 
                         <div className="price-link">
                             <div className="title-left">
-                                <p>$</p>
+                                <p>{product.price}</p>
                             </div>
                             <div className="title-right">
                                 <a href="">See in my room</a>
@@ -218,35 +181,9 @@ const ProductDetail = () => {
                             {product.description}
                         </p>
 
-                        <ul>
-                            <li>
-                                Install up to 6,400 square feetNo need for transition molding.
-                            </li>
-                            
-                            <li>
-                                You can install it right awayPre-installation acclimation is
-                                unnecessary.
-                            </li>
-                            
-                            <li>Attached foam underlayment makes for a quieter, warmer floor.</li>
-                        
-                            <li>
-                                Can be installed on, above, and below grade-level (perfect for
-                                basements!) and over most existing hard-surface flooring, including
-                                slightly irregular subfloors.
-                            </li>
-                            
-                            <li>
-                            This DuraLux Performance product is backed by a lifetime res./ 15 yr
-                            comm. warranty.
-                            </li>
-                        
-                            <li>
-                                It is recommended to use Sentinel Protect Plus Underlayment for
-                                optimal sound absorption and moisture resistance or a standard vapor
-                                barrier like 6mil PE Film.
-                            </li>
-                        </ul>
+                        <p>
+                            {product.overview}
+                        </p>
 
                         <a href="">Product Details</a>
                         <a href="">Reviews</a>

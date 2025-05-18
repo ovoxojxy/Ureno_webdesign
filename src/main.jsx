@@ -15,6 +15,7 @@ import { MessagesProvider } from './pages/Conversation/MessageContext'
 import { Navigate } from 'react-router-dom'
 // import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import LoadingSpinner from './components/ui/LoadingSpinner'
+import { Toaster } from './components/ui/toaster'
 
 
 // Regular imports for critical path components
@@ -33,6 +34,7 @@ import AvailableProjects from './pages/Projects/AvailableProjects'
 import ContractorDashboard from './pages/Dashboard/contractorDashboard'
 import ProjectDetails from './pages/Projects/projectDetails'
 import ProjectRequests from './pages/Projects/projectRequests'
+// import ProductForm from './components/admin/updatedProductForm'
 
 // Import lazyLoad utility
 import { lazyLoad } from './lib/lazyLoad'
@@ -48,7 +50,7 @@ const MessagePage = lazyLoad(() => import('./pages/Conversation/MessagePage'))
 
 // Admin components (likely less frequently used)
 const AdminDashboard = lazyLoad(() => import('./components/admin/AdminDashboard'))
-const ProductForm = lazyLoad(() => import('./components/admin/ProductForm'))
+// const ProductForm = lazyLoad(() => import('./components/admin/updatedProductForm'))
 
 import './styles/index.css'
 import './globals.css'
@@ -102,7 +104,7 @@ root.render(
               <Route path="/Login" element={<Login />} />
               <Route path="/sign-up" element={<SignUp />} />
               <Route path="/admin" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
-              <Route path="/admin/add" element={<ProtectedAdminRoute><ProductForm /></ProtectedAdminRoute>} />
+              {/* <Route path="/admin/add" element={<ProtectedAdminRoute><ProductForm /></ProtectedAdminRoute>} /> */}
               <Route path="/projects" element={<ProjectsDashboard />} />
               <Route path="/projects/new" element={<CreateProject />} />
               <Route path="/savedItems" element={<SavedItems />} />
@@ -115,6 +117,8 @@ root.render(
               <Route path="/projects/:id/requests" element={<ProjectRequests />} />
             </Routes>
           </Suspense>
+          {/* Add Toaster component for toast notifications */}
+          <Toaster />
         </Router>
         </MessagesProvider>
       </UserProvider>
