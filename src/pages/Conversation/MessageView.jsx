@@ -3,6 +3,7 @@ import { useMessages } from "../../pages/Conversation/MessageContext";
 import { db } from "@/firebase/firebaseConfig";
 import { collection, onSnapshot, orderBy, query, doc, getDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { useAuth } from "@/contexts/authContext";
+import UserProfileModal from "@/components/UserProfileModal";
 
 function MessageView() {
     const { state, dispatch } = useMessages();
@@ -11,6 +12,7 @@ function MessageView() {
     const messagesEndRef = useRef(null);
     const [senderProfiles, setSenderProfiles] = useState({});
     const [otherUser, setOtherUser] = useState(null);
+    const [showProfileModal, setShowProfileModal] = useState(false);
 
     // Scroll to bottom whenever messages change
     const scrollToBottom = () => {
@@ -128,6 +130,22 @@ function MessageView() {
     
     return (
         <div className="p-4 space-y-3 overflow-y-auto max-h-[70vh]">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg font-bold">
+              Chat with {otherUser?.displayName || "Loading..."}
+            </h2>
+            <button onClick={() => setShowProfileModal(true)} className="text-blue-500 hover:underline">
+              View Profile
+            </button>
+          </div>
+          {otherUser && (
+            <UserProfileModal
+            userId={otherUser.uid}
+            isOpen={showProfileModal}
+            onClose={() => setShowProfileModal(false)}
+          />
+          )}
+          
             {state.messages.length === 0 ? (
                 <div className="text-center text-gray-500">No messages in this conversation yet</div>
             ) : (
