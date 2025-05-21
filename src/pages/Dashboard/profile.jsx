@@ -67,7 +67,7 @@ export default function ProfileDashboard() {
 
                     setSavedMaterials(materials)
                 } catch (error){
-                    console.error("Error fetching saved materials:", errors)
+                    console.error("Error fetching saved materials:", error)
                 } finally {
                     setSavedMaterialsLoading(false)
                 }

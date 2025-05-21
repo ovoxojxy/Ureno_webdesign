@@ -34,6 +34,7 @@ import AvailableProjects from './pages/Projects/AvailableProjects'
 import ContractorDashboard from './pages/Dashboard/contractorDashboard'
 import ProjectDetails from './pages/Projects/projectDetails'
 import ProjectRequests from './pages/Projects/projectRequests'
+import ProjectInquiries from './pages/Projects/ProjectInquiries'
 // import ProductForm from './components/admin/updatedProductForm'
 
 // Import lazyLoad utility
@@ -115,6 +116,7 @@ root.render(
               <Route path="/available-projects" element={<ProtectedContractorRoute><AvailableProjects /></ProtectedContractorRoute>} />
               <Route path="/projects/view/:projectId" element={<ProtectedContractorRoute><ProjectDetails /></ProtectedContractorRoute>} />
               <Route path="/projects/:id/requests" element={<ProjectRequests />} />
+              <Route path="/projects/:id/inquiries" element={<ProjectInquiries />} />
             </Routes>
           </Suspense>
           {/* Add Toaster component for toast notifications */}

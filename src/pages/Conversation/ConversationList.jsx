@@ -1,7 +1,7 @@
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 import { useMessages } from "@/pages/Conversation/MessageContext";
 import { db } from "@/firebase/firebaseConfig";
-import { collection, query, where, onSnapshot, QuerySnapshot } from "firebase/firestore";
+import { collection, query, where, onSnapshot, QuerySnapshot, doc, getDoc } from "firebase/firestore";
 import { useAuth } from "@/contexts/authContext";
 import { UserContext } from "@/contexts/authContext/UserContext";
 import { Link } from "react-router-dom";
@@ -10,7 +10,46 @@ function ConversationList() {
     const { state, dispatch } = useMessages()
     const { currentUser } = useAuth()
     const { profile } = useContext(UserContext)
+    const [projectTitles, setProjectTitles] = useState({})
     const backPath = profile?.role === "contractor" ? "/contractor-dashboard" : "/ProfileDashboard"
+
+    // Fetch project titles for all conversations
+    useEffect(() => {
+        // Clear project titles when user changes
+        setProjectTitles({});
+    }, [currentUser]);
+
+    // Effect to fetch project data for each conversation
+    useEffect(() => {
+        if (!state.conversations || state.conversations.length === 0) return;
+        
+        const fetchProjectTitles = async () => {
+            const titles = {};
+            const fetchPromises = state.conversations.map(async (conversation) => {
+                if (!conversation.projectId || projectTitles[conversation.projectId]) return;
+                
+                try {
+                    const projectRef = doc(db, "projects", conversation.projectId);
+                    const projectSnap = await getDoc(projectRef);
+                    
+                    if (projectSnap.exists()) {
+                        const projectData = projectSnap.data();
+                        titles[conversation.projectId] = projectData.title || "Untitled Project";
+                    } else {
+                        titles[conversation.projectId] = "Unknown Project";
+                    }
+                } catch (error) {
+                    console.error(`Error fetching project ${conversation.projectId}:`, error);
+                    titles[conversation.projectId] = "Error Loading Project";
+                }
+            });
+            
+            await Promise.all(fetchPromises);
+            setProjectTitles(prev => ({...prev, ...titles}));
+        };
+        
+        fetchProjectTitles();
+    }, [state.conversations, projectTitles]);
 
     useEffect(() => {
         if (!currentUser) {
@@ -49,7 +88,7 @@ function ConversationList() {
         return () => unsubscribe()
     }, [currentUser, dispatch])
 
-    console.log("Conversations in state:", state.conversations);
+    // console.log("Conversations in state:", state.conversations);
 
 
     const handleSelectConversation = (conversationId) => {
@@ -64,8 +103,8 @@ function ConversationList() {
                                 { id: state.selectedConversation, projectId: "Selected Conversation" } : 
                                 null;
 
-    console.log("Selected conversation:", state.selectedConversation);
-    console.log("Visible conversations:", visibleConversations.map(c => c.id));
+    // console.log("Selected conversation:", state.selectedConversation);
+    // console.log("Visible conversations:", visibleConversations.map(c => c.id));
     
     return (
         <div className="conversation-list">
@@ -94,7 +133,7 @@ function ConversationList() {
                                         : "bg-gray-100"
                                 } ${isUnread ? "font-bold text-blue-800" : "text-gray-700"}`}
                             >
-                                <div className="font-semibold">Project: {conv.projectId}</div>
+                                <div className="font-semibold">Project: {conv.projectTitle || projectTitles[conv.projectId] || "Loading..."}</div>
                                 <div className="text-sm text-gray-600">
                                     {conv.lastMessage?.text
                                         ? `${conv.lastMessage.text.slice(0, 30)}...`
@@ -111,7 +150,7 @@ function ConversationList() {
                         key={selectedConversation.id}
                         onClick={() => handleSelectConversation(selectedConversation.id)}
                         className="cursor-pointer p-3 rounded-md bg-blue-100 border-2 border-blue-500">
-                            <div className="font-semibold">Project: {selectedConversation.projectId}</div>
+                            <div className="font-semibold">Project: {selectedConversation.projectTitle || projectTitles[selectedConversation.projectId] || "Loading..."}</div>
                             <div className="text-sm text-gray-600">
                                 Currently selected conversation
                             </div>
