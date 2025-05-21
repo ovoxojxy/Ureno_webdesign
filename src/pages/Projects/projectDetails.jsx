@@ -83,9 +83,7 @@ const ProjectDetails = () => {
           <div className="p-6 max-w-4xl mx-auto mt-24">
 
             <div className="fixed top-0 left-0 w-full bg-white p-4 flex items-center pb-6 z-10">               
-               <Link to="/available-projects">
-                    <div className="logo"> return </div>
-                </Link>
+                    <div className="logo cursor-pointer" onClick={() => navigate(-1)}> return </div>
             </div>
 
             <h1 className="text-2xl font-bold mb-2">{project.title}</h1>
@@ -104,6 +102,21 @@ const ProjectDetails = () => {
                   >
                     View Conversation
                   </button>
+                ) : project.status === "inquiry" && project.inquiredBy?.includes(user.uid) ? (
+                  <>
+                    <button
+                      onClick={() => navigate('/messages/')}
+                      className="bg-blue-600 text-white px-4 py-2 rounded"
+                    >
+                      View Conversation
+                    </button>
+                    <button
+                      onClick={handleAccept}
+                      className="bg-green-600 text-white px-4 py-2 rounded"
+                    >
+                      Request Acceptance
+                    </button>
+                  </>
                 ) : (
                   <>
                     <button

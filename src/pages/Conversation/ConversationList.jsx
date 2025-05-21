@@ -10,23 +10,54 @@ function ConversationList() {
     const { state, dispatch } = useMessages()
     const { currentUser } = useAuth()
     const { profile } = useContext(UserContext)
-    const [projectTitles, setProjectTitles] = useState({})
+    const [projectMeta, setProjectMeta] = useState({})
+    const [participantNames, setParticipantNames] = useState({})
     const backPath = profile?.role === "contractor" ? "/contractor-dashboard" : "/ProfileDashboard"
 
     // Fetch project titles for all conversations
     useEffect(() => {
         // Clear project titles when user changes
-        setProjectTitles({});
+        setProjectMeta({});
     }, [currentUser]);
+
+    // Effect to fetch participant names for each conversation
+    useEffect(() => {
+        if(!state.conversations || state.conversations.length === 0) return;
+         const fetchParticipantNames = async () => {
+            const names = {};
+            const fetchPromises = state.conversations.map(async (conv) => {
+                const otherId = conv.participants?.find(uid => uid !== currentUser.uid);
+                if (!otherId || participantNames[otherId]) return;
+
+                try {
+                    const userRef = doc(db, "users", otherId);
+                    const userSnap = await getDoc(userRef);
+                    if (userSnap.exists()) {
+                        const userData = userSnap.data();
+                        names[otherId] = userData.displayName || `${userData.firstName || "Unkown"} ${userData.lastName || ""}`.trim();
+                }else {
+                    names[otherId] = "Unkown User"
+                }
+            } catch (error) {
+                console.error(`Error fetching user ${otherId}:`, error);
+                names[otherId] = "Error Loading User";
+         }
+    })
+
+    await Promise.all(fetchPromises)
+    setParticipantNames(prev => ({ ...prev, ...names }))
+    }
+    fetchParticipantNames()
+}, [state.conversations, participantNames]);
 
     // Effect to fetch project data for each conversation
     useEffect(() => {
         if (!state.conversations || state.conversations.length === 0) return;
         
-        const fetchProjectTitles = async () => {
+        const fetchProjectTitle = async () => {
             const titles = {};
             const fetchPromises = state.conversations.map(async (conversation) => {
-                if (!conversation.projectId || projectTitles[conversation.projectId]) return;
+                if (!conversation.projectId || projectMeta[conversation.projectId]) return;
                 
                 try {
                     const projectRef = doc(db, "projects", conversation.projectId);
@@ -34,7 +65,10 @@ function ConversationList() {
                     
                     if (projectSnap.exists()) {
                         const projectData = projectSnap.data();
-                        titles[conversation.projectId] = projectData.title || "Untitled Project";
+                        titles[conversation.projectId] = {
+                            title: projectData.title || "Untitled Project",
+                            status: projectData.status || "Unknown Status",
+                        }
                     } else {
                         titles[conversation.projectId] = "Unknown Project";
                     }
@@ -45,11 +79,11 @@ function ConversationList() {
             });
             
             await Promise.all(fetchPromises);
-            setProjectTitles(prev => ({...prev, ...titles}));
+            setProjectMeta(prev => ({...prev, ...titles}));
         };
         
-        fetchProjectTitles();
-    }, [state.conversations, projectTitles]);
+        fetchProjectTitle();
+    }, [state.conversations, projectMeta]);
 
     useEffect(() => {
         if (!currentUser) {
@@ -74,10 +108,11 @@ function ConversationList() {
                 conversations.push({ id: doc.id, ...doc.data() })
             })
 
+
             conversations.sort((a, b) => {
                 const timeA = a.lastMessage?.timestamp?.toMillis?.() || 0;
                 const timeB = b.lastMessage?.timestamp?.toMillis?.() || 0;
-                return timeB - timeA; 
+                return timeB - timeA;
             })
 
 
@@ -133,7 +168,19 @@ function ConversationList() {
                                         : "bg-gray-100"
                                 } ${isUnread ? "font-bold text-blue-800" : "text-gray-700"}`}
                             >
-                                <div className="font-semibold">Project: {conv.projectTitle || projectTitles[conv.projectId] || "Loading..."}</div>
+                                <div className="font-medium text-gray-800">
+                                    {participantNames[conv.participants?.find(uid => uid !== currentUser.uid)] || "loading..."}
+                                </div>
+                                <div>
+                                    Project: {conv.projectTitle || projectMeta[conv.projectId]?.title || "Loading..."}
+                                    <span className={`ml-2 text-xs px-2 py-1 rounded-full ${
+                                        projectMeta[conv.projectId]?.status?.toLowerCase() === "in progress"
+                                            ? "bg-green-200 text-green-800"
+                                            : "bg-yellow-200 text-yellow-800"
+                                    }`}>
+                                        {projectMeta[conv.projectId]?.status || "Unknown Status"}
+                                    </span>
+                                </div>
                                 <div className="text-sm text-gray-600">
                                     {conv.lastMessage?.text
                                         ? `${conv.lastMessage.text.slice(0, 30)}...`
@@ -150,7 +197,7 @@ function ConversationList() {
                         key={selectedConversation.id}
                         onClick={() => handleSelectConversation(selectedConversation.id)}
                         className="cursor-pointer p-3 rounded-md bg-blue-100 border-2 border-blue-500">
-                            <div className="font-semibold">Project: {selectedConversation.projectTitle || projectTitles[selectedConversation.projectId] || "Loading..."}</div>
+                            <div className="font-semibold">Project: {selectedConversation.projectTitle || projectMeta[selectedConversation.projectId] || "Loading..."}</div>
                             <div className="text-sm text-gray-600">
                                 Currently selected conversation
                             </div>

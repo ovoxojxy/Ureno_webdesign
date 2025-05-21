@@ -76,7 +76,7 @@ export default function EditProfile() {
                 }
 
                 alert("profile updated succesfully")
-                navigate("/ProfileDashboard")
+                navigate(-1)
             } catch (error){
                 console.error("Error updating profile:", error);
                 alert("Failed to update profile. Check the console for details.")

@@ -78,9 +78,7 @@ const AvailableProjects = () => {
         <div className="p-4 max-w-4xl mx-auto mt-20">
 
           <div className="fixed top-0 left-0 w-full bg-white p-4 flex items-center pb-6 z-10">               
-               <Link to="/contractor-dashboard">
-                    <div className="logo"> return </div>
-                </Link>
+                    <div className="logo cursor-pointer" onClick={() => navigate(-1)}> return </div>
             </div>
 
             {acceptedProjects.length > 0 && (
