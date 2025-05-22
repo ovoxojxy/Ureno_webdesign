@@ -25,4 +25,9 @@ export default defineConfig({
       plugins: [tailwindcss, autoprefixer],
     },
   },
+  server: {
+    proxy: {
+      '/api': 'http://localhost:3000'
+    }
+  }
 })

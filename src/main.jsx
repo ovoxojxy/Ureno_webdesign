@@ -13,7 +13,6 @@ import { AuthProvider } from './contexts/authContext'
 import { UserProvider } from './contexts/authContext/UserContext'
 import { MessagesProvider } from './pages/Conversation/MessageContext'
 import { Navigate } from 'react-router-dom'
-// import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import LoadingSpinner from './components/ui/LoadingSpinner'
 import { Toaster } from './components/ui/toaster'
 
@@ -35,7 +34,8 @@ import ContractorDashboard from './pages/Dashboard/contractorDashboard'
 import ProjectDetails from './pages/Projects/projectDetails'
 import ProjectRequests from './pages/Projects/projectRequests'
 import ProjectInquiries from './pages/Projects/ProjectInquiries'
-// import ProductForm from './components/admin/updatedProductForm'
+import AIChat from './components/AI_Design/AIChat'
+import AIImageGenerator from './components/AI_Design/AiImage'
 
 // Import lazyLoad utility
 import { lazyLoad } from './lib/lazyLoad'
@@ -56,6 +56,7 @@ const AdminDashboard = lazyLoad(() => import('./components/admin/AdminDashboard'
 import './styles/index.css'
 import './globals.css'
 import RoleRedirectGate from './contexts/authContext/RoleRedirectGate'
+import UrenoLanding from './pages/LandingPage/UrenoLanding'
 // Login.css will be imported only in the Login component
 
 const ProtectedAdminRoute = ({ children }) => {
@@ -117,6 +118,9 @@ root.render(
               <Route path="/projects/view/:projectId" element={<ProtectedContractorRoute><ProjectDetails /></ProtectedContractorRoute>} />
               <Route path="/projects/:id/requests" element={<ProjectRequests />} />
               <Route path="/projects/:id/inquiries" element={<ProjectInquiries />} />
+              <Route path="/LandingPage" element={<UrenoLanding />} />
+              <Route path="/TestChat" element={<AIChat />} />
+              <Route path="/TestImage" element={<AIImageGenerator />} />
             </Routes>
           </Suspense>
           {/* Add Toaster component for toast notifications */}
