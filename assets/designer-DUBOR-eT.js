@@ -1,1 +1,0 @@
-import{j as e,N as t,F as s}from"./index-CN_GWN2r.js";function a(){return e.jsxs(e.Fragment,{children:[e.jsx("meta",{charSet:"UTF-8"}),e.jsx("meta",{name:"viewport",content:"width=device-width, initial-scale=1.0"}),e.jsx("title",{children:"Designer"}),e.jsx(t,{}),e.jsx(s,{})]})}export{a as default};
