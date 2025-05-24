@@ -8,9 +8,6 @@ import OpenAI from "openai"
 
 dotenv.config({ path: './server/.env' })
 
-
-
-
 console.log("✅ OpenAI Key Loaded:", process.env.OPENAI_API_KEY ? "Yes" : "No");
 console.log("Actual key:", process.env.OPENAI_API_KEY);
 const app = express();
