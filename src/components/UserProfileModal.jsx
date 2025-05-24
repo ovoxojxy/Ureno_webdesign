@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { db } from "@/firebase/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
+import BasicRating from "./ui/Rating";
 
 function UserProfileModal({ userId, isOpen, onClose }) {
     const [user, setUser] = useState(null);
@@ -34,6 +35,11 @@ function UserProfileModal({ userId, isOpen, onClose }) {
                     <div>
                         <p><strong>Name:</strong> {user.displayName}</p>
                         <p><strong>Role:</strong> {user.role}</p>
+                        {user?.role === "contractor" && (
+                            <div className="mt-2">
+                            <BasicRating value={user.rating || 0} readOnly />
+                        </div>
+                        )}
                     </div>
                 ) : (
                     <p>Loading...</p>

@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import { Link } from 'react-router-dom'
 import { cn } from '@/lib/utils'
-import { buttonVariants } from '@/components/ui/Button'
+import { buttonVariants } from '@/components/ui/button'
 import SignIn from '@/components/SignIn'
 import { Toaster } from '@/components/ui/toaster'
 

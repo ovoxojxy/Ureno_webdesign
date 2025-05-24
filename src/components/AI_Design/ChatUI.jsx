@@ -1,91 +1,96 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { getAIResponse } from '../../../services/aiService'
+import React, { useState, useEffect, useRef } from 'react';
+import './ChatUI.module.css'
 
-const AIChat = () => {
-  const [messages, setMessages] = useState([])
-  const [inputValue, setInputValue] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const [roomType, setRoomType] = useState('Kitchen')
-  const [budget, setBudget] = useState('')
-  const messagesEndRef = useRef(null)
+const ChatUI = () => {
+  const [messages, setMessages] = useState([]);
+  const [inputValue, setInputValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [fakeMessageIndex, setFakeMessageIndex] = useState(0);
+  const messagesEndRef = useRef(null);
+
+  const fakeMessages = [
+    'Hi there, I\'m Fabio and you?',
+    'Nice to meet you',
+    'How are you?',
+    'Not too bad, thanks',
+    'What do you do?',
+    'That\'s awesome',
+    'Codepen is a nice place to stay',
+    'I think you\'re a nice person',
+    'Why do you think that?',
+    'Can you explain?',
+    'Anyway I\'ve gotta go now',
+    'It was a pleasure chat with you',
+    'Time to make a new codepen',
+    'Bye',
+    ':)'
+  ];
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   useEffect(() => {
-    scrollToBottom()
-  }, [messages])
+    scrollToBottom();
+  }, [messages]);
 
   useEffect(() => {
-    // Initial welcome message
-    const welcomeMessage = {
-      id: Date.now(),
-      text: "Hi! I'm Ureno AI Assistant. I can help you with renovation ideas, budget planning, and design suggestions. What would you like to know about your project?",
-      isPersonal: false,
-      timestamp: formatTime()
-    }
-    setMessages([welcomeMessage])
-  }, [])
+    // Initial fake message
+    const timer = setTimeout(() => {
+      addFakeMessage();
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   const formatTime = () => {
-    const now = new Date()
-    return `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`
-  }
+    const now = new Date();
+    return `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+  };
 
-  const handleSendMessage = async () => {
-    if (inputValue.trim() === '') return
+  const addFakeMessage = () => {
+    if (inputValue !== '' || fakeMessageIndex >= fakeMessages.length) return;
 
-    const userMessage = {
+    setIsLoading(true);
+    
+    const delay = 1000 + Math.random() * 2000;
+    setTimeout(() => {
+      setIsLoading(false);
+      const newMessage = {
+        id: Date.now(),
+        text: fakeMessages[fakeMessageIndex],
+        isPersonal: false,
+        timestamp: formatTime()
+      };
+      setMessages(prev => [...prev, newMessage]);
+      setFakeMessageIndex(prev => prev + 1);
+    }, delay);
+  };
+
+  const handleSendMessage = () => {
+    if (inputValue.trim() === '') return;
+
+    const newMessage = {
       id: Date.now(),
       text: inputValue,
       isPersonal: true,
       timestamp: formatTime()
-    }
+    };
 
-    setMessages(prev => [...prev, userMessage])
-    setIsLoading(true)
+    setMessages(prev => [...prev, newMessage]);
+    setInputValue('');
 
-    const fullPrompt = budget ? 
-      `I am planning a ${roomType} renovation with a budget of $${budget}. ${inputValue}` : 
-      `I am planning a ${roomType} renovation. ${inputValue}`
-
-    try {
-      const aiResponse = await getAIResponse(fullPrompt)
-      
-      setTimeout(() => {
-        const botMessage = {
-          id: Date.now() + 1,
-          text: aiResponse,
-          isPersonal: false,
-          timestamp: formatTime()
-        }
-        setMessages(prev => [...prev, botMessage])
-        setIsLoading(false)
-      }, 1000)
-    } catch (error) {
-      console.error('Error:', error)
-      setTimeout(() => {
-        const errorMessage = {
-          id: Date.now() + 1,
-          text: "Sorry, I'm having trouble connecting right now. Please try again later.",
-          isPersonal: false,
-          timestamp: formatTime()
-        }
-        setMessages(prev => [...prev, errorMessage])
-        setIsLoading(false)
-      }, 1000)
-    }
-
-    setInputValue('')
-  }
+    // Trigger fake response
+    setTimeout(() => {
+      addFakeMessage();
+    }, 1000 + Math.random() * 2000);
+  };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      handleSendMessage()
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSendMessage();
     }
-  }
+  };
 
   const styles = {
     container: {
@@ -121,9 +126,9 @@ const AIChat = () => {
       top: '50%',
       left: '50%',
       transform: 'translate(-50%, -50%)',
-      width: '350px',
+      width: '300px',
       height: '80vh',
-      maxHeight: '600px',
+      maxHeight: '500px',
       zIndex: 2,
       overflow: 'hidden',
       boxShadow: '0 5px 30px rgba(0, 0, 0, .2)',
@@ -134,24 +139,24 @@ const AIChat = () => {
       flexDirection: 'column'
     },
     chatTitle: {
-      flex: '0 1 60px',
+      flex: '0 1 45px',
       position: 'relative',
       zIndex: 2,
       background: 'rgba(0, 0, 0, 0.2)',
       color: '#fff',
       textTransform: 'uppercase',
       textAlign: 'left',
-      padding: '10px 10px 10px 60px'
+      padding: '10px 10px 10px 50px'
     },
     titleH1: {
       fontWeight: 'normal',
-      fontSize: '12px',
+      fontSize: '10px',
       margin: 0,
       padding: 0
     },
     titleH2: {
       color: 'rgba(255, 255, 255, .5)',
-      fontSize: '9px',
+      fontSize: '8px',
       letterSpacing: '1px',
       fontWeight: 'normal',
       margin: 0,
@@ -160,56 +165,19 @@ const AIChat = () => {
     avatar: {
       position: 'absolute',
       zIndex: 1,
-      top: '10px',
-      left: '15px',
+      top: '8px',
+      left: '9px',
       borderRadius: '30px',
-      width: '35px',
-      height: '35px',
+      width: '30px',
+      height: '30px',
       overflow: 'hidden',
       margin: 0,
       padding: 0,
-      border: '2px solid rgba(255, 255, 255, 0.24)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: 'linear-gradient(135deg, #000000, #404040)',
-      fontSize: '18px'
+      border: '2px solid rgba(255, 255, 255, 0.24)'
     },
-    settingsBar: {
-      background: 'rgba(0, 0, 0, 0.1)',
-      padding: '8px 10px',
-      borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-      display: 'flex',
-      gap: '10px',
-      fontSize: '10px'
-    },
-    settingItem: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '2px'
-    },
-    settingLabel: {
-      color: 'rgba(255, 255, 255, .7)',
-      fontSize: '8px'
-    },
-    settingSelect: {
-      background: 'rgba(255, 255, 255, 0.1)',
-      border: 'none',
-      color: 'white',
-      fontSize: '9px',
-      padding: '2px 4px',
-      borderRadius: '4px',
-      outline: 'none'
-    },
-    settingInput: {
-      background: 'rgba(255, 255, 255, 0.1)',
-      border: 'none',
-      color: 'white',
-      fontSize: '9px',
-      padding: '2px 4px',
-      borderRadius: '4px',
-      outline: 'none',
-      width: '60px'
+    avatarImg: {
+      width: '100%',
+      height: 'auto'
     },
     messages: {
       flex: '1 1 auto',
@@ -230,25 +198,23 @@ const AIChat = () => {
     message: {
       clear: 'both',
       float: 'left',
-      padding: '8px 12px',
-      borderRadius: '12px 12px 12px 4px',
+      padding: '6px 10px 7px',
+      borderRadius: '10px 10px 10px 0',
       background: 'rgba(0, 0, 0, .3)',
       margin: '8px 0',
       fontSize: '11px',
       lineHeight: 1.4,
-      marginLeft: '40px',
+      marginLeft: '35px',
       position: 'relative',
       textShadow: '0 1px 1px rgba(0, 0, 0, .2)',
-      animation: 'bounce 500ms linear both',
-      maxWidth: '250px',
-      wordWrap: 'break-word'
+      animation: 'bounce 500ms linear both'
     },
     messagePersonal: {
       float: 'right',
       color: '#fff',
       textAlign: 'right',
-      background: 'linear-gradient(135deg, #000000, #404040)',
-      borderRadius: '12px 12px 4px 12px',
+      background: 'linear-gradient(135deg, #000000, #404040, #ffffff)',
+      borderRadius: '10px 10px 0 10px',
       marginLeft: 0,
       marginRight: '10px'
     },
@@ -258,23 +224,17 @@ const AIChat = () => {
       bottom: '-15px',
       left: '-35px',
       borderRadius: '30px',
-      width: '25px',
-      height: '25px',
+      width: '30px',
+      height: '30px',
       overflow: 'hidden',
       margin: 0,
       padding: 0,
-      border: '2px solid rgba(255, 255, 255, 0.24)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: 'linear-gradient(135deg, #000000, #404040)',
-      fontSize: '12px',
-      color: 'white'
+      border: '2px solid rgba(255, 255, 255, 0.24)'
     },
     timestamp: {
       position: 'absolute',
       bottom: '-15px',
-      fontSize: '8px',
+      fontSize: '9px',
       color: 'rgba(255, 255, 255, .3)',
       left: 0
     },
@@ -283,10 +243,10 @@ const AIChat = () => {
       left: 'auto'
     },
     messageBox: {
-      flex: '0 1 50px',
+      flex: '0 1 40px',
       width: '100%',
       background: 'rgba(0, 0, 0, 0.3)',
-      padding: '12px',
+      padding: '10px',
       position: 'relative'
     },
     messageInput: {
@@ -296,24 +256,23 @@ const AIChat = () => {
       resize: 'none',
       color: 'rgba(255, 255, 255, .7)',
       fontSize: '11px',
-      height: '20px',
+      height: '17px',
       margin: 0,
-      paddingRight: '60px',
-      width: '100%',
-      boxSizing: 'border-box'
+      paddingRight: '20px',
+      width: '265px'
     },
     messageSubmit: {
       position: 'absolute',
       zIndex: 1,
-      top: '12px',
-      right: '12px',
+      top: '9px',
+      right: '10px',
       color: '#fff',
       border: 'none',
       background: '#248A52',
       fontSize: '10px',
       textTransform: 'uppercase',
       lineHeight: 1,
-      padding: '8px 12px',
+      padding: '6px 10px',
       borderRadius: '10px',
       outline: 'none',
       transition: 'background .2s ease',
@@ -322,13 +281,13 @@ const AIChat = () => {
     loadingMessage: {
       clear: 'both',
       float: 'left',
-      padding: '8px 12px',
-      borderRadius: '12px 12px 12px 4px',
+      padding: '6px 10px 7px',
+      borderRadius: '10px 10px 10px 0',
       background: 'rgba(0, 0, 0, .3)',
       margin: '8px 0',
       fontSize: '11px',
       lineHeight: 1.4,
-      marginLeft: '40px',
+      marginLeft: '35px',
       position: 'relative',
       textShadow: '0 1px 1px rgba(0, 0, 0, .2)'
     },
@@ -348,7 +307,7 @@ const AIChat = () => {
       margin: '0 1px',
       animation: 'ball 0.45s cubic-bezier(0, 0, 0.15, 1) alternate infinite'
     }
-  }
+  };
 
   const keyframes = `
     @keyframes bounce { 
@@ -364,7 +323,7 @@ const AIChat = () => {
       52.15% { transform: matrix3d(0.991, 0, 0, 0, 0, 0.991, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
       63.26% { transform: matrix3d(1.007, 0, 0, 0, 0, 1.007, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
       85.49% { transform: matrix3d(0.999, 0, 0, 0, 0, 0.999, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
-      100% { transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1); } 
+      100% { transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); } 
     }
 
     @keyframes ball { 
@@ -375,7 +334,7 @@ const AIChat = () => {
         transform: translateY(-10px);
       }
     }
-  `
+  `;
 
   return (
     <div style={styles.container}>
@@ -383,38 +342,15 @@ const AIChat = () => {
       <div style={styles.bg}></div>
       <div style={styles.chat}>
         <div style={styles.chatTitle}>
-          <h1 style={styles.titleH1}>Ureno AI Assistant</h1>
-          <h2 style={styles.titleH2}>Renovation Helper</h2>
-          <div style={styles.avatar}>
-            🏠
-          </div>
-        </div>
-        
-        <div style={styles.settingsBar}>
-          <div style={styles.settingItem}>
-            <label style={styles.settingLabel}>Room Type:</label>
-            <select 
-              style={styles.settingSelect} 
-              value={roomType} 
-              onChange={(e) => setRoomType(e.target.value)}
-            >
-              <option>Kitchen</option>
-              <option>Bathroom</option>
-              <option>Living Room</option>
-              <option>Bedroom</option>
-              <option>Basement</option>
-            </select>
-          </div>
-          <div style={styles.settingItem}>
-            <label style={styles.settingLabel}>Budget ($):</label>
-            <input
-              style={styles.settingInput}
-              type="number"
-              value={budget}
-              onChange={(e) => setBudget(e.target.value)}
-              placeholder="10000"
+          <h1 style={styles.titleH1}>Fabio Ottaviani</h1>
+          <h2 style={styles.titleH2}>Supah</h2>
+          <figure style={styles.avatar}>
+            <img 
+              src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80.jpg" 
+              alt="Avatar"
+              style={styles.avatarImg}
             />
-          </div>
+          </figure>
         </div>
         
         <div style={styles.messages}>
@@ -428,9 +364,13 @@ const AIChat = () => {
                 }}
               >
                 {!message.isPersonal && (
-                  <div style={styles.messageAvatar}>
-                    🤖
-                  </div>
+                  <figure style={styles.messageAvatar}>
+                    <img 
+                      src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80.jpg" 
+                      alt="Avatar"
+                      style={styles.avatarImg}
+                    />
+                  </figure>
                 )}
                 {message.text}
                 <div style={{
@@ -444,9 +384,13 @@ const AIChat = () => {
             
             {isLoading && (
               <div style={styles.loadingMessage}>
-                <div style={styles.messageAvatar}>
-                  🤖
-                </div>
+                <figure style={styles.messageAvatar}>
+                  <img 
+                    src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80.jpg" 
+                    alt="Avatar"
+                    style={styles.avatarImg}
+                  />
+                </figure>
                 <div style={styles.loadingDots}>
                   <span style={{...styles.loadingDot, animationDelay: '0s'}}></span>
                   <span style={{...styles.loadingDot, animationDelay: '0.15s'}}></span>
@@ -462,7 +406,7 @@ const AIChat = () => {
           <textarea 
             type="text" 
             style={styles.messageInput}
-            placeholder="Ask about your renovation..."
+            placeholder="Type message..."
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
@@ -473,14 +417,13 @@ const AIChat = () => {
             onClick={handleSendMessage}
             onMouseEnter={(e) => e.target.style.background = '#1D7745'}
             onMouseLeave={(e) => e.target.style.background = '#248A52'}
-            disabled={isLoading}
           >
-            {isLoading ? '...' : 'Send'}
+            Send
           </button>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default AIChat
+export default ChatUI;

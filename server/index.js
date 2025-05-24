@@ -1,8 +1,18 @@
 import dotenv from 'dotenv'
 import express from 'express';
 import imageRoutes from './routes/api.js';
+import OpenAI from "openai"
 
-dotenv.config()
+
+
+
+dotenv.config({ path: './server/.env' })
+
+
+
+
+console.log("✅ OpenAI Key Loaded:", process.env.OPENAI_API_KEY ? "Yes" : "No");
+console.log("Actual key:", process.env.OPENAI_API_KEY);
 const app = express();
 app.use(express.json());
 app.use('/api', imageRoutes);

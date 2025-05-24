@@ -12,7 +12,10 @@ const ChooseRole = () => {
     const setRole = async (role) => {
         if (!user?.uid) return
         try {
-            await updateDoc(doc(db, 'users', user.uid), {role})
+            await updateDoc(doc(db, 'users', user.uid), {
+              role,
+              ...(role === 'contractor' &&  { rating: 0, reviewCount:0 })
+            })
 
             // Redirect to the appropriate dashboard based on role
             if (role === 'contractor') {

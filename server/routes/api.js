@@ -1,10 +1,12 @@
 import express from 'express';
+import dotenv from 'dotenv'
 import { generateImage } from '../generateImage.js';
 import { askOpenAI } from '../askOpenAI.js'
 
 
 
 const router = express.Router();
+dotenv.config()
 
 router.post('/ask-openai', async (req, res) => {
     const { prompt } = req.body

@@ -173,7 +173,7 @@ function ConversationList() {
                                 </div>
                                 <div>
                                     Project: {conv.projectTitle || projectMeta[conv.projectId]?.title || "Loading..."}
-                                    <span className={`ml-2 text-xs px-2 py-1 rounded-full ${
+                                    <span className={`ml-2 text-xs px-2 py-1 rounded-full inline-block w-fit ${
                                         projectMeta[conv.projectId]?.status?.toLowerCase() === "in progress"
                                             ? "bg-green-200 text-green-800"
                                             : "bg-yellow-200 text-yellow-800"

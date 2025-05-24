@@ -62,8 +62,24 @@ export default function EditProfile() {
             }
 
             if (formData.profilePicture) {
-                const storageRef = ref(storage, `profilePictures/${currentUser.uid}`)
-                await uploadBytes(storageRef, formData.profilePicture)
+                if (!["image/jpeg", "image/png"].includes(formData.profilePicture.type)) {
+                alert("Please upload a JPEG or PNG image.");
+                return;
+                }
+                const fileName = `${currentUser.uid}_${Date.now()}_${formData.profilePicture.name}`;
+                const storageRef = ref(storage, `profilePictures/${fileName}`)
+                
+                // Upload file with metadata
+                const fileType = formData.profilePicture.type || "application/octet-stream";
+
+                const metadata = {
+                    contentType: fileType,
+                    customMetadata: {
+                        uploadedBy: currentUser.uid,
+                    },
+                };
+                
+                await uploadBytes(storageRef, formData.profilePicture, metadata)
                 const photoURL = await getDownloadURL(storageRef)
 
                 await updateProfile(currentUser, { photoURL })

@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react'
 import { Navigate, useNavigate, Link } from 'react-router-dom'
 import { Icons } from './Icons'
-import { Button } from './ui/Button'
+import { Button } from './ui/button'
 import { cn } from '@/lib/utils'
 import { Toaster } from '@/components/ui/toaster'
 import { useToast } from '@/hooks/use-toast'
@@ -117,7 +117,8 @@ const UserAuthForm: FC<UserAuthFormProps> = ({className, ...props}) => {
                 onClick={() => loginWithEmailAndPassword(email, password)}
                 isLoading={isLoading}
                 size="sm"
-                className='w-full'
+                variant="default"
+                className='w-full bg-black text-white hover:bg-gray-800'
             >
                 Login with Email
             </Button>
@@ -130,8 +131,9 @@ const UserAuthForm: FC<UserAuthFormProps> = ({className, ...props}) => {
         <Button 
             onClick={loginWithGoogle} 
             isLoading={isLoading} 
-            size='sm' 
-            className='w-full'> 
+            size='sm'
+            variant="default"
+            className='w-full bg-black text-white hover:bg-gray-800'> 
             {isLoading ? null : <Icons.google className='sh-4 w-4 mr-2'/>}
             Google
         </Button>

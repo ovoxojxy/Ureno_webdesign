@@ -57,7 +57,7 @@ body { background: var(--white); }
 .container { padding: 0 15px; }
 
 .btn {
-    color: var(--oxford-blue);
+    color: var(black);
     font-size: var(--fs-7);
     font-weight: var(--fw-500);
     text-transform: capitalize;

@@ -1,4 +1,9 @@
 import { Link } from "react-router-dom"
+import { useEffect } from "react"
+import { useState } from "react"
+import { useAuth } from "@/contexts/authContext"
+import { getFirestore, collection, getDocs } from "firebase/firestore"
+
 import harvestGrove from '../assets/images/Harvest-grove-rigid.png'
 import tavertine from '../assets/images/tavertine.png'
 import champagne from '../assets/images/champagne.png'
@@ -9,16 +14,29 @@ import Nav from "../components/nav"
 import Footer from "../components/footer"
 import FloorCard from "../components/flooringCards"
 import "../styles/FlooringProduct.css"
-import { useEffect } from "react"
-import { useState } from "react"
-import { useAuth } from "@/contexts/authContext"
-import { getFirestore, collection, getDocs } from "firebase/firestore"
+
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination.tsx"
+
 
 export default function FlooringProduct() {
 
   const [navHeight, setNavHeight] = useState(0);
   const { userLoggedIn } = useAuth() || { userLoggedIn: false }
   const [products, setProducts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1)
+  const productsPerPage = 20
+
+  const indexOfLastProduct = currentPage * productsPerPage
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct)
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -29,6 +47,8 @@ export default function FlooringProduct() {
         console.log("Products fetched successfully:", querySnapshot.size);
         const productList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setProducts(productList);
+
+        
       } catch (error) {
         console.error("Error fetching products:", error);
         // Fallback to hardcoded products
@@ -131,7 +151,7 @@ export default function FlooringProduct() {
       price="$2.19/sqft"
       />*/}
 
-      {products.map(product => (
+      {currentProducts.map(product => (
         <FloorCard
         key={product.id}
         productId={product.id}
@@ -142,6 +162,41 @@ export default function FlooringProduct() {
         link={product.link}
         />
       ))}
+    </div>
+    
+    <div className="flex justify-center mt-8 mb-8">
+      <Pagination>
+  <PaginationContent>
+    <PaginationItem>
+      <PaginationPrevious
+        onClick={() =>
+          setCurrentPage(prev => Math.max(prev - 1, 1))
+        }
+      />
+    </PaginationItem>
+
+    {Array.from({ length: Math.ceil(products.length / productsPerPage) }, (_, i) => (
+      <PaginationItem key={i + 1}>
+        <PaginationLink
+          isActive={currentPage === i + 1}
+          onClick={() => setCurrentPage(i + 1)}
+        >
+          {i + 1}
+        </PaginationLink>
+      </PaginationItem>
+    ))}
+
+    <PaginationItem>
+      <PaginationNext
+        onClick={() =>
+          setCurrentPage(prev =>
+            Math.min(prev + 1, Math.ceil(products.length / productsPerPage))
+          )
+        }
+      />
+    </PaginationItem>
+  </PaginationContent>
+</Pagination>
     </div>
   </div>
   <Footer />

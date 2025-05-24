@@ -36,6 +36,7 @@ import ProjectRequests from './pages/Projects/projectRequests'
 import ProjectInquiries from './pages/Projects/ProjectInquiries'
 import AIChat from './components/AI_Design/AIChat'
 import AIImageGenerator from './components/AI_Design/AiImage'
+import ChatUI from './components/AI_Design/ChatUI'
 
 // Import lazyLoad utility
 import { lazyLoad } from './lib/lazyLoad'
@@ -121,6 +122,7 @@ root.render(
               <Route path="/LandingPage" element={<UrenoLanding />} />
               <Route path="/TestChat" element={<AIChat />} />
               <Route path="/TestImage" element={<AIImageGenerator />} />
+              <Route path="/ChatUI" element={<ChatUI />} />
             </Routes>
           </Suspense>
           {/* Add Toaster component for toast notifications */}

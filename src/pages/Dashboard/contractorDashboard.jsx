@@ -6,6 +6,9 @@ import { db } from "@/firebase/firebaseConfig";
 import { Link, useNavigate } from "react-router-dom";
 import ProfileNav from "@/components/profileNav";
 import defaultProfile from "@/assets/images/default_pfp.png";
+import BasicRating from "@/components/ui/Rating";
+
+
 
 const ContractorDashboard = () => {
     const { profile } = useContext(UserContext);
@@ -117,6 +120,14 @@ const ContractorDashboard = () => {
               <h2 className="text-2xl font-bold mt-4">{profile?.username || profile?.firstName || "Contractor"}</h2>
               <img src={defaultProfile} alt="profile" className="w-24 h-24 rounded-full my-2" />
               <p className="text-gray-500">{profile?.email}</p>
+              {profile?.role === "contractor" && (
+                <div className="mt-2">
+                  <BasicRating value={profile.rating || 0} readOnly />
+                  <p className="text-sm text-gray-500">
+                    {profile.reviewCount || 0} review{profile.reviewCount === 1 ? "" : "s"}
+                  </p>
+                </div>
+              )}
               <Link to="/edit-profile">
                 <button className="mt-2 bg-blue-500 text-white px-4 py-2 rounded">Edit Profile</button>
               </Link>
