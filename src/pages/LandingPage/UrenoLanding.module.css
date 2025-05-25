@@ -36,6 +36,12 @@
 
     --section-padding: 80px 0;
 
+    html, body {
+        height: auto;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
 }
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -264,6 +270,7 @@ header {
     .about .sectionTitle, .about-bottom-title { text-align: center; }
 .aboutTop, .about-banner { margin-bottom: 40px; }
 .about-banner img { width: 100%; }
+.aboutBottom .aboutBanner img { width: 60%; margin: 0 auto; display: block; }
 .about-bottom-list { margin-left: 18px; }
 .about-bottom-item { list-style: disc; }
 .sectionText { text-align: justify; }
@@ -462,7 +469,7 @@ header {
     .container { max-width: 990px; padding: 0; }
     .btn { --fs-7: 18px; padding-block: 16px; }
 
-    header { padding: 35px 15px; background: transparent; }
+    header { padding: 7px 15px; background: var(--white); }
         header.active { padding: 15px; background: var(--white); }
         header .container { max-width: 980px; }
 
@@ -482,9 +489,9 @@ header {
     }
 
         .navbar .btnPrimary {  
-    --fs-7:16px; 
+    --fs-7:14px; 
     width: auto; 
-    padding: 12px 30px; 
+    padding: 8px 20px; 
     border-radius: 25px;
 }
 
