@@ -5,7 +5,7 @@ const AIChat = () => {
   const [messages, setMessages] = useState([])
   const [inputValue, setInputValue] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [roomType, setRoomType] = useState('Kitchen')
+  const [roomType, setRoomType] = useState('')
   const [budget, setBudget] = useState('')
   const messagesEndRef = useRef(null)
 
@@ -46,9 +46,17 @@ const AIChat = () => {
     setMessages(prev => [...prev, userMessage])
     setIsLoading(true)
 
-    const fullPrompt = budget ? 
-      `I am planning a ${roomType} renovation with a budget of $${budget}. ${inputValue}` : 
-      `I am planning a ${roomType} renovation. ${inputValue}`
+    const fullPrompt = (() => {
+      if (roomType && budget) {
+        return `I am planning a ${roomType} renovation with a budget of $${budget}. ${inputValue}`
+      } else if (roomType) {
+        return `I am planning a ${roomType} renovation. ${inputValue}`
+      } else if (budget) {
+        return `I am planning a renovation with a budget of $${budget}. ${inputValue}`
+      } else {
+        return `I am planning a renovation. ${inputValue}`
+      }
+    })()
 
     try {
       const aiResponse = await getAIResponse(fullPrompt)
@@ -398,6 +406,7 @@ const AIChat = () => {
               value={roomType} 
               onChange={(e) => setRoomType(e.target.value)}
             >
+              <option value="">Any Room</option>
               <option>Kitchen</option>
               <option>Bathroom</option>
               <option>Living Room</option>
