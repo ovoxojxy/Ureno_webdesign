@@ -106,11 +106,7 @@ const UrenoLanding = () => {
                   <button type="submit" className={`${styles.btn} ${styles.btnPrimary}`}>Get Started Now</button>
                 </form>
 
-                <p className={`${styles.heroText}`}>
-                  <span>Free 30 days trial</span>
-                  <span>Exclusive Support</span>
-                  <span>No Fees</span>
-                </p>
+                
               </div>
 
               <figure className={`${styles.heroBanner}`}>

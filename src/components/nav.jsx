@@ -35,7 +35,10 @@ const Nav = () => {
         
         <div className="Right">
           <menu>
-            <li>AI Design</li>
+            <Link to="/testchat">
+              <li>AI Design</li>
+            </Link>
+            
             {userLoggedIn && (
               <>
                 <Link to='/messages'>
