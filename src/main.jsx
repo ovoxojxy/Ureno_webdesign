@@ -41,6 +41,13 @@ import AIImageGenerator from './components/AI_Design/AiImage'
 import ChatUI from './components/AI_Design/ChatUI'
 import RedSwatches from './components/RedSwatches'
 import RedShadesPage from './pages/red-shades-page.jsx'
+import OrangeShadesPage from './pages/orange-shades-page.jsx'
+import YellowShadesPage from './pages/yellow-shades-page.jsx'
+import GreenShadesPage from './pages/green-shades-page.jsx'
+import BlueShadesPage from './pages/blue-shades-page.jsx'
+import PurpleShadesPage from './pages/purple-shades-page.jsx'
+import NeutralShadesPage from './pages/neutral-shades-page.jsx'
+import WhiteShadesPage from './pages/white-shades-page.jsx'
 import AllPaint from './components/AllPaint'
   
 // Import lazyLoad utility
@@ -132,6 +139,13 @@ root.render(
               <Route path="/ChatUI" element={<ChatUI />} />
               <Route path="/Paint" element={<AllPaint />} />
               <Route path="/red-shades" element={<RedShadesPage />} />
+              <Route path="/orange-shades" element={<OrangeShadesPage />} />
+              <Route path="/yellow-shades" element={<YellowShadesPage />} />
+              <Route path="/green-shades" element={<GreenShadesPage />} />
+              <Route path="/blue-shades" element={<BlueShadesPage />} />
+              <Route path="/purple-shades" element={<PurpleShadesPage />} />
+              <Route path="/neutral-shades" element={<NeutralShadesPage />} />
+              <Route path="/white-shades" element={<WhiteShadesPage />} />
             </Routes>
           </Suspense>
           {/* Add Toaster component for toast notifications */}

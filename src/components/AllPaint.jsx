@@ -21,11 +21,12 @@ const AllPaint = () => {
   });
 
   const [swatches, setSwatches] = useState([]);
+  const [touchedSwatch, setTouchedSwatch] = useState(null);
 
   const generateSwatches = useCallback(() => {
     settersRef.current.length = 0;
     const customColors = ['#bf2d32', '#f4a045', '#fdb702', '#9aba25', '#019196', '#514c7e', '#c0b9a9', '#f0eadc'];
-    const colorLabels = ['Reds', 'Oranges', 'Yellows', 'Greens', 'Blues', 'Purples', 'Neutrals', 'White & Pastels'];
+    const colorLabels = ['Reds', 'Oranges', 'Yellows', 'Greens', 'Blues', 'Purples', 'Neutrals', 'Whites & Pastels'];
     const newSwatches = new Array(config.swatches).fill().map((_, index) => {
       const color = customColors[index % customColors.length];
       const label = colorLabels[index % colorLabels.length];
@@ -94,12 +95,49 @@ const AllPaint = () => {
   const handleSwatchClick = useCallback((event) => {
     if (event.target.tagName === 'BUTTON') {
       const colorCategory = event.target.dataset.category;
-      if (colorCategory === 'Reds') {
-        // Navigate to red shades page
-        navigate('/red-shades');
+      const swatchIndex = parseInt(event.target.dataset.index);
+      
+      // Check if this is a touch device
+      const isTouchDevice = 'ontouchstart' in window;
+      
+      if (isTouchDevice) {
+        // For touch devices: first tap shows hover state, second tap navigates
+        if (touchedSwatch === swatchIndex) {
+          // Second tap - navigate
+          navigateToColorPage(colorCategory);
+          setTouchedSwatch(null);
+        } else {
+          // First tap - show hover state
+          setTouchedSwatch(swatchIndex);
+          // Reset touched state after 3 seconds if no second tap
+          setTimeout(() => setTouchedSwatch(null), 3000);
+        }
+      } else {
+        // For non-touch devices: immediate navigation
+        navigateToColorPage(colorCategory);
       }
-      // Add other color categories as needed
     }
+  }, [navigate, touchedSwatch]);
+
+  const navigateToColorPage = useCallback((colorCategory) => {
+    if (colorCategory === 'Reds') {
+      navigate('/red-shades');
+    } else if (colorCategory === 'Oranges') {
+      navigate('/orange-shades');
+    } else if (colorCategory === 'Yellows') {
+      navigate('/yellow-shades');
+    } else if (colorCategory === 'Greens') {
+      navigate('/green-shades');
+    } else if (colorCategory === 'Blues') {
+      navigate('/blue-shades');
+    } else if (colorCategory === 'Purples') {
+      navigate('/purple-shades');
+    } else if (colorCategory === 'Neutrals') {
+      navigate('/neutral-shades');
+    } else if (colorCategory === 'Whites & Pastels') {
+      navigate('/white-shades');
+    }
+    // Add other color categories as needed
   }, [navigate]);
 
   const update = useCallback(() => {
@@ -136,7 +174,7 @@ const AllPaint = () => {
 
   return (
     <>
-      <style jsx>{`
+      <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Reddit+Mono:wght@200..900&display=swap');
         @import url('https://unpkg.com/normalize.css') layer(normalize);
 
@@ -305,9 +343,14 @@ const AllPaint = () => {
         }
 
         li button:hover span,
-        li button:focus-visible span {
+        li button:focus-visible span,
+        li button.touch-active span {
           opacity: 1;
           translate: 0 0;
+        }
+
+        li button.touch-active {
+          translate: 0 calc(clamp(0.9, var(--power), 1) * (var(--distance, 40) * -1%));
         }
 
         .bear-link {
@@ -354,7 +397,12 @@ const AllPaint = () => {
                 '--i': swatch.index,
               }}
             >
-              <button data-color={swatch.color} data-category={swatch.label}>
+              <button 
+                data-color={swatch.color} 
+                data-category={swatch.label}
+                data-index={swatch.index}
+                className={touchedSwatch === swatch.index ? 'touch-active' : ''}
+              >
                 <span>{swatch.label}</span>
               </button>
             </li>

@@ -69,8 +69,8 @@ const LoggedInHeader = ({ user }) => {
 
 
             <li>
-              <Link to="/testchat">
-                <a className="text-black-500 transition hover:text-gray-500/75" > AI Designer </a>
+              <Link to="/testchat" className="text-black-500 transition hover:text-gray-500/75">
+                AI Designer
               </Link>
             </li>
 
@@ -83,8 +83,8 @@ const LoggedInHeader = ({ user }) => {
             </li>
 
             <li>
-              <Link>
-                <a className="text-black-500 transition hover:text-gray-500/75" > Products </a>
+              <Link to="/products" className="text-black-500 transition hover:text-gray-500/75">
+                Products
               </Link>
             </li>
 
@@ -127,12 +127,12 @@ const LoggedInHeader = ({ user }) => {
                 </Link>
               )}
 
-              <Link>
-                <p role='menuitem' className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700">Designs</p>
+              <Link to="/designs" role="menuitem" className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700">
+                Designs
               </Link>
               
-              <Link>
-                <p role='menuitem' className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700">Reviews</p>
+              <Link to="/reviews" role="menuitem" className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700">
+                Reviews
               </Link>
             </div>
 
