@@ -39,6 +39,15 @@ service cloud.firestore {
                     get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
     }
 
+    // Paint Colors
+    match /colors/{colorId} {
+      // Anyone can read paint colors (public catalog)
+      allow read: if true;
+      // Only admins can write paint colors
+      allow write: if request.auth != null &&
+                    get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+
     // Root-level projects collection
     match /projects/{projectId} {
       // Allow contractors to read all projects

@@ -160,6 +160,13 @@ button{
     transition: background-color 0.3s ease, border-color 0.3 ease;
 }
 
+.profile-btn object,
+.profile-btn img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
 .profile-btn:hover{
     background-color: #f0f0f0;
     border-color: #333;

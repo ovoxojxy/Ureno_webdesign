@@ -3,6 +3,7 @@ import floorBackground from '../assets/images/flooring-background.png'
 import paintBackground from '../assets/images/paint-background.png'
 import Footer from "../components/footer";
 import Nav from "../components/nav";
+import NewNav from "@/components/ui/newNav";
 
 import '../styles/index.css'
 
@@ -12,7 +13,7 @@ export default function Home() {
   <meta charSet="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ureno</title>
-  <Nav />
+  <NewNav />
   <div className="center-logo">
     <div className="container">
       <h1>URENO</h1>

@@ -33,8 +33,8 @@ body {
     position: fixed;
     background-color: white;
     margin-bottom: auto;
-    /* z-index: 1000; */
-    
+    z-index: 1000;
+    top: 0;
 }
 
 .nav menu{
@@ -78,6 +78,13 @@ body {
     justify-content: center;
     font-size: 20px;
     transition: background-color 0.3s ease, border-color 0.3 ease;
+}
+
+.profile-btn object,
+.profile-btn img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
 }
 
 .profile-btn:hover{
@@ -152,13 +159,19 @@ input {
 
 .products .container {
     background-color: #fff;
-    border: 1px solid #ddd;
+    border: 1px solid transparent;
     border-radius: 8px;
     padding: 16px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: none;
     text-align: center;
     color: black;
     text-decoration: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.products .container:hover {
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .products .container img{

@@ -61,4 +61,34 @@ export const getAllUsers = async () => {
   }
 };
 
+// Paint Colors Functions
+export const getPaintColorsByCategory = async (category) => {
+  try {
+    const colorsRef = collection(db, "colors");
+    const q = query(colorsRef, where("category", "==", category));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+  } catch (error) {
+    console.error(`Error fetching ${category} paint colors:`, error);
+    throw error;
+  }
+};
+
+export const getAllPaintColors = async () => {
+  try {
+    const colorsRef = collection(db, "colors");
+    const querySnapshot = await getDocs(colorsRef);
+    return querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+  } catch (error) {
+    console.error("Error fetching all paint colors:", error);
+    throw error;
+  }
+};
+
 export { db };

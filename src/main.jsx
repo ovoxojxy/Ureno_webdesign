@@ -20,10 +20,12 @@ import { Toaster } from './components/ui/toaster'
 // Regular imports for critical path components
 import Home from './pages/home.jsx'
 import FlooringProduct from './pages/product-page.jsx'
+import PaintProduct from './pages/paint-page.jsx'
 import SignIn from './app/(auth)/sign-in/page'
 import SignUp from './components/SignUp.jsx'
 import ProductDetail from './components/product-detail'
 import ProductDetailPage from './pages/productDetailPage'
+import ColorDetailPage from './pages/colorDetailPage'
 import EditProfile from './pages/Dashboard/edit-profile'
 import SavedItems from './pages/SavedItems'
 import Login from './pages/Login'
@@ -37,7 +39,10 @@ import ProjectInquiries from './pages/Projects/ProjectInquiries'
 import AIChat from './components/AI_Design/AIChat'
 import AIImageGenerator from './components/AI_Design/AiImage'
 import ChatUI from './components/AI_Design/ChatUI'
-
+import RedSwatches from './components/RedSwatches'
+import RedShadesPage from './pages/red-shades-page.jsx'
+import AllPaint from './components/AllPaint'
+  
 // Import lazyLoad utility
 import { lazyLoad } from './lib/lazyLoad'
 
@@ -99,7 +104,9 @@ root.render(
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/product-page" element={<FlooringProduct />} />
+              <Route path="/paint-page" element={<PaintProduct />} />
               <Route path="/productDetail/:productId" element={<ProductDetailPage />} />
+              <Route path="/colorDetail/:colorId" element={<ColorDetailPage />} />
               <Route path="/designerPage" element={<DesignerPage />} />
               <Route path="/ProfileDashboard" element={<ProfileDashboard />} />
               <Route path="/edit-profile" element={<EditProfile />} />
@@ -123,6 +130,8 @@ root.render(
               <Route path="/TestChat" element={<AIChat />} />
               <Route path="/TestImage" element={<AIImageGenerator />} />
               <Route path="/ChatUI" element={<ChatUI />} />
+              <Route path="/Paint" element={<AllPaint />} />
+              <Route path="/red-shades" element={<RedShadesPage />} />
             </Routes>
           </Suspense>
           {/* Add Toaster component for toast notifications */}

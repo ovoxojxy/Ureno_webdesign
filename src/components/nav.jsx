@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import profileSVG from '../assets/images/profile-svgrepo-com.svg'
+import profileSVG from '../assets/images/profile-svgrepo-com.png'
 import { useAuth } from '@/contexts/authContext'
 import { doSignOut } from '@/firebase/auth'
 import UserDropDown from './userDropDown'
@@ -27,6 +27,7 @@ const Nav = () => {
         alert("Logout failed. Please try again.")
       }
     }
+    
     return (
         <div className="nav">
         <Link to="/">

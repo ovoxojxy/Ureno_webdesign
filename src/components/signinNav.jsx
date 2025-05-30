@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import profileSVG from '../assets/images/profile-svgrepo-com.svg'
+import profileSVG from '../assets/images/profile-svgrepo-com.png'
 
 
 const SignInNav = () => {

@@ -10,7 +10,7 @@ import champagne from '../assets/images/champagne.png'
 import luxury from '../assets/images/luxury.png'
 import champagne2 from '../assets/images/champage2.png'
 import harvest from '../assets/images/harvest.png'
-import Nav from "../components/nav"
+import NewNav from "@/components/ui/newNav"
 import Footer from "../components/footer"
 import FloorCard from "../components/flooringCards"
 import "../styles/FlooringProduct.css"
@@ -94,7 +94,7 @@ export default function FlooringProduct() {
   <meta charSet="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>URENO</title>
-  <Nav />
+   <NewNav />
   <div className="body">
 
   <div className={`main-content ${userLoggedIn ? "logged-in" : ""}`}>

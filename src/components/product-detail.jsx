@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom"
 import { doc, getDoc } from "firebase/firestore"
 import { db } from "../firebase/firestore";
 import defaultImage from "../assets/images/Image-not-found.png"
+import SuggestedProducts from "./SuggestedProducts"
 
 const ProductDetail = () => {
 
@@ -77,52 +78,11 @@ const ProductDetail = () => {
                     </div>
                 </div>
     
-                <div className="secondary-content">
-                    <div className="suggestedProduct">
-                        <div className="container">
-                            <img src={defaultImage} alt="{title}" />
-                            <div className="prod-title">
-                                {"{"}title{"}"}
-                            </div>
-                            <p>
-                                {"{"}description{"}"}
-                            </p>
-                            <p> 
-                                {"{"}price{"}"}
-                            </p>
-                        </div>
-                    </div>
-                    
-                    <div className="suggestedProduct">
-                        <div className="container">
-                            <img src={defaultImage} alt="{title}" />
-                            <div className="prod-title">
-                                {"{"}title{"}"}
-                            </div>
-                            <p>
-                                {"{"}description{"}"}
-                            </p>
-                            <p>
-                                {"{"}price{"}"}
-                            </p>
-                        </div>
-                    </div>
-    
-                    <div className="suggestedProduct">
-                        <div className="container">
-                            <img src={defaultImage} alt="{title}" />
-                            <div className="prod-title">
-                            {"{"}title{"}"}
-                            </div>
-                            <p>
-                            {"{"}description{"}"}
-                            </p>
-                            <p>
-                            {"{"}price{"}"}
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                <SuggestedProducts 
+                    currentProductId={productId} 
+                    category={null} 
+                    maxSuggestions={3} 
+                />
             </>
         )
     }
@@ -192,52 +152,11 @@ const ProductDetail = () => {
                 </div>
             </div>
 
-            <div className="secondary-content">
-                <div className="suggestedProduct">
-                    <div className="container">
-                        <img src={defaultImage} alt="{title}" />
-                        <div className="prod-title">
-                            {"{"}title{"}"}
-                        </div>
-                        <p>
-                            {"{"}description{"}"}
-                        </p>
-                        <p> 
-                            {"{"}price{"}"}
-                        </p>
-                    </div>
-                </div>
-                
-                <div className="suggestedProduct">
-                    <div className="container">
-                        <img src={defaultImage} alt="{title}" />
-                        <div className="prod-title">
-                            {"{"}title{"}"}
-                        </div>
-                        <p>
-                            {"{"}description{"}"}
-                        </p>
-                        <p>
-                            {"{"}price{"}"}
-                        </p>
-                    </div>
-                </div>
-
-                <div className="suggestedProduct">
-                    <div className="container">
-                        <img src={defaultImage} alt="{title}" />
-                        <div className="prod-title">
-                        {"{"}title{"}"}
-                        </div>
-                        <p>
-                        {"{"}description{"}"}
-                        </p>
-                        <p>
-                        {"{"}price{"}"}
-                        </p>
-                    </div>
-                </div>
-            </div>
+            <SuggestedProducts 
+                currentProductId={productId} 
+                category={product?.category} 
+                maxSuggestions={3} 
+            />
         </>
     )
 }

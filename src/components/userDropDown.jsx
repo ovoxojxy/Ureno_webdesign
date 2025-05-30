@@ -1,4 +1,4 @@
-import profileSVG from '../assets/images/profile-svgrepo-com.svg'
+import profileSVG from '../assets/images/profile-svgrepo-com.png'
 import { doSignOut } from "@/firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
 import Dropdown from 'react-bootstrap/Dropdown'
