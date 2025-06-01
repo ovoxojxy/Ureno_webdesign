@@ -5,7 +5,9 @@
   "homepage": "https://ovoxojxy.github.io/Ureno_webdesign/",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"vite\" \"nodemon index.js\"",
+    "dev": "concurrently \"npm:dev:vite\" \"npm:dev:server\" --names \"VITE,SERVER\" --prefix-colors \"cyan,yellow\"",
+    "dev:vite": "vite",
+    "dev:server": "nodemon server/index.js",
     "start": "vite",
     "build": "cross-env NODE_ENV=production vite build",
     "preview": "vite preview",

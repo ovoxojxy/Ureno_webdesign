@@ -1,0 +1,15 @@
+/* Minimal custom styles for ProjectDashboard component */
+/* Most styling now handled by Tailwind CSS classes */
+
+.no-actions-text {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* Optional: Custom hover effects that complement Tailwind */
+.action-select:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom status colors if needed beyond Tailwind defaults */
+/* .status-custom reserved for future custom status styling */

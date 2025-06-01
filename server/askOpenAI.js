@@ -1,7 +1,9 @@
 import axios from 'axios';
 import dotenv from 'dotenv'
 
-dotenv.config()
+// Load environment variables
+dotenv.config({ path: '../.env' });
+dotenv.config({ path: '.env' });
 
 export async function askOpenAI(prompt) {
 

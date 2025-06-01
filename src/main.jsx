@@ -73,6 +73,7 @@ import './styles/index.css'
 import './globals.css'
 import RoleRedirectGate from './contexts/authContext/RoleRedirectGate'
 import UrenoLearnMore from './pages/LandingPage/UrenoLanding'
+import ProjectDashboard from './pages/Projects/contractorProjDash.jsx'
 // Login.css will be imported only in the Login component
 
 const ProtectedAdminRoute = ({ children }) => {
@@ -148,7 +149,7 @@ root.render(
               <Route path="/purple-shades" element={<PurpleShadesPage />} />
               <Route path="/neutral-shades" element={<NeutralShadesPage />} />
               <Route path="/white-shades" element={<WhiteShadesPage />} />
-              <Route path="/test-ui" element={<TestUI />} />
+              <Route path="/test-ui" element={<ProjectDashboard />} />
             </Routes>
           </Suspense>
           {/* Add Toaster component for toast notifications */}

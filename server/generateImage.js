@@ -1,4 +1,9 @@
 import axios from 'axios';
+import dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config({ path: '../.env' });
+dotenv.config({ path: '.env' });
 
 export async function generateImage(prompt) {
     const response = await axios.post('https://api.openai.com/v1/images/generations', {

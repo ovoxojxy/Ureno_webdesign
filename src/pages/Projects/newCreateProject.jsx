@@ -3,11 +3,11 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../firebase/firebaseConfig";
 import { useAuth } from "../../contexts/authContext";
 import { useNavigate } from "react-router-dom";
-import ProjectTypeSelector from "../../components/createProject/ProjectTypeSelector";
-import SurfaceAreaForm from "../../components/createProject/SurfaceAreaForm";
-import MaterialPicker from "../../components/createProject/MaterialPicker";
+import ProjectTypeSelector from "../../components/createProject/projectTypeSelector";
+import SurfaceAreaForm from "../../components/createProject/surfaceAreaForm";
+import MaterialPicker from "../../components/createProject/materialPicker";
 import PaintPicker from "../../components/createProject/PaintPicker";
-import EstimateSidebar from "../../components/createProject/EstimateSidebar";
+import EstimateSidebar from "../../components/createProject/estimateSidebar";
 import Calendar from "../../components/ui/Calendar";
 
 export default function CreateProject() {
