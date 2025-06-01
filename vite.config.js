@@ -8,7 +8,15 @@ import autoprefixer from 'autoprefixer'
 // https://vite.dev/config/
 export default defineConfig({
   optimizeDeps: {
-    include: ['lucide-react'],
+    force: true,
+    include: [
+      'lucide-react',
+      'react-icons/ci',
+      'react-icons/io5',
+      'react-icons/hi2',
+      'firebase/storage',
+      'react-bootstrap'
+    ]
   },
   base: '/Ureno_webdesign/',
   plugins: [
