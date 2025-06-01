@@ -32,11 +32,17 @@ export default function FlooringProduct() {
   const { userLoggedIn } = useAuth() || { userLoggedIn: false }
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1)
+  const [searchQuery, setSearchQuery] = useState("");
   const productsPerPage = 20
 
-  const indexOfLastProduct = currentPage * productsPerPage
+  const filteredProducts = products.filter(product =>
+    product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    product.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct)
+  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct)
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -98,59 +104,24 @@ export default function FlooringProduct() {
   <div className="body">
 
   <div className={`main-content ${userLoggedIn ? "logged-in" : ""}`}>
-    <h1>Flooring</h1>
+    <h1 className="page-title">Flooring</h1>
+
     <div className="search">
       <div className="input">
-        <input type="text" className="search-bar" placeholder="Search" />
+        <input
+          type="text"
+          className="search-bar"
+          placeholder="Search"
+          value={searchQuery}
+          onChange={(e) => {
+            setSearchQuery(e.target.value);
+            setCurrentPage(1); // Reset to first page on new search
+          }}
+        />
       </div>
-      <div className="filter">Filter</div>
     </div>
     <p>Popular</p>
     <div className="products">
-      {/* <FloorCard 
-        productId="HarvestGrove"
-        image={harvestGrove}
-        title="Harvest Grove Rigid Luxury Vinyl"
-        description="Floor and Decor"
-        price="$2.19/sqft"
-        link="/productDetail"
-      />
-      <FloorCard
-        productId= "tavertine"
-        image={tavertine}
-        title="Inverness Tavertine Vinyl"
-        description="Floor and Decor"
-        price="$2.19/sqft"
-      />
-      <FloorCard
-        productId= "Champagne"
-        image={champagne}
-        title="Champagne Limestone Rigid Core Luxury Vinyl"
-        description="Floor and Decor"
-        price="2.19/sqft"
-      />
-      <FloorCard
-        productId= "Luxury"
-        image={luxury}
-        title="Harvest Grove Rigid Luxury Vinyl"
-        description="Floor and Decor"
-        price="$2.19/sqft"
-      />
-      <FloorCard
-        productId= "Harvest"
-        image={harvest}
-        title="Inverness Tavertine Vinyl"
-        description="Floor and Decor"
-        price="2.19/sqft"
-      />
-      <FloorCard
-      productId= "Champagne2"
-      image={champagne2}
-      title="Champagne Limestone Rigid Core Luxury Vinyl"
-      description="Floor and Decor"
-      price="$2.19/sqft"
-      />*/}
-
       {currentProducts.map(product => (
         <FloorCard
         key={product.id}
@@ -158,7 +129,7 @@ export default function FlooringProduct() {
         image={product.image}
         title={product.title}
         description={product.description}
-        price={product.price}
+        price={typeof product.price === "number" ? `$${product.price}/sqft` : product.price}
         link={product.link}
         />
       ))}
@@ -175,7 +146,7 @@ export default function FlooringProduct() {
       />
     </PaginationItem>
 
-    {Array.from({ length: Math.ceil(products.length / productsPerPage) }, (_, i) => (
+    {Array.from({ length: Math.ceil(filteredProducts.length / productsPerPage) }, (_, i) => (
       <PaginationItem key={i + 1}>
         <PaginationLink
           isActive={currentPage === i + 1}
@@ -190,7 +161,7 @@ export default function FlooringProduct() {
       <PaginationNext
         onClick={() =>
           setCurrentPage(prev =>
-            Math.min(prev + 1, Math.ceil(products.length / productsPerPage))
+            Math.min(prev + 1, Math.ceil(filteredProducts.length / productsPerPage))
           )
         }
       />

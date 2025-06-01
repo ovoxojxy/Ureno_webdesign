@@ -49,6 +49,9 @@ import PurpleShadesPage from './pages/purple-shades-page.jsx'
 import NeutralShadesPage from './pages/neutral-shades-page.jsx'
 import WhiteShadesPage from './pages/white-shades-page.jsx'
 import AllPaint from './components/AllPaint'
+import TestUI from './pages/testUI'
+
+
   
 // Import lazyLoad utility
 import { lazyLoad } from './lib/lazyLoad'
@@ -59,7 +62,7 @@ import { lazyLoad } from './lib/lazyLoad'
 const DesignerPage = lazyLoad(() => import('./pages/designer'))
 const ProfileDashboard = lazyLoad(() => import('./pages/Dashboard/profile'))
 const ProjectsDashboard = lazyLoad(() => import('./pages/Projects/projectsDashboard'))
-const CreateProject = lazyLoad(() => import('./pages/Projects/CreateProject'))
+const CreateProject = lazyLoad(() => import('./pages/Projects/newCreateProject'))
 const MessagePage = lazyLoad(() => import('./pages/Conversation/MessagePage'))
 
 // Admin components (likely less frequently used)
@@ -69,7 +72,7 @@ const AdminDashboard = lazyLoad(() => import('./components/admin/AdminDashboard'
 import './styles/index.css'
 import './globals.css'
 import RoleRedirectGate from './contexts/authContext/RoleRedirectGate'
-import UrenoLanding from './pages/LandingPage/UrenoLanding'
+import UrenoLearnMore from './pages/LandingPage/UrenoLanding'
 // Login.css will be imported only in the Login component
 
 const ProtectedAdminRoute = ({ children }) => {
@@ -121,7 +124,6 @@ root.render(
               <Route path="/Login" element={<Login />} />
               <Route path="/sign-up" element={<SignUp />} />
               <Route path="/admin" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
-              {/* <Route path="/admin/add" element={<ProtectedAdminRoute><ProductForm /></ProtectedAdminRoute>} /> */}
               <Route path="/projects" element={<ProjectsDashboard />} />
               <Route path="/projects/new" element={<CreateProject />} />
               <Route path="/savedItems" element={<SavedItems />} />
@@ -133,7 +135,7 @@ root.render(
               <Route path="/projects/view/:projectId" element={<ProtectedContractorRoute><ProjectDetails /></ProtectedContractorRoute>} />
               <Route path="/projects/:id/requests" element={<ProjectRequests />} />
               <Route path="/projects/:id/inquiries" element={<ProjectInquiries />} />
-              <Route path="/LandingPage" element={<UrenoLanding />} />
+              <Route path="/LearnMore" element={<UrenoLearnMore />} />
               <Route path="/TestChat" element={<AIChat />} />
               <Route path="/TestImage" element={<AIImageGenerator />} />
               <Route path="/ChatUI" element={<ChatUI />} />
@@ -146,6 +148,7 @@ root.render(
               <Route path="/purple-shades" element={<PurpleShadesPage />} />
               <Route path="/neutral-shades" element={<NeutralShadesPage />} />
               <Route path="/white-shades" element={<WhiteShadesPage />} />
+              <Route path="/test-ui" element={<TestUI />} />
             </Routes>
           </Suspense>
           {/* Add Toaster component for toast notifications */}

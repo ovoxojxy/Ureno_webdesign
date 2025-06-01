@@ -4,6 +4,7 @@ import paintBackground from '../assets/images/paint-background.png'
 import Footer from "../components/footer";
 import Nav from "../components/nav";
 import NewNav from "@/components/ui/newNav";
+import Logo from '../assets/images/Large_logo.png'
 
 import '../styles/index.css'
 
@@ -16,9 +17,18 @@ export default function Home() {
   <NewNav />
   <div className="center-logo">
     <div className="container">
-      <h1>URENO</h1>
+      <img
+        src={Logo}
+        alt="SEO illustration"
+        style={{ width: "200px", height: "auto" }}
+      />
       <p>Renovation Made Simple</p>
-      <button className="btn try-now">Try it Now</button>
+      {/* <button className="btn try-now">Try it Now</button> */}
+
+      <Link to="/learnmore">
+        <button className="btn try-now">Learn More</button>
+      </Link>
+      
     </div>
   </div>
   <div className="services">
@@ -37,23 +47,18 @@ export default function Home() {
         </p>
       </div>
       <div className="floor-txt fadeInRight">
-        <h3>flooring</h3>
-        <p>
-          Lorem ipsum dolor sit amet. A reiciendis repellat in cupiditate
-          temporibus est tenetur architecto sed voluptatibus saepe.
-        </p>
+        <h1>Explore our flooring options</h1>
       </div>
     </div>
-    <div className="paint-content">
-      <div className="painting fadeInLeft">
-        <img src={paintBackground} alt="blue painted walls" />
+    <div className="floor-content">
+      <div className="flooring fadeInRight">
+        <Link to='/paint-page'>
+          <img src={paintBackground} alt="blue painted walls" />
+        </Link>
+        
       </div>
       <div className="paint-txt fadeInLeft">
-        <h3>paint</h3>
-        <p>
-          Lorem ipsum dolor sit amet. A reiciendis repellat in cupiditate
-          temporibus est tenetur architecto sed voluptatibus saepe.
-        </p>
+        <h1>Explore our paint options</h1>
       </div>
     </div>
   </div>

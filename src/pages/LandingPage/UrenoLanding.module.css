@@ -268,12 +268,27 @@ header {
 .about { padding: var(--section-padding); background: var(--cultured); }
     .about .sectionTitle, .about-content .sectionText:not(last-child), .about-bottom-title, .about-bottom-item:first-child { margin-bottom: 20px; }
     .about .sectionTitle, .about-bottom-title { text-align: center; }
+
 .aboutTop, .about-banner { margin-bottom: 40px; }
 .about-banner img { width: 100%; }
 .aboutBottom .aboutBanner img { width: 60%; margin: 0 auto; display: block; }
 .about-bottom-list { margin-left: 18px; }
 .about-bottom-item { list-style: disc; }
-.sectionText { text-align: justify; }
+.sectionText { text-align: center; }
+
+/* Center align aboutBottom .about-content and its children */
+.aboutBottom .about-content {
+  text-align: center;
+}
+.aboutBottom .about-content .aboutBottomTitle {
+  text-align: center;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+.aboutBottom .about-content .sectionText {
+  text-align: center;
+  margin-bottom: 20px;
+}
 
 /*FEATURES*/
 
@@ -429,8 +444,23 @@ header {
 
     .container { max-width: 820px; }
 
-    .hero .container { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-    .heroContent { text-align: left; margin-bottom: 0; }
+    /* Refactored hero layout to flex for horizontal alignment */
+    .hero .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .heroContent {
+      flex: 1;
+      text-align: left;
+      margin-bottom: 0;
+    }
+
+    .heroBanner {
+      flex: 1;
+    }
+
     .hero .btnPrimary { justify-content: flex-start; } 
 
     .service .sectionText { max-width: 650px; margin-inline: auto; }
@@ -579,4 +609,44 @@ header {
         .social-list > li:not(:last-child)::after { right: -10px; }
 
     .go-top-btn { bottom: 30px; right: 30px; width: 50px; height: 50px; }
+}
+/* Flex container for aboutBottom section */
+.aboutBottomFlex {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+@media (min-width: 768px) {
+  .aboutBottomFlex {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .aboutBottomFlex .aboutContent {
+    flex: 1;
+    max-width: 50%;
+  }
+}
+/* Flexbox split for features section */
+.featuresSplit {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+@media (min-width: 768px) {
+  .featuresSplit {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 60px;
+  }
+
+  .featuresColumn {
+    flex: 1;
+  }
+
+  .featuresColumn li {
+    margin-bottom: 30px;
+  }
 }

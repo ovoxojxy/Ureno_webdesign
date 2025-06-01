@@ -2,6 +2,7 @@
 import { FC } from 'react'
 import { Icons } from './Icons'
 import { Link, useNavigate } from 'react-router-dom'
+import Logo from '../assets/images/Large_logo.png'
 import UserAuthForm from './UserAuthForm'
 import SignInNav from './signinNav'
 
@@ -12,9 +13,13 @@ return <div className='flex items-center justify-center h-screen w-full px-4'>
         <div className='w-full max-w-sm space-y-6 text-center'>
         <div className='flex flex-col space-y-2 text-center'>
         <div className='w-full flex justify-center'>
-        <button onClick = {() => navigate('/')} aria-label="Go to home">
-        <Icons.logo className='h-12 w-auto' />
-        </button>
+        <Link to="/">
+            <img
+                src={Logo}
+                alt="SEO illustration"
+                style={{ width: "200px", height: "auto" }}
+              />
+        </Link>
         </div>
         
         <h1 className='text-2xl font-semibold tracking-tight'>Welcome back</h1>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "@/contexts/authContext";
-import NewNav from "@/components/ui/newNav";
+import { useAuth } from "../contexts/authContext";
+import NewNav from "../components/ui/newNav";
 import Footer from "../components/footer";
 import AllPaint from "../components/AllPaint";
 import "../styles/FlooringProduct.css";

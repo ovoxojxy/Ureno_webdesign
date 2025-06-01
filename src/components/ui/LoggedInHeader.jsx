@@ -14,7 +14,9 @@ const LoggedInHeader = ({ user }) => {
   const [loggingOut, setLoggingOut] = useState(false)
   const [loggedOut, setLoggedOut] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const menuRef = useRef(null)
+  const mobileMenuRef = useRef(null)
 
   const { profile } = useContext(UserContext)
   const { toast } = useToast()
@@ -24,6 +26,9 @@ const LoggedInHeader = ({ user }) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setIsMenuOpen(false)
       }
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target)) {
+        setIsMobileMenuOpen(false)
+      }
     }
 
     document.addEventListener('mousedown', handleClickOutside)
@@ -32,6 +37,10 @@ const LoggedInHeader = ({ user }) => {
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
+  }
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen)
   }
 
   const handleLogout = async () =>{
@@ -89,9 +98,15 @@ const LoggedInHeader = ({ user }) => {
             </li>
 
             <li>
-              <Link to='/projects'>
-                <p className="text-black-500 transition hover:text-gray-500/75" > Projects </p>
-              </Link>
+              {profile?.role === 'contractor' ? (
+                <Link to='/available-projects'>
+                  <p role='menuitem'className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700">Projects</p>
+                </Link>
+              ) : (
+                <Link to='/projects'>
+                  <p role='menuitem'  className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700">Projects</p>
+                </Link>
+              )}
             </li>
           </ul>
         </nav>
@@ -126,6 +141,8 @@ const LoggedInHeader = ({ user }) => {
                   <p role='menuitem'  className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700">My Profile</p>
                 </Link>
               )}
+
+              
 
               <Link to="/designs" role="menuitem" className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700">
                 Designs
@@ -166,10 +183,12 @@ const LoggedInHeader = ({ user }) => {
           )}
         </div>
 
-        <div className="block md:hidden">
+        <div className="block md:hidden" ref={mobileMenuRef}>
           <button
+            onClick={toggleMobileMenu}
             className="rounded-sm bg-gray-100 p-2 text-gray-600 transition hover:text-gray-600/75"
           >
+            <span className="sr-only">Toggle menu</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="size-5"
@@ -181,6 +200,107 @@ const LoggedInHeader = ({ user }) => {
               <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
+
+          {isMobileMenuOpen && (
+            <div className="absolute right-4 top-16 z-10 w-56 rounded-md border border-gray-100 bg-white shadow-lg">
+              <div className="p-2">
+                <Link
+                  to="/testchat"
+                  className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  AI Designer
+                </Link>
+                <Link
+                  to="/messages"
+                  className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Messages
+                </Link>
+                {/* <Link
+                  to="/products"
+                  className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Products
+                </Link> */}
+                {profile?.role === 'contractor' ? (
+                  <Link
+                  to="/available-projects"
+                  className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Projects
+                  </Link>
+              ) : (
+                <Link
+                  to="/projects"
+                  className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Projects
+                  </Link>
+              )}
+
+                
+                {profile?.role === 'contractor' ? (
+                  <Link
+                    to="/contractor-dashboard"
+                    className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    My Profile
+                  </Link>
+                ) : (
+                  <Link
+                    to="/ProfileDashboard"
+                    className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    My Profile
+                  </Link>
+                )}
+                <Link
+                  to="/designs"
+                  className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Designs
+                </Link>
+                <Link
+                  to="/reviews"
+                  className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Reviews
+                </Link>
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false)
+                    handleLogout()
+                  }}
+                  className="flex w-full items-center gap-2 rounded-lg px-4 py-2 text-sm text-red-700 hover:bg-red-50"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    className="size-4"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"
+                    />
+                  </svg>
+                  Logout
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -12,7 +12,7 @@ import { HiCubeTransparent } from "react-icons/hi2";
 
 import styles from './UrenoLanding.module.css';
 
-const UrenoLanding = () => {
+const UrenoLearnMore = () => {
   const [isNavbarActive, setIsNavbarActive] = useState(false);
   const [isHeaderActive, setIsHeaderActive] = useState(false);
   const [isGoTopActive, setIsGoTopActive] = useState(false);
@@ -58,12 +58,12 @@ const UrenoLanding = () => {
         <div className={`${styles.overlay} ${isNavbarActive ? 'active' : ''}`} data-overlay onClick={toggleNavbar}></div>
 
         <div className={`${styles.container}`}>
-          <a href="#" className={`${styles.logo}`}>
+          <Link to="/" className={`${styles.logo}`}>
             <img
                     src={Logo}
                     alt="SEO illustration"
                 />
-          </a>
+          </Link>
 
           <button className={`${styles.navOpenBtn}`} data-nav-open-btn onClick={toggleNavbar}>
             <ion-icon name="menu-outline"></ion-icon>
@@ -73,8 +73,10 @@ const UrenoLanding = () => {
             <button className={`${styles.navCloseBtn}`} data-nav-close-btn onClick={toggleNavbar}>
               <ion-icon name="close-outline"></ion-icon>
             </button>
-
-            <button className={`${styles.btn} ${styles.btnPrimary}`}>Let's Get Started</button>
+            <Link to='/'>
+              <button className={`${styles.btn} ${styles.btnPrimary}`}>Let's Get Started</button>
+            </Link>
+            
           </nav>
         </div>
       </header>
@@ -85,28 +87,6 @@ const UrenoLanding = () => {
             <div className={`${styles.container}`}>
               <div className={`${styles.heroContent}`}>
                 <h1 className={`${styles.h1} ${styles.heroTitle}`}>Make renovations faster, cheaper, and radically more transparent!</h1>
-
-                <form action="" className={`${styles.heroForm}`}>
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="Enter your name"
-                    required
-                    className={styles.inputField}
-                  />
-
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="Enter your email"
-                    required
-                    className={styles.inputField}
-                  />
-
-                  <button type="submit" className={`${styles.btn} ${styles.btnPrimary}`}>Get Started Now</button>
-                </form>
-
-                
               </div>
 
               <figure className={`${styles.heroBanner}`}>
@@ -179,13 +159,13 @@ const UrenoLanding = () => {
                 </figure>
 
                 <div className={`${styles.aboutContent}`}>
-                  <p className={`${styles.sectionSubtitle}`}>Quick and Transparent</p>
+                  
 
                   <h2 className={`${styles.h3} ${styles.sectionTitle}`}>From Click to Contractor - Renocvation, Simplified</h2>
 
                   <p className={`${styles.sectionText}`}>URENO skips the search engine race and puts homeowners directly in control. With instant square-footage pricing, verified local contractors, and real-time dashboards, projects start faster and stay on track.</p>
 
-                  <p className={`${styles.sectionText}`}>Forget chasing—URENO brings the full renovation journey into one seamless, digital workflow. Ready to cut costs, save time, and rebuild trust in the renovation process?</p>
+                  <p className={`${styles.sectionText}`}>Forget chasing we bring the full renovation journey into one seamless, digital workflow. Ready to cut costs, save time, and rebuild trust in the renovation process?</p>
                 </div>
               </div>
 
@@ -194,33 +174,30 @@ const UrenoLanding = () => {
                   <img
                     src={ThirdImage}
                     alt="SEO illustration"
-                />
+                  />
                 </figure>
-
-                <div className={`${styles.aboutContent}`}>
-                  <h3 className={`${styles.h4} ${styles.aboutBottomTitle}`}>Project Insights & Smart Tracking</h3>
-
-                  <p className={`${styles.sectionText}`}>Use a set of sophisticated techniques and tools used to analyze complex data sets and extract valuable insights that go beyond traditional business intelligence methods. Here we can include machine learning, and data mining techniques to uncover patterns, predict future trends, and support decision-making processes</p>
-
-                  <h3 className={`${styles.h4} ${styles.aboutBottomTitle}`}>Data That Drives Every Decision</h3>
-
-                  <ul className={`${styles.aboutBottomList}`}>
-                    <li className={`${styles.aboutBottomItem}`}>
-                      <p className={`${styles.sectionText}`}>Predict renovation timelines based on project size and complexity</p>
-                    </li>
-
-                    <li className={`${styles.aboutBottomItem}`}>
-                      <p className={`${styles.sectionText}`}>Monitor license status, materials, and progress in real time</p>
-                    </li>
-
-                    <li className={`${styles.aboutBottomItem}`}>
-                      <p className={`${styles.sectionText}`}>Support smarter decision-making with transparent cost breakdowns</p>
-                    </li>
-
-                    <li className={`${styles.aboutBottomItem}`}>
-                      <p className={`${styles.sectionText}`}> Automate payments tied to verified milestones</p>
-                    </li>
-                  </ul>
+                <div className={`${styles.aboutBottomFlex}`}>
+                  <div className={`${styles.aboutContent}`}>
+                    <h3 className={`${styles.h4} ${styles.aboutBottomTitle}`}>Project Insights & Smart Tracking</h3>
+                    <p className={`${styles.sectionText}`}>Use a set of sophisticated techniques and tools used to analyze complex data sets and extract valuable insights that go beyond traditional business intelligence methods. Here we can include machine learning, and data mining techniques to uncover patterns, predict future trends, and support decision-making processes</p>
+                  </div>
+                  <div className={`${styles.aboutContent}`}>
+                    <h3 className={`${styles.h4} ${styles.aboutBottomTitle}`}>Data That Drives Every Decision</h3>
+                    <ul className={`${styles.aboutBottomList}`}>
+                      <li className={`${styles.aboutBottomItem}`}>
+                        <p className={`${styles.sectionText}`}>Predict renovation timelines based on project size and complexity</p>
+                      </li>
+                      <li className={`${styles.aboutBottomItem}`}>
+                        <p className={`${styles.sectionText}`}>Monitor license status, materials, and progress in real time</p>
+                      </li>
+                      <li className={`${styles.aboutBottomItem}`}>
+                        <p className={`${styles.sectionText}`}>Support smarter decision-making with transparent cost breakdowns</p>
+                      </li>
+                      <li className={`${styles.aboutBottomItem}`}>
+                        <p className={`${styles.sectionText}`}>Automate payments tied to verified milestones</p>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
@@ -228,108 +205,110 @@ const UrenoLanding = () => {
 
           <section className={`${styles.features}`} id="features">
             <div className={`${styles.container}`}>
-              <p className={`${styles.sectionSubtitle}`}>Market Research</p>
-
               <h2 className={`${styles.h3} ${styles.sectionTitle}`}>URENO isn’t just a platform, it’s a full-stack solution for modernizing renovation.</h2>
-
-              <ul className={`${styles.featuresList}`}>
-                <li>
-                  <div className={`${styles.featuresCard}`}>
-                    <div className={`${styles.cardIcon}`}>
-                      <ion-icon name="analytics-outline"></ion-icon>
+              <div className={`${styles.featuresSplit}`}>
+                <div className={styles.featuresColumn}>
+                  <li>
+                    <div className={`${styles.featuresCard}`}>
+                      <div className={`${styles.cardIcon}`}>
+                        <ion-icon name="analytics-outline"></ion-icon>
+                      </div>
+                      <div className="card-content">
+                        <h3 className={`${styles.h4} ${styles.cardTitle}`}>Real-Time Project Intelligence</h3>
+                        <p className={`${styles.sectionText}`}>Use URENO’s milestone-based dashboards and smart algorithms to track permits, materials, and contractor timelines—turning raw data into decisions that cut delays and save money.</p>
+                      </div>
                     </div>
-
-                    <div className="card-content">
-                      <h3 className={`${styles.h4} ${styles.cardTitle}`}>Real-Time Project Intelligence</h3>
-
-                      <p className={`${styles.sectionText}`}>Use URENO’s milestone-based dashboards and smart algorithms to track permits, materials, and contractor timelines—turning raw data into decisions that cut delays and save money.</p>
+                  </li>
+                  <li>
+                    <div className={`${styles.featuresCard}`}>
+                      <div className={`${styles.cardIcon}`}>
+                        <ion-icon name="mail-open-outline"></ion-icon>
+                      </div>
+                      <div className="card-content">
+                        <h3 className={`${styles.h4} ${styles.cardTitle}`}>Transparent Cost Breakdown</h3>
+                        <p className={`${styles.sectionText}`}>From square footage estimates to labor margins, URENO keeps homeowners informed and contractors accountable—with every dollar tied to a verified step in the process.</p>
+                      </div>
                     </div>
-                  </div>
-                </li>
-
-                <li>
-                  <div className={`${styles.featuresCard}`}>
-                    <div className={`${styles.cardIcon}`}>
-                      <ion-icon name="mail-open-outline"></ion-icon>
+                  </li>
+                  <li>
+                    <div className={`${styles.featuresCard}`}>
+                      <div className={`${styles.cardIcon}`}>
+                        <ion-icon name="film-outline"></ion-icon>
+                      </div>
+                      <div className="card-content">
+                        <h3 className={`${styles.h4} ${styles.cardTitle}`}>Built-In Customer Communication</h3>
+                        <p className={`${styles.sectionText}`}>Automated notifications and project updates keep homeowners engaged, informed, and stress-free—no follow-up calls or email chains required.</p>
+                      </div>
                     </div>
-
-                    <div className="card-content">
-                      <h3 className={`${styles.h4} ${styles.cardTitle}`}>Transparent Cost Breakdown</h3>
-
-                      <p className={`${styles.sectionText}`}>From square footage estimates to labor margins, URENO keeps homeowners informed and contractors accountable—with every dollar tied to a verified step in the process.</p>
+                  </li>
+                </div>
+                <div className={styles.featuresColumn}>
+                  <li>
+                    <div className={`${styles.featuresCard}`}>
+                      <div className={`${styles.cardIcon}`}>
+                        <ion-icon name="globe-outline"></ion-icon>
+                      </div>
+                      <div className="card-content">
+                        <h3 className={`${styles.h4} ${styles.cardTitle}`}>Visual Progress Tracking</h3>
+                        <p className={`${styles.sectionText}`}>Photos, updates, and contractor check-ins show exactly what’s happening on site—so there’s no confusion at the finish line.</p>
+                      </div>
                     </div>
-                  </div>
-                </li>
-
-                <li>
-                  <div className={`${styles.featuresCard}`}>
-                    <div className={`${styles.cardIcon}`}>
-                      <ion-icon name="film-outline"></ion-icon>
+                  </li>
+                  <li>
+                    <div className={`${styles.featuresCard}`}>
+                      <div className={`${styles.cardIcon}`}>
+                        <ion-icon name="magnet-outline"></ion-icon>
+                      </div>
+                      <div className="card-content">
+                        <h3 className={`${styles.h4} ${styles.cardTitle}`}>Smart Discovery Tools</h3>
+                        <p className={`${styles.sectionText}`}>Homeowners can browse pre-priced renovation options, compare contractor availability, and schedule projects—all from one interface.</p>
+                      </div>
                     </div>
-
-                    <div className="card-content">
-                      <h3 className={`${styles.h4} ${styles.cardTitle}`}>Built-In Customer Communication</h3>
-
-                      <p className={`${styles.sectionText}`}>Automated notifications and project updates keep homeowners engaged, informed, and stress-free—no follow-up calls or email chains required.</p>
+                  </li>
+                  <li>
+                    <div className={`${styles.featuresCard}`}>
+                      <div className={`${styles.cardIcon}`}>
+                        <ion-icon name="layers-outline"></ion-icon>
+                      </div>
+                      <div className="card-content">
+                        <h3 className={`${styles.h4} ${styles.cardTitle}`}>Dynamic Contractor Matching</h3>
+                        <p className={`${styles.sectionText}`}>Projects are routed to licensed contractors based on availability, location, and past performance—boosting job satisfaction and completion speed on both sides.</p>
+                      </div>
                     </div>
-                  </div>
-                </li>
-
-                <li>
-                  <div className={`${styles.featuresCard}`}>
-                    <div className={`${styles.cardIcon}`}>
-                      <ion-icon name="globe-outline"></ion-icon>
-                    </div>
-
-                    <div className="card-content">
-                      <h3 className={`${styles.h4} ${styles.cardTitle}`}>Visual Progress Tracking</h3>
-
-                      <p className={`${styles.sectionText}`}>Photos, updates, and contractor check-ins show exactly what’s happening on site—so there’s no confusion at the finish line.</p>
-                    </div>
-                  </div>
-                </li>
-
-                <li>
-                  <div className={`${styles.featuresCard}`}>
-                    <div className={`${styles.cardIcon}`}>
-                      <ion-icon name="magnet-outline"></ion-icon>
-                    </div>
-
-                    <div className="card-content">
-                      <h3 className={`${styles.h4} ${styles.cardTitle}`}>Smart Discovery Tools</h3>
-
-                      <p className={`${styles.sectionText}`}>Homeowners can browse pre-priced renovation options, compare contractor availability, and schedule projects—all from one interface.</p>
-                    </div>
-                  </div>
-                </li>
-
-                <li>
-                  <div className={`${styles.featuresCard}`}>
-                    <div className={`${styles.cardIcon}`}>
-                      <ion-icon name="layers-outline"></ion-icon>
-                    </div>
-
-                    <div className="card-content">
-                      <h3 className={`${styles.h4} ${styles.cardTitle}`}>Dynamic Contractor Matching</h3>
-
-                      <p className={`${styles.sectionText}`}>Projects are routed to licensed contractors based on availability, location, and past performance—boosting job satisfaction and completion speed on both sides.</p>
-                    </div>
-                  </div>
-                </li>
-              </ul>
+                  </li>
+                </div>
+              </div>
             </div>
           </section>
 
           <section className={`${styles.pricing}`} id="pricing">
             <div className={`${styles.container}`}>
               <div className={`${styles.pricingContent}`}>
-                <p className={`${styles.sectionSubtitle}`}>Renovation Made Effortless</p>
+                
 
                 <h2 className={`${styles.h3} ${styles.sectionTitle}`}>One seamless platform for every project</h2>
 
                 <p className={`${styles.sectionText}`}>URENO simplifies the entire renovation journey—from estimate to final walkthrough. Every feature is built with clarity and speed in mind, whether you’re a first-time homeowner or a seasoned contractor.</p>
 
-                <button className={`${styles.btn} ${styles.btnPrimary}`}>Pricing & Packages</button>
+                <form action="" className={`${styles.heroForm}`}>
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Enter your name"
+                    required
+                    className={styles.inputField}
+                  />
+
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Enter your email"
+                    required
+                    className={styles.inputField}
+                  />
+
+                  <button type="submit" className={`${styles.btn} ${styles.btnPrimary}`}>Join our newsletter</button>
+                </form>
               </div>
 
               <figure className={`${styles.pricingBanner}`}>
@@ -344,68 +323,6 @@ const UrenoLanding = () => {
           <section className={`${styles.faq}`} id="faq">
             <div className={`${styles.container}`}>
               <p className={`${styles.sectionSubtitle}`}>Frequently Asked Questions</p>
-
-              {/* <h2 className={`${styles.h3} ${styles.sectionTitle}`}>Everything you need to know before getting started</h2>
-
-              <div className="grid-wrapper">
-                <ul className="faq-list">
-                  <li>
-                    <h3 className={`${styles.h4} ${styles.cardTitle}`}>Can I see SCEO in action before purchasing?</h3>
-
-                    <p className={`${styles.sectionText}`}>Yes, we provide for you a free trial version, for around 7-15 days, of our functionalities and features firsthand. This will allow you to interact with the inteface and see the first results in real-time</p>
-                  </li>
-
-                  <li>
-                    <h3 className={`${styles.h4} ${styles.cardTitle}`}>What are the requirements for using SCEO?</h3>
-
-                    <p className={`${styles.sectionText}`}>SCEO require few demands to work in your company. This includes a desktop or mobile device linked to a stable internet, a user account to access our features and keep your device updated to ensure security and compatibility with the latest SCEO features</p>
-                  </li>
-
-                  <li>
-                    <h3 className={`${styles.h4} ${styles.cardTitle}`}>Can I use SCEO on different devices?</h3>
-
-                    <ul className="faq-item-list">
-                      <li>
-                        <p className={`${styles.sectionText}`}>Yes, SCEO is designed to work seamlessly on both desktop and mobile devices</p>
-                      </li>
-
-                      <li>
-                        <p className={`${styles.sectionText}`}>We just emphasize that the SCEO mobile version has fewer features if compared with desktop version. Also SCEO mobile version focus in practicity, with simpler layouts, but more effective infos displayed. While desktop version is more robust giving depth-info of your website and more features dedicated to analysis and creation sceneries</p>
-                      </li>
-                    </ul>
-                  </li>
-                </ul>
-
-                <ul className="faq-list">
-                  <li>
-                    <h3 className={`${styles.h4} ${styles.cardTitle}`}>Do you have a free trial?</h3>
-
-                    <p className={`${styles.sectionText}`}>Yes, we provide for you a free trial version, for around 7-15 days</p>
-                  </li>
-
-                  <li>
-                    <h3 className={`${styles.h4} ${styles.cardTitle}`}>How does SCEO handle my privacy?</h3>
-
-                    <p className={`${styles.sectionText}`}>SCEO takes your personal information seriously and implements several measures to ensure your data is protected</p>
-
-                    <p className={`${styles.sectionText}`}>This include strict use of third-party serives, user management of data preferences, transparency and regular information about how your data is collected and used and compliance with relevant data protection regulations</p>
-                  </li>
-
-                  <li>
-                    <h3 className={`${styles.h4} ${styles.cardTitle}`}>I have an issue with my account</h3>
-
-                    <ul className="faq-item-list">
-                      <li>
-                        <p className={`${styles.sectionText}`}>When experiencing an issue, you can use our SCEO IA help right below your login screen for fast support. Most of problems (like login problems, account verification, billing issues, access issues, technical glitches) are solved using it.</p>
-                      </li>
-
-                      <li>
-                        <p className={`${styles.sectionText}`}>If the above solution don't resolve your issue, our SCEO IA rapidly contacts SCEO's customer support with prepared staff to solve more complex issues. Also you can access our customer support by phone or email</p>
-                      </li>
-                    </ul>
-                  </li>
-                </ul>
-              </div> */}
 
               <p className={`${styles.faqBottomLink}`}>
                 Have any more questions?
@@ -430,4 +347,4 @@ const UrenoLanding = () => {
   );
 };
 
-export default UrenoLanding;
+export default UrenoLearnMore;

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "@/contexts/authContext";
+import { useAuth } from "../contexts/authContext";
 import { useNavigate } from "react-router-dom";
-import NewNav from "@/components/ui/newNav";
+import NewNav from "../components/ui/newNav";
 import Footer from "../components/footer";
 import YellowSwatches from "../components/YellowSwatches";
 import "../styles/FlooringProduct.css";
