@@ -15,19 +15,6 @@ const NewNav = () => {
     const [loggingOut, setLoggingOut] = useState(false)
     const [loggedOut, setLoggedOut] = useState(false)
 
-    const handleLogout = async () => {
-        setLoggingOut(true)
-        const result = await doSignOut()
-        setLoggingOut(false)
-
-        if (result.success) {
-            setTimeout(() => {
-                navigate('/')
-            }, 1500)
-        } else {
-            alert("Logout failed. Please try again.")
-        }
-    }
 
     return (
     <>

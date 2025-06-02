@@ -17,33 +17,20 @@ const UserDropDown = () => {
     const { toast } = useToast()
     const [isLoggingOut, setIsLoggingOut] = useState(false)
 
-    const handleLogout = async () => {
-        try {
-            setIsLoggingOut(true)
-            
-            // Show toast notification
-            toast({
-                title: "Logging out",
-                description: "You are being signed out...",
-            })
-            
-            await doSignOut()
-            
-            // Navigate after a slight delay to allow the toast to be seen
-            setTimeout(() => {
-                navigate('/')
-                setIsLoggingOut(false)
-            }, 1000)
-        } catch (error) {
-            console.error("Logout error:", error)
-            toast({
-                variant: "destructive",
-                title: "Logout failed",
-                description: "There was an error signing you out.",
-            })
-            setIsLoggingOut(false)
+    const handleLogout = async () =>{
+        setLoggingOut(true)
+        const result = await doSignOut()
+        setLoggingOut(false)
+      
+        if (result.success) {
+          setLoggedOut(true)
+          setTimeout(() => {
+            navigate('/')
+          }, 1500)
+        } else {
+          alert("Logout failed. Please try again.")
         }
-    }
+      }
     
     if (isLoggingOut) {
         return <LoadingSpinner />

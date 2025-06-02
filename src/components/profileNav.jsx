@@ -28,9 +28,9 @@ const ProfileNav = () => {
                     <Bell className="w-5 h-5" /> Notifications
                 </Link>
 
-                <Link to="/logout" onClick={handleLogout} className="flex items-center gap-2 text-red-500 hover:text-red-700">
+                <button onClick={handleLogout} className="flex items-center gap-2 text-red-500 hover:text-red-700">
                     <LogOut className="w-5 h-5" /> Log Out
-                </Link>
+                </button>
             </div>
         </div>
             
