@@ -3,7 +3,7 @@ import { useAuth } from "../contexts/authContext";
 import { useNavigate } from "react-router-dom";
 import NewNav from "../components/ui/newNav";
 import Footer from "../components/footer";
-import RedSwatches from "../components/RedSwatches";
+import RedSwatches from "../components/Paint/RedSwatches";
 import "../styles/FlooringProduct.css";
 
 export default function RedShadesPage() {

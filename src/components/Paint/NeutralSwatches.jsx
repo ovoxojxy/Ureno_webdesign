@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getPaintColorsByCategory } from '../firebase/firestore';
+import { getPaintColorsByCategory } from '../../firebase/firestore';
 
-const BlueSwatches = () => {
+const NeutralSwatches = () => {
   const navigate = useNavigate();
   const [colors, setColors] = useState([]);
   const [selectedColor, setSelectedColor] = useState(null);
@@ -19,40 +19,42 @@ const BlueSwatches = () => {
       hsl: hexToHSL(color.hex)
     }));
     
-    // Group by hue ranges first (different blue tones)
+    // Group by undertones and saturation levels for neutrals
     const hueGroups = {};
     colorsWithHSL.forEach(color => {
       const hue = color.hsl.h;
-      // Group by hue ranges: blue-greens (180-210), pure blues (210-250), blue-purples (250-280)
+      const saturation = color.hsl.s;
+      
+      // Group neutrals by undertone: warm (beiges, taupes), cool (grays), balanced (true neutrals)
       let hueGroup;
-      if (hue >= 210 && hue <= 250) {
-        hueGroup = 'pure-blue'; // Pure blues
-      } else if (hue >= 180 && hue < 210) {
-        hueGroup = 'blue-green'; // Blue-greens
-      } else if (hue > 250 && hue <= 280) {
-        hueGroup = 'blue-purple'; // Blue-purples
+      if (saturation <= 15) {
+        hueGroup = 'true-neutral'; // Very low saturation - true grays/neutrals
+      } else if ((hue >= 15 && hue <= 65) || (hue >= 280 && hue <= 360)) {
+        hueGroup = 'warm-neutral'; // Warm undertones (beige, taupe, warm grays)
+      } else if (hue >= 180 && hue <= 240) {
+        hueGroup = 'cool-neutral'; // Cool undertones (blue-grays, cool grays)
       } else {
-        hueGroup = 'other'; // Other blues
+        hueGroup = 'other-neutral'; // Other neutral tones
       }
       
       if (!hueGroups[hueGroup]) hueGroups[hueGroup] = [];
       hueGroups[hueGroup].push(color);
     });
     
-    // Sort each hue group by saturation and lightness
+    // Sort each hue group by lightness primarily (light to dark)
     Object.keys(hueGroups).forEach(group => {
       hueGroups[group].sort((a, b) => {
-        // Primary sort: saturation (high to low for vibrancy)
-        const satDiff = b.hsl.s - a.hsl.s;
-        if (Math.abs(satDiff) > 10) return satDiff;
+        // Primary sort: lightness (light to dark)
+        const lightDiff = b.hsl.l - a.hsl.l;
+        if (Math.abs(lightDiff) > 5) return lightDiff;
         
-        // Secondary sort: lightness (light to dark)
-        return b.hsl.l - a.hsl.l;
+        // Secondary sort: saturation (lower saturation first for neutrals)
+        return a.hsl.s - b.hsl.s;
       });
     });
     
     // Combine groups in a pleasing order
-    const groupOrder = ['blue-green', 'pure-blue', 'blue-purple', 'other'];
+    const groupOrder = ['warm-neutral', 'true-neutral', 'cool-neutral', 'other-neutral'];
     const sortedColors = [];
     groupOrder.forEach(groupName => {
       if (hueGroups[groupName]) {
@@ -158,21 +160,21 @@ const BlueSwatches = () => {
   };
 
   useEffect(() => {
-    const fetchBlueColors = async () => {
+    const fetchNeutralColors = async () => {
       try {
         setLoading(true);
         setError(null);
         
-        // Fetch blue paint colors from database
-        const bluePaintColors = await getPaintColorsByCategory('blues');
+        // Fetch neutral paint colors from database
+        const neutralPaintColors = await getPaintColorsByCategory('neutrals');
         
-        if (bluePaintColors.length > 0) {
+        if (neutralPaintColors.length > 0) {
           // Use real database colors
-          const organizedColors = organizeColorsIntoStrips(bluePaintColors);
+          const organizedColors = organizeColorsIntoStrips(neutralPaintColors);
           // setColors is called inside organizeColorsIntoStrips after padding
         } else {
           // Fallback to generated colors if no database colors found
-          console.warn('No blue paint colors found in database, using generated colors');
+          console.warn('No neutral paint colors found in database, using generated colors');
           const generatedColors = generateFallbackColors();
           setColors(generatedColors);
         }
@@ -188,7 +190,7 @@ const BlueSwatches = () => {
       }
     };
 
-    fetchBlueColors();
+    fetchNeutralColors();
   }, []);
 
   // Fallback function for when database is empty or fails
@@ -196,19 +198,31 @@ const BlueSwatches = () => {
     const colorStrips = [];
     
     for (let strip = 0; strip < 10; strip++) {
-      const baseHue = 200 + (strip * 5); // Blue hues range from 200-250
-      const baseSaturation = 70 + (strip * 3);
-      
       const stripColors = [];
       
       for (let shade = 0; shade < 9; shade++) {
         const lightness = 90 - (shade * 10);
-        const adjustedSaturation = Math.min(baseSaturation + (shade * 2), 100);
+        let hue, saturation;
+        
+        // Create different types of neutrals
+        if (strip < 3) {
+          // Warm neutrals (beiges, taupes)
+          hue = 35 + (strip * 10);
+          saturation = 15 + (strip * 5);
+        } else if (strip < 6) {
+          // True grays
+          hue = 0;
+          saturation = 0;
+        } else {
+          // Cool grays
+          hue = 200 + (strip * 5);
+          saturation = 8 + (strip * 2);
+        }
         
         stripColors.push({
           id: `fallback-${strip}-${shade}`,
-          name: `Blue ${strip + 1}-${shade + 1}`,
-          hex: hslToHex(baseHue, adjustedSaturation, lightness),
+          name: `Neutral ${strip + 1}-${shade + 1}`,
+          hex: hslToHex(hue, saturation, lightness),
           lightness: lightness,
           strip: strip,
           position: shade
@@ -245,7 +259,7 @@ const BlueSwatches = () => {
         .title {
           font-size: 2.5rem;
           font-weight: 700;
-          color: #3182ce;
+          color: #8d7053;
           margin-bottom: 0.5rem;
         }
 
@@ -425,7 +439,7 @@ const BlueSwatches = () => {
                 width: '40px', 
                 height: '40px', 
                 border: '3px solid #f3f3f3', 
-                borderTop: '3px solid #3182ce',
+                borderTop: '3px solid #8d7053',
                 borderRadius: '50%',
                 animation: 'spin 1s linear infinite',
                 margin: '0 auto'
@@ -502,4 +516,4 @@ const BlueSwatches = () => {
   );
 };
 
-export default BlueSwatches;
+export default NeutralSwatches;

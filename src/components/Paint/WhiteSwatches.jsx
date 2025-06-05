@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getPaintColorsByCategory } from '../firebase/firestore';
+import { getPaintColorsByCategory } from '../../firebase/firestore';
 
-const GreenSwatches = () => {
+const WhiteSwatches = () => {
   const navigate = useNavigate();
   const [colors, setColors] = useState([]);
   const [selectedColor, setSelectedColor] = useState(null);
@@ -19,40 +19,50 @@ const GreenSwatches = () => {
       hsl: hexToHSL(color.hex)
     }));
     
-    // Group by hue ranges first (different green tones)
+    // Group by color type: pure whites vs pastels
     const hueGroups = {};
     colorsWithHSL.forEach(color => {
       const hue = color.hsl.h;
-      // Group by hue ranges: blue-greens (120-180), pure greens (90-120), yellow-greens (60-90)
+      const saturation = color.hsl.s;
+      const lightness = color.hsl.l;
+      
+      // Group whites and pastels by type
       let hueGroup;
-      if (hue >= 90 && hue <= 120) {
-        hueGroup = 'pure-green'; // Pure greens
-      } else if (hue > 120 && hue <= 180) {
-        hueGroup = 'blue-green'; // Blue-greens
-      } else if (hue >= 60 && hue < 90) {
-        hueGroup = 'yellow-green'; // Yellow-greens
+      if (lightness >= 85 && saturation <= 10) {
+        hueGroup = 'pure-white'; // Very light, low saturation - pure whites
+      } else if (lightness >= 75 && saturation <= 25) {
+        hueGroup = 'off-white'; // Light with slight color - off-whites
+      } else if (lightness >= 70 && saturation <= 40) {
+        hueGroup = 'light-pastel'; // Light pastels
+      } else if (lightness >= 60 && saturation <= 60) {
+        hueGroup = 'medium-pastel'; // Medium pastels
       } else {
-        hueGroup = 'other'; // Other greens
+        hueGroup = 'other'; // Other light colors
       }
       
       if (!hueGroups[hueGroup]) hueGroups[hueGroup] = [];
       hueGroups[hueGroup].push(color);
     });
     
-    // Sort each hue group by saturation and lightness
+    // Sort each hue group by lightness primarily (light to dark)
     Object.keys(hueGroups).forEach(group => {
       hueGroups[group].sort((a, b) => {
-        // Primary sort: saturation (high to low for vibrancy)
-        const satDiff = b.hsl.s - a.hsl.s;
-        if (Math.abs(satDiff) > 10) return satDiff;
+        // Primary sort: lightness (light to dark)
+        const lightDiff = b.hsl.l - a.hsl.l;
+        if (Math.abs(lightDiff) > 5) return lightDiff;
         
-        // Secondary sort: lightness (light to dark)
-        return b.hsl.l - a.hsl.l;
+        // Secondary sort: hue for pastels to create rainbow effect
+        if (group.includes('pastel')) {
+          return a.hsl.h - b.hsl.h;
+        }
+        
+        // For whites, sort by saturation (less to more)
+        return a.hsl.s - b.hsl.s;
       });
     });
     
     // Combine groups in a pleasing order
-    const groupOrder = ['yellow-green', 'pure-green', 'blue-green', 'other'];
+    const groupOrder = ['pure-white', 'off-white', 'light-pastel', 'medium-pastel', 'other'];
     const sortedColors = [];
     groupOrder.forEach(groupName => {
       if (hueGroups[groupName]) {
@@ -158,21 +168,21 @@ const GreenSwatches = () => {
   };
 
   useEffect(() => {
-    const fetchGreenColors = async () => {
+    const fetchWhiteColors = async () => {
       try {
         setLoading(true);
         setError(null);
         
-        // Fetch green paint colors from database
-        const greenPaintColors = await getPaintColorsByCategory('greens');
+        // Fetch white & pastel paint colors from database using the correct category name
+        const whitePaintColors = await getPaintColorsByCategory('white_pastels');
         
-        if (greenPaintColors.length > 0) {
+        if (whitePaintColors.length > 0) {
           // Use real database colors
-          const organizedColors = organizeColorsIntoStrips(greenPaintColors);
+          const organizedColors = organizeColorsIntoStrips(whitePaintColors);
           // setColors is called inside organizeColorsIntoStrips after padding
         } else {
           // Fallback to generated colors if no database colors found
-          console.warn('No green paint colors found in database, using generated colors');
+          console.warn('No white & pastel paint colors found in database, using generated colors');
           const generatedColors = generateFallbackColors();
           setColors(generatedColors);
         }
@@ -188,7 +198,7 @@ const GreenSwatches = () => {
       }
     };
 
-    fetchGreenColors();
+    fetchWhiteColors();
   }, []);
 
   // Fallback function for when database is empty or fails
@@ -196,19 +206,38 @@ const GreenSwatches = () => {
     const colorStrips = [];
     
     for (let strip = 0; strip < 10; strip++) {
-      const baseHue = 90 + (strip * 3); // Green hues range from 90-120
-      const baseSaturation = 70 + (strip * 3);
-      
       const stripColors = [];
       
       for (let shade = 0; shade < 9; shade++) {
-        const lightness = 90 - (shade * 10);
-        const adjustedSaturation = Math.min(baseSaturation + (shade * 2), 100);
+        let hue, saturation, lightness;
+        
+        // Create different types of whites and pastels
+        if (strip < 2) {
+          // Pure whites
+          hue = 0;
+          saturation = 0;
+          lightness = 95 - (shade * 2);
+        } else if (strip < 4) {
+          // Off-whites with warm undertones
+          hue = 45;
+          saturation = 5 + (shade * 2);
+          lightness = 92 - (shade * 3);
+        } else if (strip < 6) {
+          // Off-whites with cool undertones
+          hue = 210;
+          saturation = 8 + (shade * 2);
+          lightness = 90 - (shade * 3);
+        } else {
+          // Light pastels
+          hue = (strip - 6) * 90; // Different hues for pastels
+          saturation = 20 + (shade * 5);
+          lightness = 85 - (shade * 3);
+        }
         
         stripColors.push({
           id: `fallback-${strip}-${shade}`,
-          name: `Green ${strip + 1}-${shade + 1}`,
-          hex: hslToHex(baseHue, adjustedSaturation, lightness),
+          name: `White/Pastel ${strip + 1}-${shade + 1}`,
+          hex: hslToHex(hue, saturation, lightness),
           lightness: lightness,
           strip: strip,
           position: shade
@@ -245,7 +274,7 @@ const GreenSwatches = () => {
         .title {
           font-size: 2.5rem;
           font-weight: 700;
-          color: #38a169;
+          color: #4a5568;
           margin-bottom: 0.5rem;
         }
 
@@ -282,7 +311,7 @@ const GreenSwatches = () => {
           cursor: pointer;
           transition: all 0.2s ease;
           position: relative;
-          border: 1px solid rgba(255,255,255,0.2);
+          border: 1px solid rgba(0,0,0,0.1);
         }
 
         .color-chip:hover {
@@ -425,7 +454,7 @@ const GreenSwatches = () => {
                 width: '40px', 
                 height: '40px', 
                 border: '3px solid #f3f3f3', 
-                borderTop: '3px solid #38a169',
+                borderTop: '3px solid #4a5568',
                 borderRadius: '50%',
                 animation: 'spin 1s linear infinite',
                 margin: '0 auto'
@@ -502,4 +531,4 @@ const GreenSwatches = () => {
   );
 };
 
-export default GreenSwatches;
+export default WhiteSwatches;

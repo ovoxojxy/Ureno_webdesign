@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getPaintColorsByCategory } from '../firebase/firestore';
+import { getPaintColorsByCategory } from '../../firebase/firestore';
 
-const RedSwatches = () => {
+const GreenSwatches = () => {
   const navigate = useNavigate();
   const [colors, setColors] = useState([]);
   const [selectedColor, setSelectedColor] = useState(null);
@@ -19,20 +19,20 @@ const RedSwatches = () => {
       hsl: hexToHSL(color.hex)
     }));
     
-    // Group by hue ranges first (different red tones)
+    // Group by hue ranges first (different green tones)
     const hueGroups = {};
     colorsWithHSL.forEach(color => {
       const hue = color.hsl.h;
-      // Group by hue ranges: pure reds (345-15), orange-reds (15-30), pink-reds (300-345)
+      // Group by hue ranges: blue-greens (120-180), pure greens (90-120), yellow-greens (60-90)
       let hueGroup;
-      if (hue >= 345 || hue <= 15) {
-        hueGroup = 'pure-red'; // Pure reds
-      } else if (hue > 15 && hue <= 30) {
-        hueGroup = 'orange-red'; // Orange-reds
-      } else if (hue >= 300 && hue < 345) {
-        hueGroup = 'pink-red'; // Pink-reds
+      if (hue >= 90 && hue <= 120) {
+        hueGroup = 'pure-green'; // Pure greens
+      } else if (hue > 120 && hue <= 180) {
+        hueGroup = 'blue-green'; // Blue-greens
+      } else if (hue >= 60 && hue < 90) {
+        hueGroup = 'yellow-green'; // Yellow-greens
       } else {
-        hueGroup = 'other'; // Other reds
+        hueGroup = 'other'; // Other greens
       }
       
       if (!hueGroups[hueGroup]) hueGroups[hueGroup] = [];
@@ -52,7 +52,7 @@ const RedSwatches = () => {
     });
     
     // Combine groups in a pleasing order
-    const groupOrder = ['pink-red', 'pure-red', 'orange-red', 'other'];
+    const groupOrder = ['yellow-green', 'pure-green', 'blue-green', 'other'];
     const sortedColors = [];
     groupOrder.forEach(groupName => {
       if (hueGroups[groupName]) {
@@ -158,21 +158,21 @@ const RedSwatches = () => {
   };
 
   useEffect(() => {
-    const fetchRedColors = async () => {
+    const fetchGreenColors = async () => {
       try {
         setLoading(true);
         setError(null);
         
-        // Fetch red paint colors from database
-        const redPaintColors = await getPaintColorsByCategory('reds');
+        // Fetch green paint colors from database
+        const greenPaintColors = await getPaintColorsByCategory('greens');
         
-        if (redPaintColors.length > 0) {
+        if (greenPaintColors.length > 0) {
           // Use real database colors
-          const organizedColors = organizeColorsIntoStrips(redPaintColors);
+          const organizedColors = organizeColorsIntoStrips(greenPaintColors);
           // setColors is called inside organizeColorsIntoStrips after padding
         } else {
           // Fallback to generated colors if no database colors found
-          console.warn('No red paint colors found in database, using generated colors');
+          console.warn('No green paint colors found in database, using generated colors');
           const generatedColors = generateFallbackColors();
           setColors(generatedColors);
         }
@@ -188,7 +188,7 @@ const RedSwatches = () => {
       }
     };
 
-    fetchRedColors();
+    fetchGreenColors();
   }, []);
 
   // Fallback function for when database is empty or fails
@@ -196,7 +196,7 @@ const RedSwatches = () => {
     const colorStrips = [];
     
     for (let strip = 0; strip < 10; strip++) {
-      const baseHue = 0 + (strip * 4);
+      const baseHue = 90 + (strip * 3); // Green hues range from 90-120
       const baseSaturation = 70 + (strip * 3);
       
       const stripColors = [];
@@ -207,7 +207,7 @@ const RedSwatches = () => {
         
         stripColors.push({
           id: `fallback-${strip}-${shade}`,
-          name: `Red ${strip + 1}-${shade + 1}`,
+          name: `Green ${strip + 1}-${shade + 1}`,
           hex: hslToHex(baseHue, adjustedSaturation, lightness),
           lightness: lightness,
           strip: strip,
@@ -245,7 +245,7 @@ const RedSwatches = () => {
         .title {
           font-size: 2.5rem;
           font-weight: 700;
-          color: #c53030;
+          color: #38a169;
           margin-bottom: 0.5rem;
         }
 
@@ -264,13 +264,6 @@ const RedSwatches = () => {
         }
 
         .color-strips-container {
-          /* Removed flex layout */
-          /* display: flex;
-          gap: 2px;
-          justify-content: center;
-          background: #e2e8f0;
-          padding: 1rem;
-          border-radius: 8px; */
           background: #e2e8f0;
           padding: 1rem;
           border-radius: 8px;
@@ -432,7 +425,7 @@ const RedSwatches = () => {
                 width: '40px', 
                 height: '40px', 
                 border: '3px solid #f3f3f3', 
-                borderTop: '3px solid #c53030',
+                borderTop: '3px solid #38a169',
                 borderRadius: '50%',
                 animation: 'spin 1s linear infinite',
                 margin: '0 auto'
@@ -509,4 +502,4 @@ const RedSwatches = () => {
   );
 };
 
-export default RedSwatches;
+export default GreenSwatches;

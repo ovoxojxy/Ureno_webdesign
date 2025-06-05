@@ -40,7 +40,7 @@ import ProjectInquiries from './pages/Projects/ProjectInquiries'
 import AIChat from './components/AI_Design/AIChat'
 import AIImageGenerator from './components/AI_Design/AiImage'
 import ChatUI from './components/AI_Design/ChatUI'
-import RedSwatches from './components/RedSwatches'
+import RedSwatches from './components/Paint/RedSwatches'
 import RedShadesPage from './pages/red-shades-page.jsx'
 import OrangeShadesPage from './pages/orange-shades-page.jsx'
 import YellowShadesPage from './pages/yellow-shades-page.jsx'
@@ -49,7 +49,7 @@ import BlueShadesPage from './pages/blue-shades-page.jsx'
 import PurpleShadesPage from './pages/purple-shades-page.jsx'
 import NeutralShadesPage from './pages/neutral-shades-page.jsx'
 import WhiteShadesPage from './pages/white-shades-page.jsx'
-import AllPaint from './components/AllPaint'
+import AllPaint from './components/Paint/AllPaint'
 import TestUI from './pages/testUI'
 
 
@@ -67,7 +67,7 @@ const CreateProject = lazyLoad(() => import('./pages/Projects/newCreateProject')
 const MessagePage = lazyLoad(() => import('./pages/Conversation/MessagePage'))
 
 // Admin components (likely less frequently used)
-const AdminDashboard = lazyLoad(() => import('./components/admin/AdminDashboard'))
+const AdminDashboard = lazyLoad(() => import('./components/admin/toDelete_AdminDashboard'))
 // const ProductForm = lazyLoad(() => import('./components/admin/updatedProductForm'))
 
 import './styles/index.css'

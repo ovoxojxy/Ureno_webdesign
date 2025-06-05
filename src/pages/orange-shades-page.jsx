@@ -3,7 +3,7 @@ import { useAuth } from "../contexts/authContext";
 import { useNavigate } from "react-router-dom";
 import NewNav from "../components/ui/newNav";
 import Footer from "../components/footer";
-import OrangeSwatches from "../components/OrangeSwatches";
+import OrangeSwatches from "../components/Paint/OrangeSwatches";
 import "../styles/FlooringProduct.css";
 
 export default function OrangeShadesPage() {

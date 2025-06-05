@@ -1,5 +1,5 @@
 import Footer from "../components/footer";
-import Nav from "../components/nav";
+import Nav from "../components/toDelete_nav";
 
 import '../styles/productDetailPage.css'
 

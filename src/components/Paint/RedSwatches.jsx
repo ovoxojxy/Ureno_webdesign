@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getPaintColorsByCategory } from '../firebase/firestore';
+import { getPaintColorsByCategory } from '../../firebase/firestore';
 
-const WhiteSwatches = () => {
+const RedSwatches = () => {
   const navigate = useNavigate();
   const [colors, setColors] = useState([]);
   const [selectedColor, setSelectedColor] = useState(null);
@@ -19,50 +19,40 @@ const WhiteSwatches = () => {
       hsl: hexToHSL(color.hex)
     }));
     
-    // Group by color type: pure whites vs pastels
+    // Group by hue ranges first (different red tones)
     const hueGroups = {};
     colorsWithHSL.forEach(color => {
       const hue = color.hsl.h;
-      const saturation = color.hsl.s;
-      const lightness = color.hsl.l;
-      
-      // Group whites and pastels by type
+      // Group by hue ranges: pure reds (345-15), orange-reds (15-30), pink-reds (300-345)
       let hueGroup;
-      if (lightness >= 85 && saturation <= 10) {
-        hueGroup = 'pure-white'; // Very light, low saturation - pure whites
-      } else if (lightness >= 75 && saturation <= 25) {
-        hueGroup = 'off-white'; // Light with slight color - off-whites
-      } else if (lightness >= 70 && saturation <= 40) {
-        hueGroup = 'light-pastel'; // Light pastels
-      } else if (lightness >= 60 && saturation <= 60) {
-        hueGroup = 'medium-pastel'; // Medium pastels
+      if (hue >= 345 || hue <= 15) {
+        hueGroup = 'pure-red'; // Pure reds
+      } else if (hue > 15 && hue <= 30) {
+        hueGroup = 'orange-red'; // Orange-reds
+      } else if (hue >= 300 && hue < 345) {
+        hueGroup = 'pink-red'; // Pink-reds
       } else {
-        hueGroup = 'other'; // Other light colors
+        hueGroup = 'other'; // Other reds
       }
       
       if (!hueGroups[hueGroup]) hueGroups[hueGroup] = [];
       hueGroups[hueGroup].push(color);
     });
     
-    // Sort each hue group by lightness primarily (light to dark)
+    // Sort each hue group by saturation and lightness
     Object.keys(hueGroups).forEach(group => {
       hueGroups[group].sort((a, b) => {
-        // Primary sort: lightness (light to dark)
-        const lightDiff = b.hsl.l - a.hsl.l;
-        if (Math.abs(lightDiff) > 5) return lightDiff;
+        // Primary sort: saturation (high to low for vibrancy)
+        const satDiff = b.hsl.s - a.hsl.s;
+        if (Math.abs(satDiff) > 10) return satDiff;
         
-        // Secondary sort: hue for pastels to create rainbow effect
-        if (group.includes('pastel')) {
-          return a.hsl.h - b.hsl.h;
-        }
-        
-        // For whites, sort by saturation (less to more)
-        return a.hsl.s - b.hsl.s;
+        // Secondary sort: lightness (light to dark)
+        return b.hsl.l - a.hsl.l;
       });
     });
     
     // Combine groups in a pleasing order
-    const groupOrder = ['pure-white', 'off-white', 'light-pastel', 'medium-pastel', 'other'];
+    const groupOrder = ['pink-red', 'pure-red', 'orange-red', 'other'];
     const sortedColors = [];
     groupOrder.forEach(groupName => {
       if (hueGroups[groupName]) {
@@ -168,21 +158,21 @@ const WhiteSwatches = () => {
   };
 
   useEffect(() => {
-    const fetchWhiteColors = async () => {
+    const fetchRedColors = async () => {
       try {
         setLoading(true);
         setError(null);
         
-        // Fetch white & pastel paint colors from database using the correct category name
-        const whitePaintColors = await getPaintColorsByCategory('white_pastels');
+        // Fetch red paint colors from database
+        const redPaintColors = await getPaintColorsByCategory('reds');
         
-        if (whitePaintColors.length > 0) {
+        if (redPaintColors.length > 0) {
           // Use real database colors
-          const organizedColors = organizeColorsIntoStrips(whitePaintColors);
+          const organizedColors = organizeColorsIntoStrips(redPaintColors);
           // setColors is called inside organizeColorsIntoStrips after padding
         } else {
           // Fallback to generated colors if no database colors found
-          console.warn('No white & pastel paint colors found in database, using generated colors');
+          console.warn('No red paint colors found in database, using generated colors');
           const generatedColors = generateFallbackColors();
           setColors(generatedColors);
         }
@@ -198,7 +188,7 @@ const WhiteSwatches = () => {
       }
     };
 
-    fetchWhiteColors();
+    fetchRedColors();
   }, []);
 
   // Fallback function for when database is empty or fails
@@ -206,38 +196,19 @@ const WhiteSwatches = () => {
     const colorStrips = [];
     
     for (let strip = 0; strip < 10; strip++) {
+      const baseHue = 0 + (strip * 4);
+      const baseSaturation = 70 + (strip * 3);
+      
       const stripColors = [];
       
       for (let shade = 0; shade < 9; shade++) {
-        let hue, saturation, lightness;
-        
-        // Create different types of whites and pastels
-        if (strip < 2) {
-          // Pure whites
-          hue = 0;
-          saturation = 0;
-          lightness = 95 - (shade * 2);
-        } else if (strip < 4) {
-          // Off-whites with warm undertones
-          hue = 45;
-          saturation = 5 + (shade * 2);
-          lightness = 92 - (shade * 3);
-        } else if (strip < 6) {
-          // Off-whites with cool undertones
-          hue = 210;
-          saturation = 8 + (shade * 2);
-          lightness = 90 - (shade * 3);
-        } else {
-          // Light pastels
-          hue = (strip - 6) * 90; // Different hues for pastels
-          saturation = 20 + (shade * 5);
-          lightness = 85 - (shade * 3);
-        }
+        const lightness = 90 - (shade * 10);
+        const adjustedSaturation = Math.min(baseSaturation + (shade * 2), 100);
         
         stripColors.push({
           id: `fallback-${strip}-${shade}`,
-          name: `White/Pastel ${strip + 1}-${shade + 1}`,
-          hex: hslToHex(hue, saturation, lightness),
+          name: `Red ${strip + 1}-${shade + 1}`,
+          hex: hslToHex(baseHue, adjustedSaturation, lightness),
           lightness: lightness,
           strip: strip,
           position: shade
@@ -274,7 +245,7 @@ const WhiteSwatches = () => {
         .title {
           font-size: 2.5rem;
           font-weight: 700;
-          color: #4a5568;
+          color: #c53030;
           margin-bottom: 0.5rem;
         }
 
@@ -293,6 +264,13 @@ const WhiteSwatches = () => {
         }
 
         .color-strips-container {
+          /* Removed flex layout */
+          /* display: flex;
+          gap: 2px;
+          justify-content: center;
+          background: #e2e8f0;
+          padding: 1rem;
+          border-radius: 8px; */
           background: #e2e8f0;
           padding: 1rem;
           border-radius: 8px;
@@ -311,7 +289,7 @@ const WhiteSwatches = () => {
           cursor: pointer;
           transition: all 0.2s ease;
           position: relative;
-          border: 1px solid rgba(0,0,0,0.1);
+          border: 1px solid rgba(255,255,255,0.2);
         }
 
         .color-chip:hover {
@@ -454,7 +432,7 @@ const WhiteSwatches = () => {
                 width: '40px', 
                 height: '40px', 
                 border: '3px solid #f3f3f3', 
-                borderTop: '3px solid #4a5568',
+                borderTop: '3px solid #c53030',
                 borderRadius: '50%',
                 animation: 'spin 1s linear infinite',
                 margin: '0 auto'
@@ -531,4 +509,4 @@ const WhiteSwatches = () => {
   );
 };
 
-export default WhiteSwatches;
+export default RedSwatches;

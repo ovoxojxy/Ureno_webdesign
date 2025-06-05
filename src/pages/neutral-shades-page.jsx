@@ -3,7 +3,7 @@ import { useAuth } from "../contexts/authContext";
 import { useNavigate } from "react-router-dom";
 import NewNav from "../components/ui/newNav";
 import Footer from "../components/footer";
-import NeutralSwatches from "../components/NeutralSwatches";
+import NeutralSwatches from "../components/Paint/NeutralSwatches";
 import "../styles/FlooringProduct.css";
 
 export default function NeutralShadesPage() {

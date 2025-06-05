@@ -4,7 +4,6 @@ import { Icons } from './Icons'
 import { Link, useNavigate } from 'react-router-dom'
 import Logo from '../assets/images/Large_logo.png'
 import UserAuthForm from './UserAuthForm'
-import SignInNav from './signinNav'
 
 const SignIn = () => {
     const navigate = useNavigate();
@@ -13,6 +12,8 @@ return <div className='flex items-center justify-center h-screen w-full px-4'>
         <div className='w-full max-w-sm space-y-6 text-center'>
         <div className='flex flex-col space-y-2 text-center'>
         <div className='w-full flex justify-center'>
+        
+       
         <Link to="/">
             <img
                 src={Logo}

@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import floorBackground from '../assets/images/flooring-background.png'
 import paintBackground from '../assets/images/paint-background.png'
 import Footer from "../components/footer";
-import Nav from "../components/nav";
+// import Nav from "../components/toDelete_nav";
 import NewNav from "@/components/ui/newNav";
 import Logo from '../assets/images/Large_logo.png'
 

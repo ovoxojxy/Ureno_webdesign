@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getPaintColorsByCategory } from '../firebase/firestore';
+import { getPaintColorsByCategory } from '../../firebase/firestore';
 
-const NeutralSwatches = () => {
+const OrangeSwatches = () => {
   const navigate = useNavigate();
   const [colors, setColors] = useState([]);
   const [selectedColor, setSelectedColor] = useState(null);
@@ -19,42 +19,40 @@ const NeutralSwatches = () => {
       hsl: hexToHSL(color.hex)
     }));
     
-    // Group by undertones and saturation levels for neutrals
+    // Group by hue ranges for orange tones
     const hueGroups = {};
     colorsWithHSL.forEach(color => {
       const hue = color.hsl.h;
-      const saturation = color.hsl.s;
-      
-      // Group neutrals by undertone: warm (beiges, taupes), cool (grays), balanced (true neutrals)
+      // Group by hue ranges: red-oranges (15-30), pure oranges (30-45), yellow-oranges (45-60)
       let hueGroup;
-      if (saturation <= 15) {
-        hueGroup = 'true-neutral'; // Very low saturation - true grays/neutrals
-      } else if ((hue >= 15 && hue <= 65) || (hue >= 280 && hue <= 360)) {
-        hueGroup = 'warm-neutral'; // Warm undertones (beige, taupe, warm grays)
-      } else if (hue >= 180 && hue <= 240) {
-        hueGroup = 'cool-neutral'; // Cool undertones (blue-grays, cool grays)
+      if (hue >= 15 && hue <= 30) {
+        hueGroup = 'red-orange'; // Red-oranges
+      } else if (hue > 30 && hue <= 45) {
+        hueGroup = 'pure-orange'; // Pure oranges
+      } else if (hue > 45 && hue <= 60) {
+        hueGroup = 'yellow-orange'; // Yellow-oranges
       } else {
-        hueGroup = 'other-neutral'; // Other neutral tones
+        hueGroup = 'other'; // Other oranges
       }
       
       if (!hueGroups[hueGroup]) hueGroups[hueGroup] = [];
       hueGroups[hueGroup].push(color);
     });
     
-    // Sort each hue group by lightness primarily (light to dark)
+    // Sort each hue group by saturation and lightness
     Object.keys(hueGroups).forEach(group => {
       hueGroups[group].sort((a, b) => {
-        // Primary sort: lightness (light to dark)
-        const lightDiff = b.hsl.l - a.hsl.l;
-        if (Math.abs(lightDiff) > 5) return lightDiff;
+        // Primary sort: saturation (high to low for vibrancy)
+        const satDiff = b.hsl.s - a.hsl.s;
+        if (Math.abs(satDiff) > 10) return satDiff;
         
-        // Secondary sort: saturation (lower saturation first for neutrals)
-        return a.hsl.s - b.hsl.s;
+        // Secondary sort: lightness (light to dark)
+        return b.hsl.l - a.hsl.l;
       });
     });
     
     // Combine groups in a pleasing order
-    const groupOrder = ['warm-neutral', 'true-neutral', 'cool-neutral', 'other-neutral'];
+    const groupOrder = ['red-orange', 'pure-orange', 'yellow-orange', 'other'];
     const sortedColors = [];
     groupOrder.forEach(groupName => {
       if (hueGroups[groupName]) {
@@ -160,21 +158,21 @@ const NeutralSwatches = () => {
   };
 
   useEffect(() => {
-    const fetchNeutralColors = async () => {
+    const fetchOrangeColors = async () => {
       try {
         setLoading(true);
         setError(null);
         
-        // Fetch neutral paint colors from database
-        const neutralPaintColors = await getPaintColorsByCategory('neutrals');
+        // Fetch orange paint colors from database
+        const orangePaintColors = await getPaintColorsByCategory('oranges');
         
-        if (neutralPaintColors.length > 0) {
+        if (orangePaintColors.length > 0) {
           // Use real database colors
-          const organizedColors = organizeColorsIntoStrips(neutralPaintColors);
+          const organizedColors = organizeColorsIntoStrips(orangePaintColors);
           // setColors is called inside organizeColorsIntoStrips after padding
         } else {
           // Fallback to generated colors if no database colors found
-          console.warn('No neutral paint colors found in database, using generated colors');
+          console.warn('No orange paint colors found in database, using generated colors');
           const generatedColors = generateFallbackColors();
           setColors(generatedColors);
         }
@@ -190,7 +188,7 @@ const NeutralSwatches = () => {
       }
     };
 
-    fetchNeutralColors();
+    fetchOrangeColors();
   }, []);
 
   // Fallback function for when database is empty or fails
@@ -198,31 +196,19 @@ const NeutralSwatches = () => {
     const colorStrips = [];
     
     for (let strip = 0; strip < 10; strip++) {
+      const baseHue = 30 + (strip * 4); // Start at 30 degrees for orange
+      const baseSaturation = 70 + (strip * 3);
+      
       const stripColors = [];
       
       for (let shade = 0; shade < 9; shade++) {
         const lightness = 90 - (shade * 10);
-        let hue, saturation;
-        
-        // Create different types of neutrals
-        if (strip < 3) {
-          // Warm neutrals (beiges, taupes)
-          hue = 35 + (strip * 10);
-          saturation = 15 + (strip * 5);
-        } else if (strip < 6) {
-          // True grays
-          hue = 0;
-          saturation = 0;
-        } else {
-          // Cool grays
-          hue = 200 + (strip * 5);
-          saturation = 8 + (strip * 2);
-        }
+        const adjustedSaturation = Math.min(baseSaturation + (shade * 2), 100);
         
         stripColors.push({
           id: `fallback-${strip}-${shade}`,
-          name: `Neutral ${strip + 1}-${shade + 1}`,
-          hex: hslToHex(hue, saturation, lightness),
+          name: `Orange ${strip + 1}-${shade + 1}`,
+          hex: hslToHex(baseHue, adjustedSaturation, lightness),
           lightness: lightness,
           strip: strip,
           position: shade
@@ -259,7 +245,7 @@ const NeutralSwatches = () => {
         .title {
           font-size: 2.5rem;
           font-weight: 700;
-          color: #8d7053;
+          color: #ea580c;
           margin-bottom: 0.5rem;
         }
 
@@ -439,7 +425,7 @@ const NeutralSwatches = () => {
                 width: '40px', 
                 height: '40px', 
                 border: '3px solid #f3f3f3', 
-                borderTop: '3px solid #8d7053',
+                borderTop: '3px solid #ea580c',
                 borderRadius: '50%',
                 animation: 'spin 1s linear infinite',
                 margin: '0 auto'
@@ -516,4 +502,4 @@ const NeutralSwatches = () => {
   );
 };
 
-export default NeutralSwatches;
+export default OrangeSwatches;

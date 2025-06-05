@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getPaintColorsByCategory } from '../firebase/firestore';
+import { getPaintColorsByCategory } from '../../firebase/firestore';
 
-const PurpleSwatches = () => {
+const YellowSwatches = () => {
   const navigate = useNavigate();
   const [colors, setColors] = useState([]);
   const [selectedColor, setSelectedColor] = useState(null);
@@ -19,20 +19,20 @@ const PurpleSwatches = () => {
       hsl: hexToHSL(color.hex)
     }));
     
-    // Group by hue ranges first (different purple tones)
+    // Group by hue ranges first (different yellow tones)
     const hueGroups = {};
     colorsWithHSL.forEach(color => {
       const hue = color.hsl.h;
-      // Group by hue ranges: blue-purples (250-280), pure purples (280-320), red-purples (320-360)
+      // Group by hue ranges: pure yellows (45-65), yellow-greens (65-85), yellow-oranges (25-45)
       let hueGroup;
-      if (hue >= 280 && hue <= 320) {
-        hueGroup = 'pure-purple'; // Pure purples
-      } else if (hue >= 250 && hue < 280) {
-        hueGroup = 'blue-purple'; // Blue-purples
-      } else if (hue > 320 || hue < 20) {
-        hueGroup = 'red-purple'; // Red-purples (includes wraparound)
+      if (hue >= 45 && hue <= 65) {
+        hueGroup = 'pure-yellow'; // Pure yellows
+      } else if (hue > 65 && hue <= 85) {
+        hueGroup = 'yellow-green'; // Yellow-greens
+      } else if (hue >= 25 && hue < 45) {
+        hueGroup = 'yellow-orange'; // Yellow-oranges
       } else {
-        hueGroup = 'other'; // Other purples
+        hueGroup = 'other'; // Other yellows
       }
       
       if (!hueGroups[hueGroup]) hueGroups[hueGroup] = [];
@@ -52,7 +52,7 @@ const PurpleSwatches = () => {
     });
     
     // Combine groups in a pleasing order
-    const groupOrder = ['blue-purple', 'pure-purple', 'red-purple', 'other'];
+    const groupOrder = ['yellow-orange', 'pure-yellow', 'yellow-green', 'other'];
     const sortedColors = [];
     groupOrder.forEach(groupName => {
       if (hueGroups[groupName]) {
@@ -158,21 +158,21 @@ const PurpleSwatches = () => {
   };
 
   useEffect(() => {
-    const fetchPurpleColors = async () => {
+    const fetchYellowColors = async () => {
       try {
         setLoading(true);
         setError(null);
         
-        // Fetch purple paint colors from database
-        const purplePaintColors = await getPaintColorsByCategory('purples');
+        // Fetch yellow paint colors from database
+        const yellowPaintColors = await getPaintColorsByCategory('yellows');
         
-        if (purplePaintColors.length > 0) {
+        if (yellowPaintColors.length > 0) {
           // Use real database colors
-          const organizedColors = organizeColorsIntoStrips(purplePaintColors);
+          const organizedColors = organizeColorsIntoStrips(yellowPaintColors);
           // setColors is called inside organizeColorsIntoStrips after padding
         } else {
           // Fallback to generated colors if no database colors found
-          console.warn('No purple paint colors found in database, using generated colors');
+          console.warn('No yellow paint colors found in database, using generated colors');
           const generatedColors = generateFallbackColors();
           setColors(generatedColors);
         }
@@ -188,7 +188,7 @@ const PurpleSwatches = () => {
       }
     };
 
-    fetchPurpleColors();
+    fetchYellowColors();
   }, []);
 
   // Fallback function for when database is empty or fails
@@ -196,7 +196,7 @@ const PurpleSwatches = () => {
     const colorStrips = [];
     
     for (let strip = 0; strip < 10; strip++) {
-      const baseHue = 270 + (strip * 5); // Purple hues range from 270-320
+      const baseHue = 55 + (strip * 3); // Yellow hues range from 45-75
       const baseSaturation = 70 + (strip * 3);
       
       const stripColors = [];
@@ -207,7 +207,7 @@ const PurpleSwatches = () => {
         
         stripColors.push({
           id: `fallback-${strip}-${shade}`,
-          name: `Purple ${strip + 1}-${shade + 1}`,
+          name: `Yellow ${strip + 1}-${shade + 1}`,
           hex: hslToHex(baseHue, adjustedSaturation, lightness),
           lightness: lightness,
           strip: strip,
@@ -245,7 +245,7 @@ const PurpleSwatches = () => {
         .title {
           font-size: 2.5rem;
           font-weight: 700;
-          color: #805ad5;
+          color: #d69e2e;
           margin-bottom: 0.5rem;
         }
 
@@ -425,7 +425,7 @@ const PurpleSwatches = () => {
                 width: '40px', 
                 height: '40px', 
                 border: '3px solid #f3f3f3', 
-                borderTop: '3px solid #805ad5',
+                borderTop: '3px solid #d69e2e',
                 borderRadius: '50%',
                 animation: 'spin 1s linear infinite',
                 margin: '0 auto'
@@ -502,4 +502,4 @@ const PurpleSwatches = () => {
   );
 };
 
-export default PurpleSwatches;
+export default YellowSwatches;

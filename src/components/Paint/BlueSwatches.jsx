@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getPaintColorsByCategory } from '../firebase/firestore';
+import { getPaintColorsByCategory } from '../../firebase/firestore';
 
-const YellowSwatches = () => {
+const BlueSwatches = () => {
   const navigate = useNavigate();
   const [colors, setColors] = useState([]);
   const [selectedColor, setSelectedColor] = useState(null);
@@ -19,20 +19,20 @@ const YellowSwatches = () => {
       hsl: hexToHSL(color.hex)
     }));
     
-    // Group by hue ranges first (different yellow tones)
+    // Group by hue ranges first (different blue tones)
     const hueGroups = {};
     colorsWithHSL.forEach(color => {
       const hue = color.hsl.h;
-      // Group by hue ranges: pure yellows (45-65), yellow-greens (65-85), yellow-oranges (25-45)
+      // Group by hue ranges: blue-greens (180-210), pure blues (210-250), blue-purples (250-280)
       let hueGroup;
-      if (hue >= 45 && hue <= 65) {
-        hueGroup = 'pure-yellow'; // Pure yellows
-      } else if (hue > 65 && hue <= 85) {
-        hueGroup = 'yellow-green'; // Yellow-greens
-      } else if (hue >= 25 && hue < 45) {
-        hueGroup = 'yellow-orange'; // Yellow-oranges
+      if (hue >= 210 && hue <= 250) {
+        hueGroup = 'pure-blue'; // Pure blues
+      } else if (hue >= 180 && hue < 210) {
+        hueGroup = 'blue-green'; // Blue-greens
+      } else if (hue > 250 && hue <= 280) {
+        hueGroup = 'blue-purple'; // Blue-purples
       } else {
-        hueGroup = 'other'; // Other yellows
+        hueGroup = 'other'; // Other blues
       }
       
       if (!hueGroups[hueGroup]) hueGroups[hueGroup] = [];
@@ -52,7 +52,7 @@ const YellowSwatches = () => {
     });
     
     // Combine groups in a pleasing order
-    const groupOrder = ['yellow-orange', 'pure-yellow', 'yellow-green', 'other'];
+    const groupOrder = ['blue-green', 'pure-blue', 'blue-purple', 'other'];
     const sortedColors = [];
     groupOrder.forEach(groupName => {
       if (hueGroups[groupName]) {
@@ -158,21 +158,21 @@ const YellowSwatches = () => {
   };
 
   useEffect(() => {
-    const fetchYellowColors = async () => {
+    const fetchBlueColors = async () => {
       try {
         setLoading(true);
         setError(null);
         
-        // Fetch yellow paint colors from database
-        const yellowPaintColors = await getPaintColorsByCategory('yellows');
+        // Fetch blue paint colors from database
+        const bluePaintColors = await getPaintColorsByCategory('blues');
         
-        if (yellowPaintColors.length > 0) {
+        if (bluePaintColors.length > 0) {
           // Use real database colors
-          const organizedColors = organizeColorsIntoStrips(yellowPaintColors);
+          const organizedColors = organizeColorsIntoStrips(bluePaintColors);
           // setColors is called inside organizeColorsIntoStrips after padding
         } else {
           // Fallback to generated colors if no database colors found
-          console.warn('No yellow paint colors found in database, using generated colors');
+          console.warn('No blue paint colors found in database, using generated colors');
           const generatedColors = generateFallbackColors();
           setColors(generatedColors);
         }
@@ -188,7 +188,7 @@ const YellowSwatches = () => {
       }
     };
 
-    fetchYellowColors();
+    fetchBlueColors();
   }, []);
 
   // Fallback function for when database is empty or fails
@@ -196,7 +196,7 @@ const YellowSwatches = () => {
     const colorStrips = [];
     
     for (let strip = 0; strip < 10; strip++) {
-      const baseHue = 55 + (strip * 3); // Yellow hues range from 45-75
+      const baseHue = 200 + (strip * 5); // Blue hues range from 200-250
       const baseSaturation = 70 + (strip * 3);
       
       const stripColors = [];
@@ -207,7 +207,7 @@ const YellowSwatches = () => {
         
         stripColors.push({
           id: `fallback-${strip}-${shade}`,
-          name: `Yellow ${strip + 1}-${shade + 1}`,
+          name: `Blue ${strip + 1}-${shade + 1}`,
           hex: hslToHex(baseHue, adjustedSaturation, lightness),
           lightness: lightness,
           strip: strip,
@@ -245,7 +245,7 @@ const YellowSwatches = () => {
         .title {
           font-size: 2.5rem;
           font-weight: 700;
-          color: #d69e2e;
+          color: #3182ce;
           margin-bottom: 0.5rem;
         }
 
@@ -425,7 +425,7 @@ const YellowSwatches = () => {
                 width: '40px', 
                 height: '40px', 
                 border: '3px solid #f3f3f3', 
-                borderTop: '3px solid #d69e2e',
+                borderTop: '3px solid #3182ce',
                 borderRadius: '50%',
                 animation: 'spin 1s linear infinite',
                 margin: '0 auto'
@@ -502,4 +502,4 @@ const YellowSwatches = () => {
   );
 };
 
-export default YellowSwatches;
+export default BlueSwatches;

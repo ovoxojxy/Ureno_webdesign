@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getPaintColorsByCategory } from '../firebase/firestore';
+import { getPaintColorsByCategory } from '../../firebase/firestore';
 
-const OrangeSwatches = () => {
+const PurpleSwatches = () => {
   const navigate = useNavigate();
   const [colors, setColors] = useState([]);
   const [selectedColor, setSelectedColor] = useState(null);
@@ -19,20 +19,20 @@ const OrangeSwatches = () => {
       hsl: hexToHSL(color.hex)
     }));
     
-    // Group by hue ranges for orange tones
+    // Group by hue ranges first (different purple tones)
     const hueGroups = {};
     colorsWithHSL.forEach(color => {
       const hue = color.hsl.h;
-      // Group by hue ranges: red-oranges (15-30), pure oranges (30-45), yellow-oranges (45-60)
+      // Group by hue ranges: blue-purples (250-280), pure purples (280-320), red-purples (320-360)
       let hueGroup;
-      if (hue >= 15 && hue <= 30) {
-        hueGroup = 'red-orange'; // Red-oranges
-      } else if (hue > 30 && hue <= 45) {
-        hueGroup = 'pure-orange'; // Pure oranges
-      } else if (hue > 45 && hue <= 60) {
-        hueGroup = 'yellow-orange'; // Yellow-oranges
+      if (hue >= 280 && hue <= 320) {
+        hueGroup = 'pure-purple'; // Pure purples
+      } else if (hue >= 250 && hue < 280) {
+        hueGroup = 'blue-purple'; // Blue-purples
+      } else if (hue > 320 || hue < 20) {
+        hueGroup = 'red-purple'; // Red-purples (includes wraparound)
       } else {
-        hueGroup = 'other'; // Other oranges
+        hueGroup = 'other'; // Other purples
       }
       
       if (!hueGroups[hueGroup]) hueGroups[hueGroup] = [];
@@ -52,7 +52,7 @@ const OrangeSwatches = () => {
     });
     
     // Combine groups in a pleasing order
-    const groupOrder = ['red-orange', 'pure-orange', 'yellow-orange', 'other'];
+    const groupOrder = ['blue-purple', 'pure-purple', 'red-purple', 'other'];
     const sortedColors = [];
     groupOrder.forEach(groupName => {
       if (hueGroups[groupName]) {
@@ -158,21 +158,21 @@ const OrangeSwatches = () => {
   };
 
   useEffect(() => {
-    const fetchOrangeColors = async () => {
+    const fetchPurpleColors = async () => {
       try {
         setLoading(true);
         setError(null);
         
-        // Fetch orange paint colors from database
-        const orangePaintColors = await getPaintColorsByCategory('oranges');
+        // Fetch purple paint colors from database
+        const purplePaintColors = await getPaintColorsByCategory('purples');
         
-        if (orangePaintColors.length > 0) {
+        if (purplePaintColors.length > 0) {
           // Use real database colors
-          const organizedColors = organizeColorsIntoStrips(orangePaintColors);
+          const organizedColors = organizeColorsIntoStrips(purplePaintColors);
           // setColors is called inside organizeColorsIntoStrips after padding
         } else {
           // Fallback to generated colors if no database colors found
-          console.warn('No orange paint colors found in database, using generated colors');
+          console.warn('No purple paint colors found in database, using generated colors');
           const generatedColors = generateFallbackColors();
           setColors(generatedColors);
         }
@@ -188,7 +188,7 @@ const OrangeSwatches = () => {
       }
     };
 
-    fetchOrangeColors();
+    fetchPurpleColors();
   }, []);
 
   // Fallback function for when database is empty or fails
@@ -196,7 +196,7 @@ const OrangeSwatches = () => {
     const colorStrips = [];
     
     for (let strip = 0; strip < 10; strip++) {
-      const baseHue = 30 + (strip * 4); // Start at 30 degrees for orange
+      const baseHue = 270 + (strip * 5); // Purple hues range from 270-320
       const baseSaturation = 70 + (strip * 3);
       
       const stripColors = [];
@@ -207,7 +207,7 @@ const OrangeSwatches = () => {
         
         stripColors.push({
           id: `fallback-${strip}-${shade}`,
-          name: `Orange ${strip + 1}-${shade + 1}`,
+          name: `Purple ${strip + 1}-${shade + 1}`,
           hex: hslToHex(baseHue, adjustedSaturation, lightness),
           lightness: lightness,
           strip: strip,
@@ -245,7 +245,7 @@ const OrangeSwatches = () => {
         .title {
           font-size: 2.5rem;
           font-weight: 700;
-          color: #ea580c;
+          color: #805ad5;
           margin-bottom: 0.5rem;
         }
 
@@ -425,7 +425,7 @@ const OrangeSwatches = () => {
                 width: '40px', 
                 height: '40px', 
                 border: '3px solid #f3f3f3', 
-                borderTop: '3px solid #ea580c',
+                borderTop: '3px solid #805ad5',
                 borderRadius: '50%',
                 animation: 'spin 1s linear infinite',
                 margin: '0 auto'
@@ -502,4 +502,4 @@ const OrangeSwatches = () => {
   );
 };
 
-export default OrangeSwatches;
+export default PurpleSwatches;

@@ -3,7 +3,7 @@ import { useAuth } from "../contexts/authContext";
 import { useNavigate } from "react-router-dom";
 import NewNav from "../components/ui/newNav";
 import Footer from "../components/footer";
-import WhiteSwatches from "../components/WhiteSwatches";
+import WhiteSwatches from "../components/Paint/WhiteSwatches";
 import "../styles/FlooringProduct.css";
 
 export default function WhiteShadesPage() {

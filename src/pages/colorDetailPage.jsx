@@ -1,7 +1,7 @@
 import { useAuth } from "@/contexts/authContext";
 import NewNav from "@/components/ui/newNav";
 import Footer from "../components/footer";
-import ColorDetail from "../components/color-detail";
+import ColorDetail from "../components/Paint/color-detail";
 import "../styles/productDetailPage.css";
 
 export default function ColorDetailPage() {
