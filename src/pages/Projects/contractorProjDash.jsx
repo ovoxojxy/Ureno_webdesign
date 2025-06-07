@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { collection, getDocs, query, where, doc, updateDoc } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase/firebaseConfig";
 import { useUser } from "../../contexts/authContext/UserContext";
+import { useNavigate } from 'react-router-dom';
 import styles from '../../../NewComponents/projectdash.module.css';
 import defaultProfile from "../../assets/images/profile-svgrepo-com.png"
 
 const ProjectDashboard = () => {
   const { profile, user } = useUser();
+  const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -105,116 +107,10 @@ const ProjectDashboard = () => {
 
   if (loading) return <div className="max-w-6xl mx-auto p-4">Loading projects...</div>;
 
-  const handleActionChange = async (projectId, action) => {
-    if (action !== 'Actions') {
-      console.log(`Action "${action}" selected for project ${projectId}`);
-      
-      try {
-        const projectRef = doc(db, "projects", projectId);
-        
-        switch (action) {
-          case 'Start project':
-            await updateDoc(projectRef, {
-              status: "in progress",
-              contractorId: user.uid,
-              updatedAt: new Date()
-            });
-            break;
-          case 'Send for QA':
-            await updateDoc(projectRef, {
-              status: "under review",
-              updatedAt: new Date()
-            });
-            break;
-          case 'Send invoice':
-            await updateDoc(projectRef, {
-              status: "pending payment",
-              updatedAt: new Date()
-            });
-            break;
-          case 'Complete project':
-            await updateDoc(projectRef, {
-              status: "completed",
-              updatedAt: new Date()
-            });
-            break;
-          default:
-            break;
-        }
-        
-        // Refresh projects after action
-        const updatedProjects = projects.map(project => {
-          if (project.id === projectId) {
-            return { 
-              ...project, 
-              status: action === 'Start project' ? 'in progress' : 
-                     action === 'Send for QA' ? 'under review' :
-                     action === 'Send invoice' ? 'pending payment' :
-                     action === 'Complete project' ? 'completed' : project.status,
-              contractorId: action === 'Start project' ? user.uid : project.contractorId
-            };
-          }
-          return project;
-        });
-        setProjects(updatedProjects);
-        
-      } catch (error) {
-        console.error("Error updating project:", error);
-        alert("Error updating project. Please try again.");
-      }
-    }
+  const handleViewDetails = (projectId) => {
+    navigate(`/projects/view/${projectId}`);
   };
 
-  const ActionDropdown = ({ projectId, projectStatus, onActionChange }) => {
-    const [selectedAction, setSelectedAction] = useState('Actions');
-
-    const handleChange = (e) => {
-      const value = e.target.value;
-      setSelectedAction(value);
-      onActionChange(projectId, value);
-      
-      // Reset to default after action
-      setTimeout(() => setSelectedAction('Actions'), 100);
-    };
-
-    // Get available actions based on project status
-    const getAvailableActions = () => {
-      switch (projectStatus) {
-        case 'submitted':
-        case 'inquiry':
-          return ['Start project'];
-        case 'in progress':
-          return ['Send for QA', 'Complete project'];
-        case 'under review':
-          return ['Send invoice', 'Complete project'];
-        case 'pending payment':
-          return ['Complete project'];
-        default:
-          return [];
-      }
-    };
-
-    const availableActions = getAvailableActions();
-
-    if (availableActions.length === 0) {
-      return <span className={styles['no-actions-text']}>No actions available</span>;
-    }
-
-    return (
-      <form onSubmit={(e) => e.preventDefault()}>
-        <select 
-          className="border border-gray-300 rounded-md px-3 py-1 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          value={selectedAction}
-          onChange={handleChange}
-        >
-          <option>Actions</option>
-          {availableActions.map(action => (
-            <option key={action} value={action}>{action}</option>
-          ))}
-        </select>
-      </form>
-    );
-  };
 
   return (
     <div className="w-full">
@@ -233,7 +129,7 @@ const ProjectDashboard = () => {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Owner + Details</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Budget</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Details</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -293,11 +189,12 @@ const ProjectDashboard = () => {
                               </span>
                             </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <ActionDropdown 
-                            projectId={project.id}
-                            projectStatus={project.status}
-                            onActionChange={handleActionChange}
-                          />
+                          <button
+                            onClick={() => handleViewDetails(project.id)}
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm transition-colors duration-200"
+                          >
+                            View Project Details
+                          </button>
                         </td>
                           </tr>
                         );

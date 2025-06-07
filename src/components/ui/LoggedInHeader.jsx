@@ -74,11 +74,11 @@ const LoggedInHeader = ({ user }) => {
 
       <div className="md:flex md:items-center md:gap-12">
         <nav aria-label="Global" className="hidden md:block">
-          <ul className="flex items-center gap-6 text-sm">
+          <ul className="flex items-center gap-6 text-sm" style={{fontFamily: 'Sansation'}}>
 
 
             <li>
-              <Link to="/testchat" className="text-black-500 transition hover:text-gray-500/75">
+              <Link to="/testchat" className="text-black-500 transition hover:text-gray-500/75" style={{fontFamily: 'Sansation'}}>
                 AI Designer
               </Link>
             </li>
@@ -86,13 +86,13 @@ const LoggedInHeader = ({ user }) => {
 
             <li>
               <Link to='/messages'>
-                <p className="text-black-500 transition hover:text-gray-500/75" > Messages </p>
+                <p className="text-black-500 transition hover:text-gray-500/75" style={{fontFamily: 'Sansation'}}> Messages </p>
               </Link>
               
             </li>
 
             <li>
-              <Link to="/products" className="text-black-500 transition hover:text-gray-500/75">
+              <Link to="/products" className="text-black-500 transition hover:text-gray-500/75" style={{fontFamily: 'Sansation'}}>
                 Products
               </Link>
             </li>
@@ -100,11 +100,11 @@ const LoggedInHeader = ({ user }) => {
             <li>
               {profile?.role === 'contractor' ? (
                 <Link to='/available-projects'>
-                  <p role='menuitem'className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700">Projects</p>
+                  <p role='menuitem' className="block rounded-lg px-4 py-2 text-sm text-black-500 hover:bg-gray-50 hover:text-gray-700" style={{fontFamily: 'Sansation'}}>Projects</p>
                 </Link>
               ) : (
                 <Link to='/projects'>
-                  <p role='menuitem'  className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700">Projects</p>
+                  <p role='menuitem' className="block rounded-lg px-4 py-2 text-sm text-black-500 hover:bg-gray-50 hover:text-gray-700" style={{fontFamily: 'Sansation'}}>Projects</p>
                 </Link>
               )}
             </li>
@@ -134,21 +134,21 @@ const LoggedInHeader = ({ user }) => {
             <div className="p-2">
               {profile?.role === 'contractor' ? (
                 <Link to='/contractor-dashboard'>
-                  <p role='menuitem'className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700">My Profile</p>
+                  <p role='menuitem' className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700" style={{fontFamily: 'Sansation'}}>My Profile</p>
                 </Link>
               ) : (
                 <Link to='/ProfileDashboard'>
-                  <p role='menuitem'  className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700">My Profile</p>
+                  <p role='menuitem' className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700" style={{fontFamily: 'Sansation'}}>My Profile</p>
                 </Link>
               )}
 
               
 
-              <Link to="/designs" role="menuitem" className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700">
+              <Link to="/designs" role="menuitem" className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700" style={{fontFamily: 'Sansation'}}>
                 Designs
               </Link>
               
-              <Link to="/reviews" role="menuitem" className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700">
+              <Link to="/reviews" role="menuitem" className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700" style={{fontFamily: 'Sansation'}}>
                 Reviews
               </Link>
             </div>
@@ -159,6 +159,7 @@ const LoggedInHeader = ({ user }) => {
                   onClick={handleLogout}
                   className="flex w-full items-center gap-2 rounded-lg px-4 py-2 text-sm text-red-700 hover:bg-red-50"
                   role="menuitem"
+                  style={{fontFamily: 'Sansation'}}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -208,6 +209,7 @@ const LoggedInHeader = ({ user }) => {
                   to="/testchat"
                   className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                   onClick={() => setIsMobileMenuOpen(false)}
+                  style={{fontFamily: 'Sansation'}}
                 >
                   AI Designer
                 </Link>
@@ -215,6 +217,7 @@ const LoggedInHeader = ({ user }) => {
                   to="/messages"
                   className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                   onClick={() => setIsMobileMenuOpen(false)}
+                  style={{fontFamily: 'Sansation'}}
                 >
                   Messages
                 </Link>
@@ -230,6 +233,7 @@ const LoggedInHeader = ({ user }) => {
                   to="/available-projects"
                   className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                   onClick={() => setIsMobileMenuOpen(false)}
+                  style={{fontFamily: 'Sansation'}}
                   >
                     Projects
                   </Link>
@@ -238,6 +242,7 @@ const LoggedInHeader = ({ user }) => {
                   to="/projects"
                   className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                   onClick={() => setIsMobileMenuOpen(false)}
+                  style={{fontFamily: 'Sansation'}}
                   >
                     Projects
                   </Link>
@@ -249,6 +254,7 @@ const LoggedInHeader = ({ user }) => {
                     to="/contractor-dashboard"
                     className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                     onClick={() => setIsMobileMenuOpen(false)}
+                    style={{fontFamily: 'Sansation'}}
                   >
                     My Profile
                   </Link>
@@ -257,6 +263,7 @@ const LoggedInHeader = ({ user }) => {
                     to="/ProfileDashboard"
                     className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                     onClick={() => setIsMobileMenuOpen(false)}
+                    style={{fontFamily: 'Sansation'}}
                   >
                     My Profile
                   </Link>
@@ -265,6 +272,7 @@ const LoggedInHeader = ({ user }) => {
                   to="/designs"
                   className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                   onClick={() => setIsMobileMenuOpen(false)}
+                  style={{fontFamily: 'Sansation'}}
                 >
                   Designs
                 </Link>
@@ -272,6 +280,7 @@ const LoggedInHeader = ({ user }) => {
                   to="/reviews"
                   className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                   onClick={() => setIsMobileMenuOpen(false)}
+                  style={{fontFamily: 'Sansation'}}
                 >
                   Reviews
                 </Link>
@@ -281,6 +290,7 @@ const LoggedInHeader = ({ user }) => {
                     handleLogout()
                   }}
                   className="flex w-full items-center gap-2 rounded-lg px-4 py-2 text-sm text-red-700 hover:bg-red-50"
+                  style={{fontFamily: 'Sansation'}}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

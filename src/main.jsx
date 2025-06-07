@@ -35,6 +35,7 @@ import EditProject from './pages/Projects/EditProject'
 import AvailableProjects from './pages/Projects/AvailableProjects'
 import ContractorDashboard from './pages/Dashboard/contractorDashboard'
 import ProjectDetails from './pages/Projects/projectDetails'
+import NewProjectDetails from './pages/Projects/newProjectDetails'
 import ProjectRequests from './pages/Projects/projectRequests'
 import ProjectInquiries from './pages/Projects/ProjectInquiries'
 import AIChat from './components/AI_Design/AIChat'
@@ -134,7 +135,8 @@ root.render(
               <Route path="/projects/edit/:projectId" element={<EditProject />} />
               <Route path="/contractor-dashboard" element={<ProtectedContractorRoute><ContractorDashboard /></ProtectedContractorRoute>} />
               <Route path="/available-projects" element={<ProtectedContractorRoute><AvailableProjects /></ProtectedContractorRoute>} />
-              <Route path="/projects/view/:projectId" element={<ProtectedContractorRoute><ProjectDetails /></ProtectedContractorRoute>} />
+              {/* <Route path="/projects/view/:projectId" element={<ProtectedContractorRoute><ProjectDetails /></ProtectedContractorRoute>} /> */}
+              <Route path="/projects/view/:projectId" element={<ProtectedContractorRoute><NewProjectDetails/></ProtectedContractorRoute>} />
               <Route path="/projects/:id/requests" element={<ProjectRequests />} />
               <Route path="/projects/:id/inquiries" element={<ProjectInquiries />} />
               <Route path="/LearnMore" element={<UrenoLearnMore />} />

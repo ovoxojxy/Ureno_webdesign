@@ -39,11 +39,12 @@ const LoggedOutHeader = () => {
 
             <div className="md:flex md:items-center md:gap-12">
               <nav aria-label="Global" className="hidden md:block">
-                <ul className="flex items-center gap-6 text-sm">
+                <ul className="flex items-center gap-6 text-sm" style={{fontFamily: 'Sansation'}}>
                   <li>
                     <Link
                       to="/testchat"
                       className="text-black-500 transition hover:text-gray-500/75"
+                      style={{fontFamily: 'Sansation'}}
                     >
                       AI Designer
                     </Link>
@@ -53,10 +54,10 @@ const LoggedOutHeader = () => {
 
               <div className="hidden md:flex md:items-center md:gap-4">
                 <Link to="/sign-in">  
-                  <p className="btn try-now" href="#" style={{marginTop: 0}}>Login</p>
+                  <p className="btn try-now" href="#" style={{marginTop: 0, fontFamily: 'Sansation'}}>Login</p>
                 </Link>
                 <Link to='/sign-up'>
-                  <p className="btn try-now" href="#" style={{marginTop: 0}}>Register</p>
+                  <p className="btn try-now" href="#" style={{marginTop: 0, fontFamily: 'Sansation'}}>Register</p>
                 </Link>
                 
               </div>
@@ -86,6 +87,7 @@ const LoggedOutHeader = () => {
                         to="/testchat"
                         className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                         onClick={() => setIsMobileMenuOpen(false)}
+                        style={{fontFamily: 'Sansation'}}
                       >
                         AI Designer
                       </Link>
@@ -93,6 +95,7 @@ const LoggedOutHeader = () => {
                         href="#"
                         className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                         onClick={() => setIsMobileMenuOpen(false)}
+                        style={{fontFamily: 'Sansation'}}
                       >
                         Login
                       </a>
@@ -100,6 +103,7 @@ const LoggedOutHeader = () => {
                         href="#"
                         className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                         onClick={() => setIsMobileMenuOpen(false)}
+                        style={{fontFamily: 'Sansation'}}
                       >
                         Register
                       </a>
