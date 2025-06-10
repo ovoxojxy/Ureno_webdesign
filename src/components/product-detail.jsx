@@ -4,12 +4,16 @@ import { doc, getDoc } from "firebase/firestore"
 import { db } from "../firebase/firestore";
 import defaultImage from "../assets/images/Image-not-found.png"
 import SuggestedProducts from "./SuggestedProducts"
+import { useCart } from "../contexts/CartContext"
 
 const ProductDetail = () => {
 
     const { productId } = useParams()
     const [product, setProduct] = useState(null)
     const [mainImage, setMainImage] = useState(null)
+    const { addToCart } = useCart()
+    const [quantity, setQuantity] = useState("")
+    const [isAdding, setIsAdding] = useState(false)
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -30,6 +34,31 @@ const ProductDetail = () => {
 
     if (productId) fetchProduct()
     }, [productId])
+
+    const handleAddToCart = async () => {
+        if (!product) return;
+        
+        const sqft = parseInt(quantity) || 1;
+        
+        // Confirmation dialog
+        const confirmed = window.confirm(
+            `Add ${sqft} sqft of "${product.title}" to your cart?\n\nPrice: $${typeof product.price === 'string' ? product.price.replace(/[^0-9.]/g, '') : product.price}/sqft\nTotal: $${((typeof product.price === 'string' ? parseFloat(product.price.replace(/[^0-9.]/g, '')) : product.price) * sqft).toFixed(2)}`
+        );
+        
+        if (!confirmed) return;
+        
+        setIsAdding(true);
+        try {
+            await addToCart(product, sqft);
+            setQuantity(""); // Clear input after successful add
+            alert(`Successfully added ${sqft} sqft of "${product.title}" to your cart!`);
+        } catch (error) {
+            console.error('Error adding to cart:', error);
+            alert('Failed to add item to cart. Please try again.');
+        } finally {
+            setIsAdding(false);
+        }
+    };
 
 
     if(!product) {
@@ -63,13 +92,44 @@ const ProductDetail = () => {
                                 </div>
                             </div>
     
-                            <a href="">View specifications</a>
+                           
                         </div>
     
                         <div className="description">
-                            <p>
-                                Default Description
-                            </p>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <p>
+                                    Default Description
+                                </p>
+                                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                                    <button 
+                                        style={{ 
+                                            padding: '8px 16px',
+                                            backgroundColor: '#28a745',
+                                            color: 'white',
+                                            border: 'none',
+                                            borderRadius: '4px',
+                                            cursor: 'pointer'
+                                        }}
+                                        onClick={handleAddToCart}
+                                        disabled={isAdding}
+                                    >
+                                        {isAdding ? 'Adding...' : 'Add to Cart'}
+                                    </button>
+                                    <button 
+                                        style={{ 
+                                            padding: '8px 16px',
+                                            backgroundColor: '#007bff',
+                                            color: 'white',
+                                            border: 'none',
+                                            borderRadius: '4px',
+                                            cursor: 'pointer'
+                                        }}
+                                        onClick={() => console.log('Add to project clicked')}
+                                    >
+                                        Add to Project
+                                    </button>
+                                </div>
+                            </div>
     
                             <a href="">Product Details</a>
                             <a href="">Reviews</a>
@@ -126,26 +186,72 @@ const ProductDetail = () => {
 
                         <div className="price-link">
                             <div className="title-left">
-                                <p>{product.price}</p>
+                                <p>${product.price}/sqft</p>
                             </div>
                             <div className="title-right">
                                 <a href="">See in my room</a>
                             </div>
                         </div>
 
-                        <a href="">View specifications</a>
                     </div>
 
                     <div className="description">
                         <p>
-                            {product.description}
-                        </p>
-
-                        <p>
                             {product.overview}
                         </p>
 
-                        <a href="">Product Details</a>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            
+                            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <label htmlFor="quantity" style={{ fontSize: '14px' }}>Sqft:</label>
+                                    <input
+                                        id="quantity"
+                                        type="number"
+                                        min="1"
+                                        value={quantity}
+                                        onChange={(e) => setQuantity(e.target.value)}
+                                        placeholder="1"
+                                        style={{
+                                            width: '60px',
+                                            padding: '4px 8px',
+                                            border: '1px solid #ccc',
+                                            borderRadius: '4px'
+                                        }}
+                                    />
+                                </div>
+                                <button 
+                                    style={{ 
+                                        padding: '8px 16px',
+                                        backgroundColor: '#28a745',
+                                        color: 'white',
+                                        border: 'none',
+                                        borderRadius: '4px',
+                                        cursor: 'pointer'
+                                    }}
+                                    onClick={handleAddToCart}
+                                    disabled={isAdding}
+                                >
+                                    {isAdding ? 'Adding...' : 'Add to Cart'}
+                                </button>
+                                <button 
+                                    style={{ 
+                                        padding: '8px 16px',
+                                        backgroundColor: '#007bff',
+                                        color: 'white',
+                                        border: 'none',
+                                        borderRadius: '4px',
+                                        cursor: 'pointer'
+                                    }}
+                                    onClick={() => console.log('Add to project clicked')}
+                                >
+                                    Add to Project
+                                </button>
+                            </div>
+                        </div>
+
+
+                        
                         <a href="">Reviews</a>
                     
                     </div>

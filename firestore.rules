@@ -136,6 +136,13 @@ service cloud.firestore {
       allow delete: if request.auth != null && 
                    resource.data.userId == request.auth.uid;
     }
+
+    // Shopping carts
+    match /carts/{userId} {
+      // Allow users to read and write only their own cart
+      allow read, write: if request.auth != null && 
+                        request.auth.uid == userId;
+    }
     
     // Default deny
     match /{document=**} {

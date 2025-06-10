@@ -6,6 +6,8 @@ import { useAuth } from '@/contexts/authContext'
 import { doSignOut } from '@/firebase/auth'
 import { UserContext } from '@/contexts/authContext/UserContext'
 import { useToast } from '@/hooks/use-toast'
+import CartIcon from './CartIcon'
+import CartModal from './CartModal'
 
 
 
@@ -15,6 +17,7 @@ const LoggedInHeader = ({ user }) => {
   const [loggedOut, setLoggedOut] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isCartOpen, setIsCartOpen] = useState(false)
   const menuRef = useRef(null)
   const mobileMenuRef = useRef(null)
 
@@ -59,6 +62,7 @@ const LoggedInHeader = ({ user }) => {
   }
 
     return (
+        <>
         <header className="bg-white">
             <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
     <div className="flex h-16 items-center justify-between">
@@ -111,20 +115,23 @@ const LoggedInHeader = ({ user }) => {
           </ul>
         </nav>
 
-        <div className="hidden md:relative md:block" ref={menuRef}>
-          <button
-            type="button"
-            onClick={toggleMenu}
-            className="overflow-hidden rounded-full border border-gray-300 shadow-inner"
-          >
-            <span className="sr-only">Toggle dashboard menu</span>
+        <div className="flex items-center gap-4">
+          <CartIcon onClick={() => setIsCartOpen(true)} />
+          
+          <div className="hidden md:relative md:block" ref={menuRef}>
+            <button
+              type="button"
+              onClick={toggleMenu}
+              className="overflow-hidden rounded-full border border-gray-300 shadow-inner"
+            >
+              <span className="sr-only">Toggle dashboard menu</span>
 
-            <img
-              src={profileSVG}
-              alt=""
-              className="size-10 object-cover"
-            />
-          </button>
+              <img
+                src={profileSVG}
+                alt=""
+                className="size-10 object-cover"
+              />
+            </button>
 
           {isMenuOpen && (
             <div
@@ -182,9 +189,9 @@ const LoggedInHeader = ({ user }) => {
             </div>
           </div>
           )}
-        </div>
+          </div>
 
-        <div className="block md:hidden" ref={mobileMenuRef}>
+          <div className="block md:hidden" ref={mobileMenuRef}>
           <button
             onClick={toggleMobileMenu}
             className="rounded-sm bg-gray-100 p-2 text-gray-600 transition hover:text-gray-600/75"
@@ -312,10 +319,13 @@ const LoggedInHeader = ({ user }) => {
             </div>
           )}
         </div>
+        </div>
       </div>
     </div>
   </div>
         </header>
+        <CartModal isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+        </>
     )
 }
 

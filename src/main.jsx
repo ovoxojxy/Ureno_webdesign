@@ -13,6 +13,7 @@ import { UserContext } from './contexts/authContext/UserContext'
 import { AuthProvider } from './contexts/authContext'
 import { UserProvider } from './contexts/authContext/UserContext'
 import { MessagesProvider } from './pages/Conversation/MessageContext'
+import { CartProvider } from './contexts/CartContext'
 import { Navigate } from 'react-router-dom'
 import LoadingSpinner from './components/ui/LoadingSpinner'
 import { Toaster } from './components/ui/toaster'
@@ -52,6 +53,7 @@ import NeutralShadesPage from './pages/neutral-shades-page.jsx'
 import WhiteShadesPage from './pages/white-shades-page.jsx'
 import AllPaint from './components/Paint/AllPaint'
 import TestUI from './pages/testUI'
+import Cart from './pages/Cart'
 
 
   
@@ -109,9 +111,10 @@ root.render(
     {/* <QueryClientProvider client={QueryClient}> */}
     <AuthProvider>
       <UserProvider>
-        <MessagesProvider>
-        <Router basename="/Ureno_webdesign/">
-        <RoleRedirectGate />
+        <CartProvider>
+          <MessagesProvider>
+          <Router basename="/Ureno_webdesign/">
+          <RoleRedirectGate />
           {/* Loading fallback for lazy-loaded components */}
           <Suspense fallback={<LoadingSpinner />}>
             <Routes>
@@ -153,14 +156,16 @@ root.render(
               <Route path="/neutral-shades" element={<NeutralShadesPage />} />
               <Route path="/white-shades" element={<WhiteShadesPage />} />
               <Route path="/test-ui" element={<ProjectDashboard />} />
+              <Route path="/cart" element={<Cart />} />
             </Routes>
           </Suspense>
           {/* Add Toaster component for toast notifications */}
           <Toaster />
         </Router>
         </MessagesProvider>
+        </CartProvider>
       </UserProvider>
-    </ AuthProvider>
+    </AuthProvider>
   {/* </QueryClientProvider > */}
   </StrictMode>
 );

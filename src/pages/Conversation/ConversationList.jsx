@@ -3,11 +3,13 @@ import { useMessages } from "@/pages/Conversation/MessageContext";
 import { db } from "@/firebase/firebaseConfig";
 import { collection, query, where, onSnapshot, QuerySnapshot, doc, getDoc } from "firebase/firestore";
 import { useAuth } from "@/contexts/authContext";
+import { useNavigate } from "react-router-dom";
 import { UserContext } from "@/contexts/authContext/UserContext";
 import { Link } from "react-router-dom";
 
 function ConversationList() {
     const { state, dispatch } = useMessages()
+    const navigate = useNavigate();
     const { currentUser } = useAuth()
     const { profile } = useContext(UserContext)
     const [projectMeta, setProjectMeta] = useState({})
@@ -144,7 +146,7 @@ function ConversationList() {
     return (
         <div className="conversation-list">
             <div className="flex items-center gap-3 ">
-            <Link to={backPath} className="text-blue-500 text-3xl font-bold hover:scale-110 hover:text-blue-700 transition-all duration-200 flex items-center justify-center">&lt;</Link>
+                <Button className="text-blue-500 text-3xl font-bold hover:scale-110 hover:text-blue-700 transition-all duration-200 flex items-center justify-center" onClick={() => navigate(-1)}>&lt;</Button>
                 <h2 className="text-xl font-bold mb-4">Conversations</h2>
             </div>
            
