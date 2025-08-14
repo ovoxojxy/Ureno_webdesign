@@ -1,0 +1,24 @@
+{
+    "compilerOptions": {
+        "baseUrl": "./",
+        "paths": {
+            "@/*": ["src/*"]
+        },
+        "target": "ESNext",
+        "module": "ESNext",
+        "strict": true,
+        "jsx": "react-jsx",
+        "esModuleInterop": false,
+        "skipLibCheck": true,
+        "moduleResolution": "node",
+        "allowJs": true,
+        "outDir": "./dist",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "allowSyntheticDefaultImports": true
+
+    },
+
+    "include": ["src/**/.ts", "src/**/*.tsx", "src/**/*.jsx", "src/lib/lazyLoad.ts", "src/global.d.ts"],
+    "exclude": ["node_modules"]
+}

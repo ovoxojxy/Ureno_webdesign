@@ -1,0 +1,17 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Allow authenticated users to upload their own profile pictures
+    match /profilePictures/{fileName} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && 
+                   (fileName.matches(request.auth.uid + ".*") || 
+                    resource == null);
+    }
+    
+    // Allow other authenticated uploads for project images, etc.
+    match /{allPaths=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
