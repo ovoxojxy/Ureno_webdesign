@@ -29,12 +29,12 @@ const LoggedOutHeader = () => {
         <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <div className="flex-1 md:flex md:items-center md:gap-12">
-              <a href="#">
+              <Link to="/">
                 <img
                   src={Logo}
-                  alt="SEO illustration"
+                  alt="URENO logo"
                 />
-              </a>
+              </Link>
             </div>
 
             <div className="md:flex md:items-center md:gap-12">
@@ -91,22 +91,22 @@ const LoggedOutHeader = () => {
                       >
                         AI Designer
                       </Link>
-                      <a
-                        href="#"
+                      <Link
+                        to="/sign-in"
                         className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                         onClick={() => setIsMobileMenuOpen(false)}
                         style={{fontFamily: 'Sansation'}}
                       >
                         Login
-                      </a>
-                      <a
-                        href="#"
+                      </Link>
+                      <Link
+                        to="/sign-up"
                         className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                         onClick={() => setIsMobileMenuOpen(false)}
                         style={{fontFamily: 'Sansation'}}
                       >
                         Register
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 )}
