@@ -143,6 +143,25 @@ service cloud.firestore {
       allow read, write: if request.auth != null && 
                         request.auth.uid == userId;
     }
+
+    // Worlds collection for 3D generated worlds
+    match /worlds/{worldId} {
+      // Users can read their own worlds
+      allow read: if request.auth != null && 
+                   request.auth.uid == resource.data.userId;
+      
+      // Users can create worlds with their own userId
+      allow create: if request.auth != null && 
+                     request.resource.data.userId == request.auth.uid;
+      
+      // Users can update their own worlds
+      allow update: if request.auth != null && 
+                     request.auth.uid == resource.data.userId;
+      
+      // Users can delete their own worlds
+      allow delete: if request.auth != null && 
+                     request.auth.uid == resource.data.userId;
+    }
     
     // Default deny
     match /{document=**} {

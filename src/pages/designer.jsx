@@ -1,5 +1,6 @@
 import Footer from "../components/footer";
 import Nav from "../components/ui/newNav";
+import WorldDesigner from "../components/AI_Design/WorldDesigner";
 
 import '../styles/productDetailPage.css'
 
@@ -12,6 +13,7 @@ export default function DesignerPage() {
         <title>Designer</title>
 
         <Nav />
+        <WorldDesigner />
         <Footer />
             
         

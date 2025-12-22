@@ -1,10 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { getAIResponse } from '../../../services/aiService'
+import { generateWorld, pollOperation } from '../../../services/worldLabsService'
+import { pollUntilComplete } from '../../lib/worldPolling'
 
-const AIChat = () => {
+const AIChat = ({ onWorldGenerated, onImageUpload, onGenerationStatusChange }) => {
   const [messages, setMessages] = useState([])
   const [inputValue, setInputValue] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [uploadedImage, setUploadedImage] = useState(null) // Store uploaded image file
+  const [imagePreview, setImagePreview] = useState(null) // Store image preview URL
+  const [isGeneratingWorld, setIsGeneratingWorld] = useState(false) // Track world generation
+  const [worldGenerationStatus, setWorldGenerationStatus] = useState(null) // Store generation status
   const [roomType, setRoomType] = useState('')
   const [budget, setBudget] = useState('')
   const messagesEndRef = useRef(null)
@@ -86,6 +92,132 @@ const AIChat = () => {
     }
 
     setInputValue('')
+  }
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        alert('Please upload an image file')
+        return
+      }
+      
+      // Validate file size (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        alert('Image size should be less than 10MB')
+        return
+      }
+      
+      setUploadedImage(file)
+      
+      // Create preview URL
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        const preview = reader.result
+        setImagePreview(preview)
+        // Notify parent component
+        if (onImageUpload) {
+          onImageUpload(file, preview)
+        }
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const handleRemoveImage = () => {
+    setUploadedImage(null)
+    setImagePreview(null)
+    // Notify parent component
+    if (onImageUpload) {
+      onImageUpload(null, null)
+    }
+  }
+
+  const handleGenerateWorld = async () => {
+    if (!uploadedImage && !imagePreview) {
+      alert('Please upload an image first')
+      return
+    }
+
+    setIsGeneratingWorld(true)
+    const initialStatus = 'Starting world generation...'
+    setWorldGenerationStatus(initialStatus)
+    if (onGenerationStatusChange) {
+      onGenerationStatusChange(initialStatus)
+    }
+
+    try {
+      // For now, we'll use image URL if available, or we need to upload to a service
+      // For simplicity, let's create an object URL from the file
+      let imageUrl = imagePreview
+      
+      // If we have a file, we could upload it first, but for now let's use base64
+      // Note: World Labs API needs a public URL, so in production you'd upload to Firebase Storage first
+      // For testing, we'll need to handle this differently - let's use a placeholder approach
+      
+      // For now, let's generate from text prompt instead, using the image description
+      // Or we can add image upload to Firebase Storage first
+      
+      // Simplified approach: Generate world with text description for now
+      // In Phase 4, we'll add proper image upload to media assets
+      
+      const operation = await generateWorld({
+        type: 'text',
+        textPrompt: `A ${roomType || 'modern'} room based on uploaded image: ${inputValue || 'renovation design'}`,
+        displayName: `World from ${roomType || 'room'} design`
+      })
+
+      const startedStatus = 'World generation started. This will take about 5 minutes...'
+      setWorldGenerationStatus(startedStatus)
+      if (onGenerationStatusChange) {
+        onGenerationStatusChange(startedStatus)
+      }
+
+      // Poll for completion
+      const completed = await pollUntilComplete(
+        operation.operation_id,
+        pollOperation,
+        {
+          onProgress: (op) => {
+            const progress = op.metadata?.progress
+            if (progress) {
+              const status = `${progress.status}: ${progress.description || 'Generating...'}`
+              setWorldGenerationStatus(status)
+              if (onGenerationStatusChange) {
+                onGenerationStatusChange(status)
+              }
+            }
+          }
+        }
+      )
+
+      const successStatus = 'World generated successfully!'
+      setWorldGenerationStatus(successStatus)
+      if (onGenerationStatusChange) {
+        onGenerationStatusChange(successStatus)
+      }
+      
+      // Store the world ID for later use
+      const worldId = completed.metadata?.world_id
+      if (worldId) {
+        // Notify parent component
+        if (onWorldGenerated) {
+          onWorldGenerated(worldId)
+        }
+      }
+
+    } catch (error) {
+      console.error('World generation error:', error)
+      const errorStatus = `Error: ${error.message}`
+      setWorldGenerationStatus(errorStatus)
+      if (onGenerationStatusChange) {
+        onGenerationStatusChange(errorStatus)
+      }
+      alert('Failed to generate world. Please try again.')
+    } finally {
+      setIsGeneratingWorld(false)
+    }
   }
 
   const handleKeyPress = (e) => {
@@ -424,7 +556,101 @@ const AIChat = () => {
               placeholder="10000"
             />
           </div>
-        </div>
+          <div style={styles.settingItem}>
+            <label style={styles.settingLabel} htmlFor="image-upload">
+              📷 Upload Photo
+            </label>
+            <input
+              id="image-upload"
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              style={{ display: 'none' }}
+            />
+            <label
+              htmlFor="image-upload"
+              style={{
+                ...styles.settingSelect,
+                cursor: 'pointer',
+                textAlign: 'center',
+                padding: '4px 8px'
+              }}
+            >
+              Choose File
+            </label>
+          </div>
+        </div>  {/* Line 551 - settingsBar closes */}
+        
+        {/* Image Preview and Generate Button */}
+        {imagePreview && (
+          <div style={{
+            background: 'rgba(0, 0, 0, 0.2)',
+            padding: '10px',
+            margin: '10px',
+            borderRadius: '8px',
+            border: '1px solid rgba(255, 255, 255, 0.1)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+              <img 
+                src={imagePreview} 
+                alt="Uploaded room" 
+                style={{
+                  width: '60px',
+                  height: '60px',
+                  objectFit: 'cover',
+                  borderRadius: '4px'
+                }}
+              />
+              <div style={{ flex: 1 }}>
+                <div style={{ color: 'white', fontSize: '10px', marginBottom: '4px' }}>
+                  {uploadedImage?.name || 'Uploaded image'}
+                </div>
+                <button
+                  onClick={handleRemoveImage}
+                  style={{
+                    background: 'rgba(255, 0, 0, 0.3)',
+                    border: 'none',
+                    color: 'white',
+                    fontSize: '9px',
+                    padding: '2px 6px',
+                    borderRadius: '4px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+            <button
+              onClick={handleGenerateWorld}
+              disabled={isGeneratingWorld}
+              style={{
+                width: '100%',
+                background: isGeneratingWorld ? '#666' : '#248A52',
+                border: 'none',
+                color: 'white',
+                fontSize: '11px',
+                padding: '8px',
+                borderRadius: '6px',
+                cursor: isGeneratingWorld ? 'not-allowed' : 'pointer',
+                textTransform: 'uppercase',
+                fontWeight: 'bold'
+              }}
+            >
+              {isGeneratingWorld ? 'Generating 3D World...' : 'Generate 3D World'}
+            </button>
+            {worldGenerationStatus && (
+              <div style={{
+                marginTop: '8px',
+                fontSize: '9px',
+                color: 'rgba(255, 255, 255, 0.7)',
+                fontStyle: 'italic'
+              }}>
+                {worldGenerationStatus}
+              </div>
+            )}
+          </div>
+        )}
         
         <div style={styles.messages}>
           <div style={styles.messagesContent}>

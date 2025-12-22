@@ -3,8 +3,10 @@ import express from 'express';
 import imageRoutes from './routes/api.js';
 
 // Try to load .env from root directory first, then server directory
+dotenv.config({ path: '../.env' });
 dotenv.config({ path: '.env' });
-dotenv.config({ path: './server/.env' });
+// After line 7, add:
+console.log('🔑 WORLDLABS_API_KEY loaded:', process.env.WORLDLABS_API_KEY ? 'YES (length: ' + process.env.WORLDLABS_API_KEY.length + ')' : 'NO');
 
 const app = express();
 
