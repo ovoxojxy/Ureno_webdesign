@@ -1,3 +1,5 @@
+import { hasAllRequiredPhotos } from './photoCoverage';
+
 export const CONVERSATION_STAGES ={
     INITIAL: 'initial',
     IDENTIFY_CHANGE: 'identify_change',
@@ -61,8 +63,8 @@ export function getNextStage(currentStage, projectContext) {
           return CONVERSATION_STAGES.DETAIL_QUESTIONS;
         
         case CONVERSATION_STAGES.PHOTO_UPLOAD:
-          // Once photos are uploaded, move to prompt generation
-          if (projectContext.photos.length > 0) {
+          // Once all required photos are uploaded and labeled, move to prompt generation
+          if (hasAllRequiredPhotos(projectContext.photos)) {
             return CONVERSATION_STAGES.GENERATE_PROMPT;
           }
           return CONVERSATION_STAGES.PHOTO_UPLOAD;
