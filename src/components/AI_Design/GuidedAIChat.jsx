@@ -34,6 +34,24 @@ const GuidedAIChat = ({
     scrollToBottom();
   }, [messages]);
 
+  // Parse photo instructions when stage becomes PHOTO_GUIDANCE or PHOTO_UPLOAD
+  useEffect(() => {
+    if ((currentStage === CONVERSATION_STAGES.PHOTO_GUIDANCE || currentStage === CONVERSATION_STAGES.PHOTO_UPLOAD) && !photoInstructions) {
+      // Find the last LLM message that might contain photo instructions
+      const lastBotMessage = [...messages].reverse().find(msg => !msg.isPersonal);
+      if (lastBotMessage) {
+        const instructions = parsePhotoInstructions(lastBotMessage.text);
+        if (instructions) {
+          setPhotoInstructions(instructions);
+          // If we're in PHOTO_GUIDANCE and found instructions, move to PHOTO_UPLOAD
+          if (currentStage === CONVERSATION_STAGES.PHOTO_GUIDANCE) {
+            setCurrentStage(CONVERSATION_STAGES.PHOTO_UPLOAD);
+          }
+        }
+      }
+    }
+  }, [currentStage, messages, photoInstructions]);
+
   const formatTime = () => {
     const now = new Date();
     return `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
@@ -87,11 +105,24 @@ const GuidedAIChat = ({
   
       // Update current stage based on new context
       const nextStage = getNextStage(currentStage, result.updatedContext);
+      
+      // Parse photo instructions if we're in PHOTO_GUIDANCE or transitioning to PHOTO_UPLOAD
+      if (currentStage === CONVERSATION_STAGES.PHOTO_GUIDANCE || nextStage === CONVERSATION_STAGES.PHOTO_UPLOAD) {
+        const instructions = parsePhotoInstructions(result.response);
+        if (instructions) {
+          setPhotoInstructions(instructions);
+          // If we're in PHOTO_GUIDANCE and found instructions, transition to PHOTO_UPLOAD
+          if (currentStage === CONVERSATION_STAGES.PHOTO_GUIDANCE) {
+            setCurrentStage(CONVERSATION_STAGES.PHOTO_UPLOAD);
+          }
+        }
+      }
+      
       if (nextStage !== currentStage) {
         setCurrentStage(nextStage);
         
-        // If transitioning to PHOTO_UPLOAD, parse photo instructions from the LLM response
-        if (nextStage === CONVERSATION_STAGES.PHOTO_UPLOAD) {
+        // Also parse instructions when transitioning to PHOTO_UPLOAD (for safety)
+        if (nextStage === CONVERSATION_STAGES.PHOTO_UPLOAD && !photoInstructions) {
           const instructions = parsePhotoInstructions(result.response);
           if (instructions) {
             setPhotoInstructions(instructions);
@@ -337,8 +368,8 @@ const GuidedAIChat = ({
         </div>
       </div>
 
-      {/* Photo upload UI when in PHOTO_UPLOAD stage */}
-      {currentStage === CONVERSATION_STAGES.PHOTO_UPLOAD && photoInstructions && (
+      {/* Photo upload UI - show whenever photo instructions are available */}
+      {photoInstructions && (
         <MultiImageUpload
           photoInstructions={photoInstructions}
           onPhotosComplete={handlePhotosComplete}
