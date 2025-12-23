@@ -1,6 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv'
-import { askOpenAI, askGuidedRenovationQuestion, extractProjectContext } from '../askOpenAI.js';
+import { askOpenAI, askGuidedRenovationQuestion, extractProjectContext, generatePromptDraft } from '../askOpenAI.js';
 import { generateImage } from '../generateImage.js';
 import {
     generateWorldFromImage,
@@ -98,7 +98,37 @@ router.post('/guided-chat', async (req, res) => {
             })()
         };
 
-        // Step 3: Build conversation history for LLM
+        // Step 3: Generate/update prompt draft if we have minimum context
+        // Minimum context: roomType, currentChange, style
+        const hasMinimumContext = !!(
+            updatedContext.roomType &&
+            updatedContext.currentChange &&
+            updatedContext.style
+        );
+
+        if (hasMinimumContext) {
+            try {
+                // Build conversation history for prompt generation
+                const promptHistory = history.map(msg => ({
+                    role: msg.isPersonal ? 'user' : 'assistant',
+                    content: msg.text || msg.content
+                }));
+                promptHistory.push({
+                    role: 'user',
+                    content: userMessage
+                });
+
+                const promptDraft = await generatePromptDraft(updatedContext, promptHistory);
+                updatedContext.promptDraft = promptDraft;
+                console.log("✅ Prompt draft generated/updated:", promptDraft.substring(0, 100) + "...");
+            } catch (promptError) {
+                console.error("⚠️ Failed to generate prompt draft:", promptError.message);
+                // Don't fail the whole request if prompt generation fails
+                // Keep existing promptDraft if available
+            }
+        }
+
+        // Step 4: Build conversation history for LLM
         // Format history as array of {role, content} objects
         const formattedHistory = history.map(msg => ({
             role: msg.isPersonal ? 'user' : 'assistant',
@@ -111,14 +141,14 @@ router.post('/guided-chat', async (req, res) => {
             content: userMessage
         });
 
-        // Step 4: Get guided response from LLM
+        // Step 5: Get guided response from LLM
         const llmResponse = await askGuidedRenovationQuestion(
             formattedHistory,
             updatedContext,
             currentStage
         );
 
-        // Step 5: Return response with updated context
+        // Step 6: Return response with updated context
         // Convert Set to Array for JSON serialization
         const questionsAnsweredArray = updatedContext.questionsAnswered instanceof Set
             ? Array.from(updatedContext.questionsAnswered)
