@@ -70,7 +70,11 @@ export function getNextStage(currentStage, projectContext) {
           return CONVERSATION_STAGES.PHOTO_UPLOAD;
         
         case CONVERSATION_STAGES.GENERATE_PROMPT:
-          return CONVERSATION_STAGES.GENERATING;
+          // Only transition to generating if promptDraft exists
+          if (projectContext.promptDraft) {
+            return CONVERSATION_STAGES.GENERATING;
+          }
+          return CONVERSATION_STAGES.GENERATE_PROMPT;
         
         default:
           return currentStage;
