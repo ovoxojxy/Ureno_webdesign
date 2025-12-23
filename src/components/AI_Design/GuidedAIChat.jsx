@@ -81,8 +81,13 @@ const GuidedAIChat = ({
       };
       setMessages(prev => [...prev, botMessage]);
   
-      // Update project context with extracted information
+      // Update project context with extracted information (includes promptDraft if generated)
       setProjectContext(result.updatedContext);
+      
+      // Log promptDraft if it was generated/updated
+      if (result.updatedContext.promptDraft) {
+        console.log("📝 Prompt draft updated:", result.updatedContext.promptDraft.substring(0, 100) + "...");
+      }
   
       // Update current stage based on new context
       const nextStage = getNextStage(currentStage, result.updatedContext);
@@ -114,16 +119,26 @@ const GuidedAIChat = ({
   // Handle photo upload completion
   const handlePhotosComplete = (uploadedPhotos) => {
     // Update project context with uploaded photos
+    // Preserve promptDraft from existing context
     setProjectContext(prev => ({
       ...prev,
       photos: uploadedPhotos
+      // promptDraft is already in prev, so it will be preserved
     }));
     
     // Update stage - will automatically transition to GENERATE_PROMPT via getNextStage
     const updatedContext = {
       ...projectContext,
       photos: uploadedPhotos
+      // promptDraft is preserved from projectContext
     };
+    
+    // Log that photos are complete and promptDraft should be ready
+    if (projectContext.promptDraft) {
+      console.log("✅ Photos uploaded. Prompt draft ready for world generation:", 
+        projectContext.promptDraft.substring(0, 100) + "...");
+    }
+    
     const nextStage = getNextStage(CONVERSATION_STAGES.PHOTO_UPLOAD, updatedContext);
     setCurrentStage(nextStage);
   };
