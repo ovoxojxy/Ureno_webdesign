@@ -224,3 +224,91 @@ try {
         return {};
     }
 }
+
+/**
+ * Generate a concise prompt draft for Marble world generation
+ * Creates a 2-3 sentence description based on project context
+ * @param {Object} projectContext - Current project context with room type, changes, style, materials, finishes
+ * @param {Array} conversationHistory - Optional conversation history for context
+ * @returns {Promise<string>} Generated prompt text (2-3 sentences)
+ */
+export async function generatePromptDraft(projectContext, conversationHistory = []) {
+    console.log("📝 Generating prompt draft from context:", {
+        roomType: projectContext.roomType,
+        currentChange: projectContext.currentChange,
+        style: projectContext.style
+    });
+
+    const systemPrompt = `You are a prompt generation assistant for a 3D world visualization system. Your job is to create a concise, descriptive prompt (2-3 sentences) that will be used to generate a 3D scene.
+
+PROJECT CONTEXT:
+- Room Type: ${projectContext.roomType || 'Not specified'}
+- Change Being Made: ${projectContext.currentChange || 'Not specified'}
+- Style: ${projectContext.style || 'Not specified'}
+- Materials: ${JSON.stringify(projectContext.materials || {})}
+- Finishes: ${JSON.stringify(projectContext.finishes || {})}
+- Existing Elements to Keep: ${(projectContext.existingElements || []).join(', ') || 'None specified'}
+
+PROMPT REQUIREMENTS:
+- Create a 2-3 sentence description of the room/space
+- Describe the CURRENT state of the room
+- Clearly specify the changes being made
+- Include style and aesthetic preferences
+- Mention key materials and finishes
+- Reference existing elements that should be preserved
+- Use descriptive, visual language suitable for 3D rendering
+- Be concise but specific
+
+IMPORTANT CONSTRAINTS:
+- Do NOT mention photos, image uploads, or camera angles
+- Do NOT mention specific viewing directions (front, back, left, right)
+- Focus on the room itself, its design, and the renovation changes
+- Return ONLY the prompt text - no explanations, no meta-commentary
+
+Generate the prompt now:`;
+
+    const messages = [
+        { role: "system", content: systemPrompt }
+    ];
+
+    // Optionally include recent conversation context for better understanding
+    if (conversationHistory.length > 0) {
+        const recentMessages = conversationHistory.slice(-6); // Last 6 messages for context
+        recentMessages.forEach(msg => {
+            if (msg.role === 'user' || msg.role === 'assistant') {
+                messages.push({
+                    role: msg.role,
+                    content: msg.content || msg.text
+                });
+            }
+        });
+    }
+
+    // Add a final user message to trigger prompt generation
+    messages.push({
+        role: "user",
+        content: "Generate the prompt based on the project context provided above."
+    });
+
+    try {
+        const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+            model: 'gpt-4-turbo',
+            messages: messages,
+            temperature: 0.7,
+            max_tokens: 200 // Limit to ensure concise prompts
+        }, {
+            headers: {
+                Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+                "Content-Type": "application/json"
+            }
+        });
+
+        const promptText = response.data.choices[0].message.content.trim();
+        console.log("✅ Generated prompt draft:", promptText.substring(0, 100) + "...");
+        
+        return promptText;
+    } catch (err) {
+        console.error("❌ OpenAI API Error (prompt generation):", err.response?.data || err.message || err);
+        throw err;
+    }
+}
