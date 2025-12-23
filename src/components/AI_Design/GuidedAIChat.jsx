@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   CONVERSATION_STAGES,
   createInitialProjectContext,
@@ -116,32 +116,31 @@ const GuidedAIChat = ({
     }
   };
 
-  // Handle photo upload completion
-  const handlePhotosComplete = (uploadedPhotos) => {
+  // Handle photo upload completion - memoized to prevent infinite loops
+  const handlePhotosComplete = useCallback((uploadedPhotos) => {
     // Update project context with uploaded photos
     // Preserve promptDraft from existing context
-    setProjectContext(prev => ({
-      ...prev,
-      photos: uploadedPhotos
-      // promptDraft is already in prev, so it will be preserved
-    }));
-    
-    // Update stage - will automatically transition to GENERATE_PROMPT via getNextStage
-    const updatedContext = {
-      ...projectContext,
-      photos: uploadedPhotos
-      // promptDraft is preserved from projectContext
-    };
-    
-    // Log that photos are complete and promptDraft should be ready
-    if (projectContext.promptDraft) {
-      console.log("✅ Photos uploaded. Prompt draft ready for world generation:", 
-        projectContext.promptDraft.substring(0, 100) + "...");
-    }
-    
-    const nextStage = getNextStage(CONVERSATION_STAGES.PHOTO_UPLOAD, updatedContext);
-    setCurrentStage(nextStage);
-  };
+    setProjectContext(prev => {
+      const updatedContext = {
+        ...prev,
+        photos: uploadedPhotos
+        // promptDraft is already in prev, so it will be preserved
+      };
+      
+      // Log that photos are complete and promptDraft should be ready
+      if (prev.promptDraft) {
+        console.log("✅ Photos uploaded. Prompt draft ready for world generation:", 
+          prev.promptDraft.substring(0, 100) + "...");
+      }
+      
+      // Update stage - will automatically transition to GENERATE_PROMPT via getNextStage
+      const nextStage = getNextStage(CONVERSATION_STAGES.PHOTO_UPLOAD, updatedContext);
+      // Use setTimeout to schedule stage update after context update completes
+      setTimeout(() => setCurrentStage(nextStage), 0);
+      
+      return updatedContext;
+    });
+  }, []); // Empty deps - function doesn't depend on any props/state that changes
 
   // Styles (similar to original AIChat)
   const styles = {
