@@ -8,8 +8,8 @@ import {
 } from '../../lib/conversationState';
 
 import { askGuidedRenovation } from '../../../services/aiService';
-import MultiImageUpload from './MultiImageUpload';
-import { parsePhotoInstructions } from '../../lib/azimuthMapper';
+import PhotoLabelingGrid from './PhotoLabelingGrid';
+import { hasAllRequiredPhotos } from '../../lib/photoCoverage';
 // import { generateWorldFromMultipleImages } from '../../../services/worldLabsService';
 
 const GuidedAIChat = ({
@@ -24,7 +24,6 @@ const GuidedAIChat = ({
 
   const [currentStage, setCurrentStage] = useState(CONVERSATION_STAGES.INITIAL);
   const [projectContext, setProjectContext] = useState(createInitialProjectContext());
-  const [photoInstructions, setPhotoInstructions] = useState(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -33,24 +32,6 @@ const GuidedAIChat = ({
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-
-  // Parse photo instructions when stage becomes PHOTO_GUIDANCE or PHOTO_UPLOAD
-  useEffect(() => {
-    if ((currentStage === CONVERSATION_STAGES.PHOTO_GUIDANCE || currentStage === CONVERSATION_STAGES.PHOTO_UPLOAD) && !photoInstructions) {
-      // Find the last LLM message that might contain photo instructions
-      const lastBotMessage = [...messages].reverse().find(msg => !msg.isPersonal);
-      if (lastBotMessage) {
-        const instructions = parsePhotoInstructions(lastBotMessage.text);
-        if (instructions) {
-          setPhotoInstructions(instructions);
-          // If we're in PHOTO_GUIDANCE and found instructions, move to PHOTO_UPLOAD
-          if (currentStage === CONVERSATION_STAGES.PHOTO_GUIDANCE) {
-            setCurrentStage(CONVERSATION_STAGES.PHOTO_UPLOAD);
-          }
-        }
-      }
-    }
-  }, [currentStage, messages, photoInstructions]);
 
   const formatTime = () => {
     const now = new Date();
@@ -105,29 +86,8 @@ const GuidedAIChat = ({
   
       // Update current stage based on new context
       const nextStage = getNextStage(currentStage, result.updatedContext);
-      
-      // Parse photo instructions if we're in PHOTO_GUIDANCE or transitioning to PHOTO_UPLOAD
-      if (currentStage === CONVERSATION_STAGES.PHOTO_GUIDANCE || nextStage === CONVERSATION_STAGES.PHOTO_UPLOAD) {
-        const instructions = parsePhotoInstructions(result.response);
-        if (instructions) {
-          setPhotoInstructions(instructions);
-          // If we're in PHOTO_GUIDANCE and found instructions, transition to PHOTO_UPLOAD
-          if (currentStage === CONVERSATION_STAGES.PHOTO_GUIDANCE) {
-            setCurrentStage(CONVERSATION_STAGES.PHOTO_UPLOAD);
-          }
-        }
-      }
-      
       if (nextStage !== currentStage) {
         setCurrentStage(nextStage);
-        
-        // Also parse instructions when transitioning to PHOTO_UPLOAD (for safety)
-        if (nextStage === CONVERSATION_STAGES.PHOTO_UPLOAD && !photoInstructions) {
-          const instructions = parsePhotoInstructions(result.response);
-          if (instructions) {
-            setPhotoInstructions(instructions);
-          }
-        }
       }
   
       setIsLoading(false);
@@ -292,7 +252,6 @@ const GuidedAIChat = ({
       [CONVERSATION_STAGES.IDENTIFY_CHANGE]: 'Identifying Changes',
       [CONVERSATION_STAGES.STYLE_QUESTIONS]: 'Style & Preferences',
       [CONVERSATION_STAGES.DETAIL_QUESTIONS]: 'Details & Finishes',
-      [CONVERSATION_STAGES.PHOTO_GUIDANCE]: 'Photo Instructions',
       [CONVERSATION_STAGES.PHOTO_UPLOAD]: 'Uploading Photos',
       [CONVERSATION_STAGES.GENERATE_PROMPT]: 'Preparing Generation',
       [CONVERSATION_STAGES.GENERATING]: 'Generating 3D World'
@@ -368,10 +327,9 @@ const GuidedAIChat = ({
         </div>
       </div>
 
-      {/* Photo upload UI - show whenever photo instructions are available */}
-      {photoInstructions && (
-        <MultiImageUpload
-          photoInstructions={photoInstructions}
+      {/* Photo upload UI - show when we have minimum context (room, change, style) */}
+      {(hasMinimumContext(projectContext) || currentStage === CONVERSATION_STAGES.PHOTO_UPLOAD) && (
+        <PhotoLabelingGrid
           onPhotosComplete={handlePhotosComplete}
           existingPhotos={projectContext.photos || []}
         />
