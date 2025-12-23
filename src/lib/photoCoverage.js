@@ -16,13 +16,16 @@ export const LABEL_TO_AZIMUTH = {
 
 /**
  * Check if all required cardinal photos are uploaded and labeled
- * @param {Array} photos - Array of photo objects with label property
- * @returns {boolean} True if all 4 required labels are present
+ * @param {Array} photos - Array of photo objects with label and file properties
+ * @returns {boolean} True if all 4 required labels are present AND have files
  */
 export function hasAllRequiredPhotos(photos) {
   if (!photos || photos.length === 0) return false;
   
-  const labels = photos
+  // Filter to only photos that have actual files uploaded
+  const photosWithFiles = photos.filter(p => p.file !== null && p.file !== undefined);
+  
+  const labels = photosWithFiles
     .map(p => p.label)
     .filter(Boolean); // Filter out null/undefined labels
   
@@ -54,7 +57,10 @@ export function getCardinalPhotos(photos) {
 export function getCoverageCount(photos) {
   if (!photos || photos.length === 0) return '0/4 required photos';
   
-  const labels = photos
+  // Only count photos that have actual files uploaded
+  const photosWithFiles = photos.filter(p => p.file !== null && p.file !== undefined);
+  
+  const labels = photosWithFiles
     .map(p => p.label)
     .filter(Boolean)
     .filter(label => REQUIRED_LABELS.includes(label));
