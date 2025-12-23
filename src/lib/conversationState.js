@@ -3,7 +3,6 @@ export const CONVERSATION_STAGES ={
     IDENTIFY_CHANGE: 'identify_change',
     STYLE_QUESTIONS: 'style_questions',
     DETAIL_QUESTIONS: 'detail_questions',
-    PHOTO_GUIDANCE: 'photo_guidance',
     PHOTO_UPLOAD: 'photo_upload',
     GENERATE_PROMPT: 'generate_prompt',
     GENERATING: 'generating'
@@ -19,7 +18,8 @@ export function createInitialProjectContext() {
         existingElements: [],
         photos: [],
         questionsAnswered: new Set(),
-        readyToGenerate: false
+        promptDraft: null,
+        sessionToken: null
     };
 }
 
@@ -54,14 +54,11 @@ export function getNextStage(currentStage, projectContext) {
           return projectContext.style ? CONVERSATION_STAGES.DETAIL_QUESTIONS : CONVERSATION_STAGES.STYLE_QUESTIONS;
         
         case CONVERSATION_STAGES.DETAIL_QUESTIONS:
-          // Check if we have enough detail to request photos
-          if (projectContext.readyToGenerate) {
-            return CONVERSATION_STAGES.PHOTO_GUIDANCE;
+          // Transition to photo upload when we have minimum context (room, change, style)
+          if (hasMinimumContext(projectContext)) {
+            return CONVERSATION_STAGES.PHOTO_UPLOAD;
           }
           return CONVERSATION_STAGES.DETAIL_QUESTIONS;
-        
-        case CONVERSATION_STAGES.PHOTO_GUIDANCE:
-          return CONVERSATION_STAGES.PHOTO_UPLOAD;
         
         case CONVERSATION_STAGES.PHOTO_UPLOAD:
           // Once photos are uploaded, move to prompt generation
