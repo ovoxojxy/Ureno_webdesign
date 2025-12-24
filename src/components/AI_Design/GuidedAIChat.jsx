@@ -134,9 +134,9 @@ const GuidedAIChat = ({
       }
       
       // Update stage - will automatically transition to GENERATE_PROMPT via getNextStage
+      // Call setCurrentStage directly - React will batch both state updates together
       const nextStage = getNextStage(CONVERSATION_STAGES.PHOTO_UPLOAD, updatedContext);
-      // Use setTimeout to schedule stage update after context update completes
-      setTimeout(() => setCurrentStage(nextStage), 0);
+      setCurrentStage(nextStage);
       
       return updatedContext;
     });
