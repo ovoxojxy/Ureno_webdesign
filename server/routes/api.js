@@ -6,6 +6,7 @@ import {
     generateWorldFromImage,
     generateWorldFromText,
     generateWorldFromMediaAsset,
+    generateWorldFromMultipleImages,
     pollOperation,
     getWorldDetails,
     prepareMediaUpload
@@ -189,12 +190,47 @@ router.post('/generate-image', async (req, res) => {
 });
 
 router.post('/worlds/generate', async (req, res) => {
-    const {type, imageUrl, textPrompt, displayName, mediaAssetId} = req.body;
+    const {type, imageUrl, textPrompt, displayName, mediaAssetId, images} = req.body;
 
     if (!type) {
-        return res.status(400).json({ error: 'Type is required (text, image, or media_asset)'});
+        return res.status(400).json({ error: 'Type is required (text, image, multiple_images, or media_asset)'});
     }
 
+    // Handle multiple images with azimuth
+    if (type === 'multiple_images') {
+        if (!images || !Array.isArray(images) || images.length === 0) {
+            return res.status(400).json({ error: 'images array is required for multiple_images type' });
+        }
+
+        // Validate that each image has required fields
+        for (const img of images) {
+            if (!img.mediaAssetId && !img.uri) {
+                return res.status(400).json({ error: 'Each image must have either mediaAssetId or uri' });
+            }
+            if (img.azimuth === undefined || img.azimuth === null) {
+                return res.status(400).json({ error: 'Each image must have an azimuth value' });
+            }
+        }
+
+        try {
+            const operation = await generateWorldFromMultipleImages(
+                images,
+                textPrompt || '',
+                displayName || 'Untitled World'
+            );
+            console.log("World generation operation started (multiple images):", operation.operation_id);
+            res.json(operation);
+        } catch (err) {
+            console.error("world generation error (multiple images):", err.response?.data || err.message || err);
+            res.status(500).json({
+                error: 'Failed to start world generation',
+                details: err.response?.data || err.message
+            });
+        }
+        return;
+    }
+
+    // Handle single image (existing logic)
     if (type === 'image' && !imageUrl && !mediaAssetId) {
         return res.status(400).json({ error: 'imageUrl or mediaAssetId is required for image type' });
     }

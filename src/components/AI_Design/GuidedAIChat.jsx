@@ -9,8 +9,9 @@ import {
 
 import { askGuidedRenovation } from '../../../services/aiService';
 import PhotoLabelingGrid from './PhotoLabelingGrid';
-import { hasAllRequiredPhotos } from '../../lib/photoCoverage';
-// import { generateWorldFromMultipleImages } from '../../../services/worldLabsService';
+import { hasAllRequiredPhotos, getCardinalPhotos } from '../../lib/photoCoverage';
+import { generateWorldFromMultiplePhotos, pollOperation } from '../../../services/worldLabsService';
+import { pollWorldOperation } from '../../lib/worldPolling';
 
 const GuidedAIChat = ({
   onWorldGenerated,
@@ -24,6 +25,7 @@ const GuidedAIChat = ({
 
   const [currentStage, setCurrentStage] = useState(CONVERSATION_STAGES.INITIAL);
   const [projectContext, setProjectContext] = useState(createInitialProjectContext());
+  const isGeneratingRef = useRef(false);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -141,6 +143,105 @@ const GuidedAIChat = ({
       return updatedContext;
     });
   }, []); // Empty deps - function doesn't depend on any props/state that changes
+
+  // Trigger world generation when we have all requirements
+  useEffect(() => {
+    const shouldGenerate = 
+      currentStage === CONVERSATION_STAGES.GENERATE_PROMPT &&
+      projectContext.promptDraft &&
+      hasAllRequiredPhotos(projectContext.photos) &&
+      !isGeneratingRef.current;
+
+    if (!shouldGenerate) return;
+
+    // Mark as generating to prevent duplicate attempts
+    isGeneratingRef.current = true;
+
+    // Transition to GENERATING stage
+    setCurrentStage(CONVERSATION_STAGES.GENERATING);
+
+    const generateWorld = async () => {
+      try {
+        // Update status
+        if (onGenerationStatusChange) {
+          onGenerationStatusChange('Uploading photos to World Labs...');
+        }
+
+        // Get cardinal photos with azimuth mapping
+        const cardinalPhotos = getCardinalPhotos(projectContext.photos);
+        console.log(`🎯 Generating world with ${cardinalPhotos.length} photos and prompt:`, 
+          projectContext.promptDraft.substring(0, 50) + '...');
+
+        // Generate display name from room type
+        const displayName = `${projectContext.roomType || 'Room'} Renovation`;
+
+        // Generate world from multiple photos
+        const operation = await generateWorldFromMultiplePhotos(
+          cardinalPhotos,
+          projectContext.promptDraft,
+          displayName
+        );
+
+        console.log("✅ World generation started, operation ID:", operation.operation_id);
+
+        // Update status
+        if (onGenerationStatusChange) {
+          onGenerationStatusChange('World generation in progress. This may take a few minutes...');
+        }
+
+        // Poll for completion
+        const completedOperation = await pollWorldOperation(
+          operation.operation_id,
+          pollOperation,
+          {
+            onProgress: (op) => {
+              console.log("⏳ Generation progress:", op);
+              if (onGenerationStatusChange) {
+                onGenerationStatusChange('Generating 3D world...');
+              }
+            }
+          }
+        );
+
+        console.log("✅ World generation completed:", completedOperation);
+
+        // Extract world ID from completed operation (check multiple possible locations)
+        const worldId = completedOperation.response?.world_id || 
+                       completedOperation.metadata?.world_id || 
+                       completedOperation.world_id;
+        if (!worldId) {
+          throw new Error('World ID not found in completed operation');
+        }
+
+        // Notify parent component
+        if (onWorldGenerated) {
+          onWorldGenerated(worldId, {
+            worldId: worldId,
+            operationId: operation.operation_id,
+            displayName: displayName
+          });
+        }
+
+        if (onGenerationStatusChange) {
+          onGenerationStatusChange('World generation complete!');
+        }
+
+        // Reset generating flag on success
+        isGeneratingRef.current = false;
+
+      } catch (error) {
+        console.error('❌ Error generating world:', error);
+        if (onGenerationStatusChange) {
+          onGenerationStatusChange(`Error: ${error.message || 'Failed to generate world'}`);
+        }
+        // Reset generating flag and transition back to GENERATE_PROMPT
+        isGeneratingRef.current = false;
+        setCurrentStage(CONVERSATION_STAGES.GENERATE_PROMPT);
+      }
+    };
+
+    generateWorld();
+  }, [currentStage, projectContext.promptDraft, projectContext.photos, projectContext.roomType, onWorldGenerated, onGenerationStatusChange]);
 
   // Styles (similar to original AIChat)
   const styles = {

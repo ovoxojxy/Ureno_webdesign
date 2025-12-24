@@ -2,7 +2,7 @@ import axios from 'axios';
 
 /**
  * Generate a world from text, image URL, or media asset
- * @param {Object} payload = { type: 'text'|'image', textPrompt?, imageUrl?, mediaAssetId?, displayName? }
+ * @param {Object} payload = { type: 'text'|'image'|'multiple_images', textPrompt?, imageUrl?, mediaAssetId?, images?, displayName? }
  * @return {Promise<Object>} Operation object with operation_id
  */
 export const generateWorld = async (payload) => {
@@ -21,6 +21,92 @@ export const generateWorld = async (payload) => {
         } else {
             console.error("Unexpected error:", error)
         }
+        throw error;
+    }
+};
+
+/**
+ * Upload a single file to World Labs and get media asset ID
+ * @param {File} file - File to upload
+ * @returns {Promise<string>} Media asset ID
+ */
+export const uploadPhotoToWorldLabs = async (file) => {
+    try {
+        // Get file extension
+        const fileName = file.name;
+        const extension = fileName.split('.').pop().toLowerCase();
+        
+        // Prepare upload
+        const prepareResponse = await prepareMediaUpload({
+            fileName: fileName,
+            kind: 'image',
+            extension: extension
+        });
+        
+        const { media_asset, upload_info } = prepareResponse;
+        const mediaAssetId = media_asset.id;
+        
+        // Upload file to signed URL
+        await uploadMedia(file, upload_info.upload_url, upload_info.headers);
+        
+        console.log("Photo uploaded successfully, media asset ID:", mediaAssetId);
+        return mediaAssetId;
+    } catch (error) {
+        console.error('Error uploading photo to World Labs:', error);
+        throw error;
+    }
+};
+
+/**
+ * Upload multiple photos to World Labs and get media asset IDs
+ * @param {Array<File>} files - Array of files to upload
+ * @returns {Promise<Array<string>>} Array of media asset IDs in same order as files
+ */
+export const uploadPhotosToWorldLabs = async (files) => {
+    try {
+        console.log(`Uploading ${files.length} photos to World Labs...`);
+        const uploadPromises = files.map(file => uploadPhotoToWorldLabs(file));
+        const mediaAssetIds = await Promise.all(uploadPromises);
+        console.log(`Successfully uploaded ${mediaAssetIds.length} photos`);
+        return mediaAssetIds;
+    } catch (error) {
+        console.error('Error uploading photos to World Labs:', error);
+        throw error;
+    }
+};
+
+/**
+ * Generate world from multiple photos with azimuth values
+ * @param {Array<Object>} photos - Array of { file: File, azimuth: number } objects
+ * @param {string} textPrompt - Text prompt describing the scene
+ * @param {string} displayName - Display name for the world
+ * @returns {Promise<Object>} Operation object with operation_id
+ */
+export const generateWorldFromMultiplePhotos = async (photos, textPrompt = '', displayName = 'Untitled World') => {
+    try {
+        console.log(`Generating world from ${photos.length} photos with prompt:`, textPrompt.substring(0, 50) + '...');
+        
+        // Upload all photos to World Labs
+        const files = photos.map(p => p.file);
+        const mediaAssetIds = await uploadPhotosToWorldLabs(files);
+        
+        // Map photos to images array with mediaAssetId and azimuth
+        const images = photos.map((photo, index) => ({
+            mediaAssetId: mediaAssetIds[index],
+            azimuth: photo.azimuth
+        }));
+        
+        // Generate world with multiple images
+        const operation = await generateWorld({
+            type: 'multiple_images',
+            images: images,
+            textPrompt: textPrompt,
+            displayName: displayName
+        });
+        
+        return operation;
+    } catch (error) {
+        console.error('Error generating world from multiple photos:', error);
         throw error;
     }
 };
