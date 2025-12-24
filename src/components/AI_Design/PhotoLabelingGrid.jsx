@@ -140,17 +140,17 @@ const PhotoLabelingGrid = ({ onPhotosComplete, existingPhotos = [] }) => {
   const allRequiredUploaded = hasAllRequiredPhotos(photos);
   const coverageCount = getCoverageCount(photos);
 
-  // Notify parent when all required photos are ready
-  // Use ref to track previous state and only call on transition from incomplete to complete
-  const prevAllRequiredRef = useRef(false);
-
+  // Notify parent whenever photos change (to keep parent state in sync)
+  // Always notify to maintain synchronization, even if photos become incomplete
+  // The parent's stage transition logic will handle checking if photos are complete
   useEffect(() => {
-    // Only call callback when we transition from incomplete to complete
-    if (allRequiredUploaded && !prevAllRequiredRef.current && onPhotosComplete) {
-      onPhotosComplete(photos.filter(p => p.file !== null));
+    if (onPhotosComplete) {
+      // Filter to only photos with actual files and notify parent
+      // This keeps parent's projectContext.photos in sync with local state
+      const photosWithFiles = photos.filter(p => p.file !== null);
+      onPhotosComplete(photosWithFiles);
     }
-    prevAllRequiredRef.current = allRequiredUploaded;
-  }, [allRequiredUploaded, photos, onPhotosComplete]);
+  }, [photos, onPhotosComplete]);
 
   const styles = {
     container: {
