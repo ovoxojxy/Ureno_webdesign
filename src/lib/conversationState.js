@@ -70,10 +70,8 @@ export function getNextStage(currentStage, projectContext) {
           return CONVERSATION_STAGES.PHOTO_UPLOAD;
         
         case CONVERSATION_STAGES.GENERATE_PROMPT:
-          // Only transition to generating if promptDraft exists
-          if (projectContext.promptDraft) {
-            return CONVERSATION_STAGES.GENERATING;
-          }
+          // Stay in GENERATE_PROMPT - transition to GENERATING only happens
+          // manually when user clicks the "Generate 3D World" button
           return CONVERSATION_STAGES.GENERATE_PROMPT;
         
         default:

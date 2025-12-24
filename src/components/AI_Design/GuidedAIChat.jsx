@@ -26,6 +26,15 @@ const GuidedAIChat = ({
   const [currentStage, setCurrentStage] = useState(CONVERSATION_STAGES.INITIAL);
   const [projectContext, setProjectContext] = useState(createInitialProjectContext());
   const isGeneratingRef = useRef(false);
+  const isMountedRef = useRef(true);
+
+  // Track component mount/unmount status
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -167,15 +176,12 @@ const GuidedAIChat = ({
     // Mark as generating
     isGeneratingRef.current = true;
 
-    // Track if component is still mounted
-    let isMounted = true;
-
     // Transition to GENERATING stage
     setCurrentStage(CONVERSATION_STAGES.GENERATING);
 
     try {
       // Update status (only if still mounted)
-      if (isMounted && onGenerationStatusChange) {
+      if (isMountedRef.current && onGenerationStatusChange) {
         onGenerationStatusChange('Uploading photos to World Labs...');
       }
 
@@ -195,7 +201,7 @@ const GuidedAIChat = ({
       );
 
       // Check if still mounted before continuing
-      if (!isMounted) {
+      if (!isMountedRef.current) {
         console.log("⚠️ Component unmounted during world generation, aborting");
         isGeneratingRef.current = false;
         return;
@@ -204,7 +210,7 @@ const GuidedAIChat = ({
       console.log("✅ World generation started, operation ID:", operation.operation_id);
 
       // Update status
-      if (onGenerationStatusChange) {
+      if (isMountedRef.current && onGenerationStatusChange) {
         onGenerationStatusChange('World generation in progress. This may take a few minutes...');
       }
 
@@ -215,7 +221,7 @@ const GuidedAIChat = ({
         {
           onProgress: (op) => {
             // Check if still mounted before updating progress
-            if (!isMounted) return;
+            if (!isMountedRef.current) return;
             console.log("⏳ Generation progress:", op);
             if (onGenerationStatusChange) {
               onGenerationStatusChange('Generating 3D world...');
@@ -225,7 +231,7 @@ const GuidedAIChat = ({
       );
 
       // Check if still mounted before processing completion
-      if (!isMounted) {
+      if (!isMountedRef.current) {
         console.log("⚠️ Component unmounted during world generation polling, aborting");
         isGeneratingRef.current = false;
         return;
@@ -242,7 +248,7 @@ const GuidedAIChat = ({
       }
 
       // Notify parent component (only if still mounted)
-      if (isMounted && onWorldGenerated) {
+      if (isMountedRef.current && onWorldGenerated) {
         onWorldGenerated(worldId, {
           worldId: worldId,
           operationId: operation.operation_id,
@@ -250,30 +256,32 @@ const GuidedAIChat = ({
         });
       }
 
-      if (isMounted && onGenerationStatusChange) {
+      if (isMountedRef.current && onGenerationStatusChange) {
         onGenerationStatusChange('World generation complete!');
       }
 
       // Reset generating flag on success (only if still mounted)
-      if (isMounted) {
+      if (isMountedRef.current) {
         isGeneratingRef.current = false;
       }
 
     } catch (error) {
       // Only handle errors if component is still mounted
-      if (!isMounted) {
+      if (!isMountedRef.current) {
         console.log("⚠️ Component unmounted during error handling, aborting");
         isGeneratingRef.current = false;
         return;
       }
 
       console.error('❌ Error generating world:', error);
-      if (onGenerationStatusChange) {
+      if (isMountedRef.current && onGenerationStatusChange) {
         onGenerationStatusChange(`Error: ${error.message || 'Failed to generate world'}`);
       }
-      // Reset generating flag and transition back to GENERATE_PROMPT
-      isGeneratingRef.current = false;
-      setCurrentStage(CONVERSATION_STAGES.GENERATE_PROMPT);
+      // Reset generating flag and transition back to GENERATE_PROMPT (only if still mounted)
+      if (isMountedRef.current) {
+        isGeneratingRef.current = false;
+        setCurrentStage(CONVERSATION_STAGES.GENERATE_PROMPT);
+      }
     }
   }, [projectContext.promptDraft, projectContext.photos, projectContext.roomType, onWorldGenerated, onGenerationStatusChange]);
 
