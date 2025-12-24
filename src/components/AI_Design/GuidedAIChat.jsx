@@ -151,138 +151,131 @@ const GuidedAIChat = ({
     }
   }, []); // Empty deps - function doesn't depend on any props/state that changes
 
-  // Trigger world generation when we have all requirements
-  useEffect(() => {
-    const shouldGenerate = 
-      currentStage === CONVERSATION_STAGES.GENERATE_PROMPT &&
-      projectContext.promptDraft &&
-      hasAllRequiredPhotos(projectContext.photos) &&
-      !isGeneratingRef.current;
+  // Handle manual world generation trigger
+  const handleGenerateWorld = useCallback(async () => {
+    // Prevent duplicate attempts
+    if (isGeneratingRef.current) {
+      return;
+    }
 
-    if (!shouldGenerate) return;
+    // Validate we have everything needed
+    if (!projectContext.promptDraft || !hasAllRequiredPhotos(projectContext.photos)) {
+      console.warn('Cannot generate world: missing promptDraft or required photos');
+      return;
+    }
 
-    // Mark as generating to prevent duplicate attempts
+    // Mark as generating
     isGeneratingRef.current = true;
 
-    // Track if component is still mounted to prevent state updates after unmount
+    // Track if component is still mounted
     let isMounted = true;
 
     // Transition to GENERATING stage
     setCurrentStage(CONVERSATION_STAGES.GENERATING);
 
-    const generateWorld = async () => {
-      try {
-        // Update status (only if still mounted)
-        if (isMounted && onGenerationStatusChange) {
-          onGenerationStatusChange('Uploading photos to World Labs...');
-        }
+    try {
+      // Update status (only if still mounted)
+      if (isMounted && onGenerationStatusChange) {
+        onGenerationStatusChange('Uploading photos to World Labs...');
+      }
 
-        // Get cardinal photos with azimuth mapping
-        const cardinalPhotos = getCardinalPhotos(projectContext.photos);
-        console.log(`🎯 Generating world with ${cardinalPhotos.length} photos and prompt:`, 
-          projectContext.promptDraft.substring(0, 50) + '...');
+      // Get cardinal photos with azimuth mapping
+      const cardinalPhotos = getCardinalPhotos(projectContext.photos);
+      console.log(`🎯 Generating world with ${cardinalPhotos.length} photos and prompt:`, 
+        projectContext.promptDraft.substring(0, 50) + '...');
 
-        // Generate display name from room type
-        const displayName = `${projectContext.roomType || 'Room'} Renovation`;
+      // Generate display name from room type
+      const displayName = `${projectContext.roomType || 'Room'} Renovation`;
 
-        // Generate world from multiple photos
-        const operation = await generateWorldFromMultiplePhotos(
-          cardinalPhotos,
-          projectContext.promptDraft,
-          displayName
-        );
+      // Generate world from multiple photos
+      const operation = await generateWorldFromMultiplePhotos(
+        cardinalPhotos,
+        projectContext.promptDraft,
+        displayName
+      );
 
-        // Check if still mounted before continuing
-        if (!isMounted) {
-          console.log("⚠️ Component unmounted during world generation, aborting");
-          isGeneratingRef.current = false;
-          return;
-        }
+      // Check if still mounted before continuing
+      if (!isMounted) {
+        console.log("⚠️ Component unmounted during world generation, aborting");
+        isGeneratingRef.current = false;
+        return;
+      }
 
-        console.log("✅ World generation started, operation ID:", operation.operation_id);
+      console.log("✅ World generation started, operation ID:", operation.operation_id);
 
-        // Update status
-        if (onGenerationStatusChange) {
-          onGenerationStatusChange('World generation in progress. This may take a few minutes...');
-        }
+      // Update status
+      if (onGenerationStatusChange) {
+        onGenerationStatusChange('World generation in progress. This may take a few minutes...');
+      }
 
-        // Poll for completion
-        const completedOperation = await pollWorldOperation(
-          operation.operation_id,
-          pollOperation,
-          {
-            onProgress: (op) => {
-              // Check if still mounted before updating progress
-              if (!isMounted) return;
-              console.log("⏳ Generation progress:", op);
-              if (onGenerationStatusChange) {
-                onGenerationStatusChange('Generating 3D world...');
-              }
+      // Poll for completion
+      const completedOperation = await pollWorldOperation(
+        operation.operation_id,
+        pollOperation,
+        {
+          onProgress: (op) => {
+            // Check if still mounted before updating progress
+            if (!isMounted) return;
+            console.log("⏳ Generation progress:", op);
+            if (onGenerationStatusChange) {
+              onGenerationStatusChange('Generating 3D world...');
             }
           }
-        );
-
-        // Check if still mounted before processing completion
-        if (!isMounted) {
-          console.log("⚠️ Component unmounted during world generation polling, aborting");
-          isGeneratingRef.current = false;
-          return;
         }
+      );
 
-        console.log("✅ World generation completed:", completedOperation);
-
-        // Extract world ID from completed operation (check multiple possible locations)
-        const worldId = completedOperation.response?.world_id || 
-                       completedOperation.metadata?.world_id || 
-                       completedOperation.world_id;
-        if (!worldId) {
-          throw new Error('World ID not found in completed operation');
-        }
-
-        // Notify parent component (only if still mounted)
-        if (isMounted && onWorldGenerated) {
-          onWorldGenerated(worldId, {
-            worldId: worldId,
-            operationId: operation.operation_id,
-            displayName: displayName
-          });
-        }
-
-        if (isMounted && onGenerationStatusChange) {
-          onGenerationStatusChange('World generation complete!');
-        }
-
-        // Reset generating flag on success (only if still mounted)
-        if (isMounted) {
-          isGeneratingRef.current = false;
-        }
-
-      } catch (error) {
-        // Only handle errors if component is still mounted
-        if (!isMounted) {
-          console.log("⚠️ Component unmounted during error handling, aborting");
-          isGeneratingRef.current = false;
-          return;
-        }
-
-        console.error('❌ Error generating world:', error);
-        if (onGenerationStatusChange) {
-          onGenerationStatusChange(`Error: ${error.message || 'Failed to generate world'}`);
-        }
-        // Reset generating flag and transition back to GENERATE_PROMPT
+      // Check if still mounted before processing completion
+      if (!isMounted) {
+        console.log("⚠️ Component unmounted during world generation polling, aborting");
         isGeneratingRef.current = false;
-        setCurrentStage(CONVERSATION_STAGES.GENERATE_PROMPT);
+        return;
       }
-    };
 
-    generateWorld();
+      console.log("✅ World generation completed:", completedOperation);
 
-    // Cleanup function: reset ref and mark as unmounted
-    return () => {
-      isMounted = false;
+      // Extract world ID from completed operation (check multiple possible locations)
+      const worldId = completedOperation.response?.world_id || 
+                     completedOperation.metadata?.world_id || 
+                     completedOperation.world_id;
+      if (!worldId) {
+        throw new Error('World ID not found in completed operation');
+      }
+
+      // Notify parent component (only if still mounted)
+      if (isMounted && onWorldGenerated) {
+        onWorldGenerated(worldId, {
+          worldId: worldId,
+          operationId: operation.operation_id,
+          displayName: displayName
+        });
+      }
+
+      if (isMounted && onGenerationStatusChange) {
+        onGenerationStatusChange('World generation complete!');
+      }
+
+      // Reset generating flag on success (only if still mounted)
+      if (isMounted) {
+        isGeneratingRef.current = false;
+      }
+
+    } catch (error) {
+      // Only handle errors if component is still mounted
+      if (!isMounted) {
+        console.log("⚠️ Component unmounted during error handling, aborting");
+        isGeneratingRef.current = false;
+        return;
+      }
+
+      console.error('❌ Error generating world:', error);
+      if (onGenerationStatusChange) {
+        onGenerationStatusChange(`Error: ${error.message || 'Failed to generate world'}`);
+      }
+      // Reset generating flag and transition back to GENERATE_PROMPT
       isGeneratingRef.current = false;
-    };
-  }, [currentStage, projectContext.promptDraft, projectContext.photos, projectContext.roomType, onWorldGenerated, onGenerationStatusChange]);
+      setCurrentStage(CONVERSATION_STAGES.GENERATE_PROMPT);
+    }
+  }, [projectContext.promptDraft, projectContext.photos, projectContext.roomType, onWorldGenerated, onGenerationStatusChange]);
 
   // Styles (similar to original AIChat)
   const styles = {
@@ -489,6 +482,55 @@ const GuidedAIChat = ({
           onPhotosComplete={handlePhotosComplete}
           existingPhotos={projectContext.photos || []}
         />
+      )}
+
+      {/* Generate 3D World button - show when ready to generate */}
+      {(currentStage === CONVERSATION_STAGES.GENERATE_PROMPT || currentStage === CONVERSATION_STAGES.GENERATING) && 
+       projectContext.promptDraft && 
+       hasAllRequiredPhotos(projectContext.photos) && (
+        <div style={{
+          padding: '16px',
+          display: 'flex',
+          justifyContent: 'center',
+          background: 'rgba(0, 0, 0, 0.3)',
+          marginBottom: '10px',
+          borderRadius: '8px'
+        }}>
+          <button
+            onClick={handleGenerateWorld}
+            disabled={currentStage === CONVERSATION_STAGES.GENERATING}
+            style={{
+              padding: '12px 24px',
+              fontSize: '16px',
+              fontWeight: 'bold',
+              color: '#fff',
+              background: currentStage === CONVERSATION_STAGES.GENERATING
+                ? '#666'
+                : '#248A52',
+              border: 'none',
+              borderRadius: '8px',
+              cursor: currentStage === CONVERSATION_STAGES.GENERATING
+                ? 'not-allowed'
+                : 'pointer',
+              transition: 'all 0.2s ease',
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
+            }}
+            onMouseEnter={(e) => {
+              if (currentStage !== CONVERSATION_STAGES.GENERATING) {
+                e.target.style.background = '#1D7745';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (currentStage !== CONVERSATION_STAGES.GENERATING) {
+                e.target.style.background = '#248A52';
+              }
+            }}
+          >
+            {currentStage === CONVERSATION_STAGES.GENERATING 
+              ? 'Generating 3D World...' 
+              : 'Generate 3D World'}
+          </button>
+        </div>
       )}
 
       <div style={styles.messageBox}>
