@@ -120,8 +120,11 @@ const GuidedAIChat = ({
 
   // Handle photo upload completion - memoized to prevent infinite loops
   const handlePhotosComplete = useCallback((uploadedPhotos) => {
+    // Calculate what the updated context will be (for stage calculation)
+    // We'll use the functional update form to ensure we have the latest state
+    let calculatedNextStage = null;
+    
     // Update project context with uploaded photos
-    // Preserve promptDraft from existing context
     setProjectContext(prev => {
       const updatedContext = {
         ...prev,
@@ -135,13 +138,17 @@ const GuidedAIChat = ({
           prev.promptDraft.substring(0, 100) + "...");
       }
       
-      // Update stage - will automatically transition to GENERATE_PROMPT via getNextStage
-      // Call setCurrentStage directly - React will batch both state updates together
-      const nextStage = getNextStage(CONVERSATION_STAGES.PHOTO_UPLOAD, updatedContext);
-      setCurrentStage(nextStage);
+      // Calculate next stage based on updated context (store it to use outside)
+      calculatedNextStage = getNextStage(CONVERSATION_STAGES.PHOTO_UPLOAD, updatedContext);
       
       return updatedContext;
     });
+
+    // Update stage separately - React will batch both state updates together
+    // This ensures proper state synchronization
+    if (calculatedNextStage !== null) {
+      setCurrentStage(calculatedNextStage);
+    }
   }, []); // Empty deps - function doesn't depend on any props/state that changes
 
   // Trigger world generation when we have all requirements
@@ -157,13 +164,16 @@ const GuidedAIChat = ({
     // Mark as generating to prevent duplicate attempts
     isGeneratingRef.current = true;
 
+    // Track if component is still mounted to prevent state updates after unmount
+    let isMounted = true;
+
     // Transition to GENERATING stage
     setCurrentStage(CONVERSATION_STAGES.GENERATING);
 
     const generateWorld = async () => {
       try {
-        // Update status
-        if (onGenerationStatusChange) {
+        // Update status (only if still mounted)
+        if (isMounted && onGenerationStatusChange) {
           onGenerationStatusChange('Uploading photos to World Labs...');
         }
 
@@ -182,6 +192,13 @@ const GuidedAIChat = ({
           displayName
         );
 
+        // Check if still mounted before continuing
+        if (!isMounted) {
+          console.log("⚠️ Component unmounted during world generation, aborting");
+          isGeneratingRef.current = false;
+          return;
+        }
+
         console.log("✅ World generation started, operation ID:", operation.operation_id);
 
         // Update status
@@ -195,6 +212,8 @@ const GuidedAIChat = ({
           pollOperation,
           {
             onProgress: (op) => {
+              // Check if still mounted before updating progress
+              if (!isMounted) return;
               console.log("⏳ Generation progress:", op);
               if (onGenerationStatusChange) {
                 onGenerationStatusChange('Generating 3D world...');
@@ -202,6 +221,13 @@ const GuidedAIChat = ({
             }
           }
         );
+
+        // Check if still mounted before processing completion
+        if (!isMounted) {
+          console.log("⚠️ Component unmounted during world generation polling, aborting");
+          isGeneratingRef.current = false;
+          return;
+        }
 
         console.log("✅ World generation completed:", completedOperation);
 
@@ -213,8 +239,8 @@ const GuidedAIChat = ({
           throw new Error('World ID not found in completed operation');
         }
 
-        // Notify parent component
-        if (onWorldGenerated) {
+        // Notify parent component (only if still mounted)
+        if (isMounted && onWorldGenerated) {
           onWorldGenerated(worldId, {
             worldId: worldId,
             operationId: operation.operation_id,
@@ -222,14 +248,23 @@ const GuidedAIChat = ({
           });
         }
 
-        if (onGenerationStatusChange) {
+        if (isMounted && onGenerationStatusChange) {
           onGenerationStatusChange('World generation complete!');
         }
 
-        // Reset generating flag on success
-        isGeneratingRef.current = false;
+        // Reset generating flag on success (only if still mounted)
+        if (isMounted) {
+          isGeneratingRef.current = false;
+        }
 
       } catch (error) {
+        // Only handle errors if component is still mounted
+        if (!isMounted) {
+          console.log("⚠️ Component unmounted during error handling, aborting");
+          isGeneratingRef.current = false;
+          return;
+        }
+
         console.error('❌ Error generating world:', error);
         if (onGenerationStatusChange) {
           onGenerationStatusChange(`Error: ${error.message || 'Failed to generate world'}`);
@@ -241,6 +276,12 @@ const GuidedAIChat = ({
     };
 
     generateWorld();
+
+    // Cleanup function: reset ref and mark as unmounted
+    return () => {
+      isMounted = false;
+      isGeneratingRef.current = false;
+    };
   }, [currentStage, projectContext.promptDraft, projectContext.photos, projectContext.roomType, onWorldGenerated, onGenerationStatusChange]);
 
   // Styles (similar to original AIChat)
