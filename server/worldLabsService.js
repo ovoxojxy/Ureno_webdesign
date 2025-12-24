@@ -120,6 +120,62 @@ export async function generateWorldFromMediaAsset(mediaAssetId, textPrompt = "",
 }
 
 /**
+ * Generate a world from multiple images with azimuth values
+ * @param {Array} images - Array of image objects with {mediaAssetId: string, azimuth: number} or {uri: string, azimuth: number}
+ * @param {string} textPrompt - Text prompt describing the scene
+ * @param {string} displayName - Display name for the world
+ * @returns {Promise<Object>}
+ */
+export async function generateWorldFromMultipleImages(images, textPrompt = "", displayName = "Untitled World") {
+    console.log("📸 Generating world from multiple images:", images.length, "images");
+    console.log("Images:", images.map(img => ({ azimuth: img.azimuth, source: img.mediaAssetId ? 'media_asset' : 'uri' })));
+
+    if (!images || images.length === 0) {
+        throw new Error("At least one image is required");
+    }
+
+    try {
+        // Build image prompts array - each image needs source and azimuth
+        const imagePrompts = images.map(img => {
+            if (img.mediaAssetId) {
+                return {
+                    source: "media_asset",
+                    media_asset_id: img.mediaAssetId,
+                    azimuth: img.azimuth
+                };
+            } else if (img.uri) {
+                return {
+                    source: "uri",
+                    uri: img.uri,
+                    azimuth: img.azimuth
+                };
+            } else {
+                throw new Error("Each image must have either mediaAssetId or uri");
+            }
+        });
+
+        const response = await axios.post(
+            `${WORLDLABS_API_BASE_URL}/worlds:generate`,
+            {
+                display_name: displayName,
+                world_prompt: {
+                    type: "image",
+                    image_prompt: imagePrompts.length === 1 ? imagePrompts[0] : imagePrompts,
+                    ...(textPrompt && { text_prompt: textPrompt })
+                }
+            },
+            { headers: getHeaders() }
+        );
+
+        console.log("✅ World generation started with", images.length, "images:", response.data.operation_id);
+        return response.data;
+    } catch (err) {
+        console.error("❌ World Labs API Error (generateWorldFromMultipleImages):", err.response?.data || err.message);
+        throw err;
+    }
+}
+
+/**
  * Poll operation status to check if world generation is complete
  * @param {string} operationId
  * @returns {Promise<Object>}
